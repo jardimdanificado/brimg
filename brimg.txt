@@ -18,7 +18,7 @@ system = 0,0
 0,0 = system
 0,1 = types
 0,2 = disks
-0,3 = tokens
+0,3 = 
 0,4 = ASCII
 0,4 = 
 
@@ -26,48 +26,66 @@ system = 0,0
 // system 
 
 0,0,0 = NULL
-0,0,1 = run function
-0,0,2 = next pixel in disk
-0,0,3 = set
-0,0,4 = free
+0,0,1 = title
+0,0,2 = window_x, int
+0,0,3 = window_y, int
+0,0,4 = current mode, char list
+0,0,5 = current disk
+0,0,6 = current token index
+0,0,7 = set
+0,0,8 = free
+0,0,9 = exit
 
-0,0,6 = goto, go to a bit
+0,0,10 = +
+0,0,11 = -
+0,0,12 = /
+0,0,13 = *
+0,0,14 = %
+0,0,15 = ^
 
-0,0,7 = if
-0,0,8 = else
+0,0,20 = play
+0,0,21 = next token
+0,0,22 = goto token
+0,0,23 = end token
+0,0,24 = play section
+0,0,25 = write token
+0,0,26 = 
 
-0,0,9 = ==
-0,0,10 = >
-0,0,11 = <
-0,0,12 = >=
-0,0,13 = <=
-0,0,14 = !=
-0,0,15 = +
-0,0,16 = -
-0,0,17 = /
-0,0,18 = %
+0,0,30 = ==
+0,0,31 = >
+0,0,32 = <
+0,0,33 = >=
+0,0,34 = <=
+0,0,35 = !=
+
+0,0,36 = if $1 goto $2
+0,0,37 = ifelse $1 goto $2 else goto $3
 
 // string functions
 
 0,0,128 = string from code(startIndex), stop when find a null
 0,0,129 = strcpy
-0,0,130 = strcat
-0,0,131 = chrcat
+0,0,130 = chrcat
+0,0,131 = strcat
 0,0,132 = intcat
 0,0,133 = strchr
 0,0,134 = strstr
 0,0,135
 
+//file function 
+0,0,140 = file read
+0,0,141 = file write
+
 
 0,0,201 = print
+0,0,202 = scan
 
 // system types
 
 0,1,0 = void
 0,1,1 = pointer(void*)
 0,1,2 = function (void*())
-0,1,3 = array
-
+0,1,3 = 
 0,1,4 = char
 0,1,5 = unsigned char
 0,1,6 = short
@@ -80,14 +98,4 @@ system = 0,0
 0,1,13 = double
 0,1,14 = long double
 0,1,15 = rgb
-
-// token
-
-0,0,5 = end token
-0,0,
-
-string = (0,4,4)array . (0,4,2)char
-
-
-
-
+0,1,16 = string
