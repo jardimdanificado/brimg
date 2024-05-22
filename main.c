@@ -33,6 +33,30 @@ void *push(List *list, void *data)
     return data;  // Return the added data (or something else as needed)
 }
 
+void *insert(List *list, size_t index, void *data) 
+{
+    if (index > list->size) {
+        // Handle out-of-bounds index if needed
+        return NULL;
+    }
+    // Reallocate the data array to hold one more element
+    list->data = realloc(list->data, (list->size + 1) * sizeof(void *));
+    if (list->data == NULL) {
+        // Handle allocation failure if needed
+        perror("Failed to reallocate memory");
+        exit(EXIT_FAILURE);
+    }
+    // Shift the data elements after the inserted element to the right
+    for (size_t i = list->size; i > index; i--) {
+        list->data[i] = list->data[i - 1];
+    }
+    // Insert the new data element into the list
+    list->data[index] = data;
+    // Increment the size of the list
+    list->size++;
+    return data;  // Return the inserted data (or something else as needed)
+}
+
 void *unpush(List *list, size_t index) 
 {
     if (index >= list->size) {
@@ -118,8 +142,8 @@ int main()
     char *str = "Hello, World!";
     char *str2 = "Hello, World! 2";
     push(lista, &str);
-    push(lista, &str2);
-    unpush(lista, 0);
+    insert(lista, 0, &str2);
+    //unpush(lista, 0);
     printf("Lista: %s\n", *(char **)lista->data[0]);
 
     memory[0][0][0] = NULL; // Liberando o ponteiro
