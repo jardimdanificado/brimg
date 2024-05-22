@@ -20,21 +20,19 @@ system = 0,0
 0,2 = disks
 0,3 = 
 0,4 = ASCII
-0,4 = 
+0,5 = 
 
 
 // system 
 
 0,0,0 = NULL
 0,0,1 = title
-0,0,2 = window_x, int
-0,0,3 = window_y, int
-0,0,4 = current mode, char list
+0,0,2 = 
+0,0,3 = 
+0,0,4 = 
 0,0,5 = current disk
 0,0,6 = current token index
-0,0,7 = set
-0,0,8 = free
-0,0,9 = exit
+
 
 0,0,10 = +
 0,0,11 = -
@@ -42,6 +40,10 @@ system = 0,0
 0,0,13 = *
 0,0,14 = %
 0,0,15 = ^
+
+0,0,16 = set
+0,0,17 = free
+0,0,18 = exit
 
 0,0,20 = play
 0,0,21 = next token
