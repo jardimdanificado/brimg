@@ -89,36 +89,18 @@ typedef struct {
 } Vec2;
 
 typedef struct {
-    byte r;
-    byte g;
-    byte b;
+    char r;
+    char g;
+    char b;
 } RGB;
 #define RGB(r, g, b) (RGB){r, g, b}
 
-typedef struct {
-    RGB *data;
-    int size;
-} Disk;
+#define Disk List
 
-int sum (int a, int b) 
+#define sum(a, b) (a + b)
+
+void ****newMemory()
 {
-    return a + b;
-}
-
-int read()
-{
-    
-}
-
-int main() 
-{
-
-    
-
-    //RGB *disk0 = (RGB *)malloc(sizeof(RGB)*disk0size);
-
-
-    // Alocando memória dinamicamente para a matriz
     void ****memory = (void ****)malloc(SIZE * sizeof(void ***));
     for (short i = 0; i < SIZE; i++) {
         memory[i] = (void ***)malloc(SIZE * sizeof(void **));
@@ -129,6 +111,27 @@ int main()
             }
         }
     }
+    memory[0][0][0] = NULL; // Liberando o ponteiro
+    memory[0][0][1] = "brimg"; // Atribuindo uma função ao ponteiro
+
+    memory[0][0][5] = 0; 
+    memory[0][0][6] = 0;
+    //memory[0][0][10] = sum;
+
+    return memory;
+}
+
+int readnext()
+{
+    
+}
+
+int main() 
+{
+    //RGB *disk0 = (RGB *)malloc(sizeof(RGB)*disk0size);
+
+    // Alocando memória dinamicamente para a matriz
+    void ****memory = newMemory();
 
     // Exemplo de uso: atribuindo alguns ponteiros aos elementos da matriz
     //float value = 1.1;
@@ -138,13 +141,15 @@ int main()
     // Exemplo de acesso aos elementos da matriz usando a função array[0][3][0]
     //printf("2 + 2 =: %d\n", ((int (*)(int, int))array[0][3][0])(2, 2));
 
-    List *lista = &List();
+    /*List *lista = &List();
     char *str = "Hello, World!";
     char *str2 = "Hello, World! 2";
     push(lista, &str);
-    insert(lista, 0, &str2);
+    insert(lista, 0, &str2);*/
     //unpush(lista, 0);
-    printf("Lista: %s\n", *(char **)lista->data[0]);
+    //printf("Lista: %s\n", *(char **)lista->data[0]);
+
+    
 
     memory[0][0][0] = NULL; // Liberando o ponteiro
     char* str3;
