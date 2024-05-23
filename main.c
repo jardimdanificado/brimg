@@ -4,17 +4,34 @@
 
 #define SIZE 256
 
-#define byte char
+#define byte unsigned char
+byte bigendian;
+
+typedef struct {
+    int x;
+    int y;
+} Vec2;
+
+typedef struct {
+    byte r;
+    byte g;
+    byte b;
+} RGB;
+#define RGB(r, g, b) (RGB){r, g, b}
 
 typedef struct {
     void *data;
-    char type;
+    byte type;
 } Generic;
 
 typedef struct {
     void **data;
     size_t size;
 } List;
+#define List() (List){NULL, 0}
+
+void ****memory;
+List *disks;
 
 // Define the push function
 void *push(List *list, void *data) 
@@ -80,24 +97,14 @@ void *unpush(List *list, size_t index)
     return data;  // Return the removed data (or something else as needed)
 }
 
-#define List() (List){NULL, 0}
-
-
-typedef struct {
-    int x;
-    int y;
-} Vec2;
-
-typedef struct {
-    char r;
-    char g;
-    char b;
-} RGB;
-#define RGB(r, g, b) (RGB){r, g, b}
-
-#define Disk List
-
-#define sum(a, b) (a + b)
+void *get(List *list, size_t index) 
+{
+    if (index >= list->size) {
+        // Handle out-of-bounds index if needed
+        return NULL;
+    }
+    return list->data[index];
+}
 
 void ****newMemory()
 {
@@ -121,17 +128,92 @@ void ****newMemory()
     return memory;
 }
 
-int readnext()
+RGB gettoken(int disk, int index)
 {
+    RGB token;
     
+    if (disk < disks->size) {
+        List disk0 = *(List *)disks->data[disk];
+        if (index < disk0.size) {
+            token = *(RGB *)disk0.data[index];
+        }
+    }
+
+    return token;
+}
+
+RGB currenttoken()
+{
+    return gettoken((int) memory[0][0][5], (int) memory[0][0][6]);
+}
+
+RGB nexttoken()
+{
+    return gettoken(memory[0][0][5], memory[0][0][6]+1);
+}
+
+int Int()
+{
+    int value = 0;
+    RGB token = nexttoken();
+    memory[0][0][6]+=2;
+    if (bigendian) 
+    {
+        value = (token.r << 16) | (token.g << 8) | token.b;
+    } 
+    else 
+    {
+        value = (token.b << 16) | (token.g << 8) | token.r;
+    }
+    return value;
+}
+
+byte *String()
+{
+    RGB token = nexttoken();
+    byte *str = "";
+    while (token.r != 0 && token.g != 0 && token.b != 0) 
+    {
+        str += token.r;
+        str += token.g;
+        str += token.b;
+        memory[0][0][6]+=1;
+        token = nexttoken();
+    }
+    
+    memory[0][0][6]+=2;
+    str[0] = token.r;
+    str[1] = token.g;
+    str[2] = token.b;
+    return str;
+}
+
+void *parseToken(int disk, int index)
+{
+    RGB token = gettoken(disk, index);
+    if (token.r == 'I') 
+    {
+        return Int();
+    }
+    return NULL;
+}
+
+int setmemory(byte r, byte g, byte b)
+{
+    RGB token = currenttoken();
+    memory[r][g][b] = &token;
+    return 0;
 }
 
 int main() 
 {
+    int n = 1;
+
+    bigendian = !(*(char *)&n == 1);
     //RGB *disk0 = (RGB *)malloc(sizeof(RGB)*disk0size);
 
     // Alocando memória dinamicamente para a matriz
-    void ****memory = newMemory();
+    memory = newMemory();
 
     // Exemplo de uso: atribuindo alguns ponteiros aos elementos da matriz
     //float value = 1.1;
@@ -155,8 +237,10 @@ int main()
     char* str3;
     scanf("%s", str3);
     // Liberando a memória alocada
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
+    for (int i = 0; i < SIZE; i++) 
+    {
+        for (int j = 0; j < SIZE; j++) 
+        {
             free(memory[i][j]);
         }
         free(memory[i]);
