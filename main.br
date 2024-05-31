@@ -1,4 +1,5 @@
 // should be used with bruterra;
+bruter.include config.br;
 set List from lua.require {lib.list};
 set io from lua.global.terralib.includec {stdio.h};
 set main from lua.eval 
@@ -19,22 +20,22 @@ set main from lua.eval
     local Memory3 = br.List(Memory2);
     local Memory4 = br.List(Memory3);
     
-    
     return terra()
         var memory:Memory4 = Memory4.new();
         
-        for w = 0, 1 do 
+        for r = 0, (br.config.memsize.r) do 
             memory:push(Memory3.new());
-            for k = 0, 255 do
-                memory.data[w]:push(Memory2.new());
-                for j = 0, 255 do
-                    memory.data[w].data[k]:push(Memory.new());
-                    for i = 0, 255 do
-                        memory.data[w].data[k].data[j]:push([RGBA]{r = 0, g = 0, b = 0, a = 0});
+            for g = 0, (br.config.memsize.g) do
+                memory.data[r]:push(Memory2.new());
+                for b = 0, (br.config.memsize.b) do
+                    memory.data[r].data[g]:push(Memory.new());
+                    for a = 0, (br.config.memsize.a) do
+                        memory.data[r].data[g].data[b]:push([RGBA]{r = 0, g = 0, b = 0, a = 0});
                     end
                 end
             end
         end
+        br.io.printf("Hello, World!%d\n",memory.data[0].data[75].data[45].size);
         memory.data[0].data[0].data[0].data[0].r = 244;
         br.io.printf("Hello, World!%d\n",memory.data[0].data[75].data[45].data[52].r);
         br.io.printf("Hello, World!%d\n",memory.data[0].data[0].data[0].data[0].r);

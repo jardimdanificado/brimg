@@ -104,7 +104,7 @@ system = 0
 
 arrays:
   array type whatever combination close;
-  array int 44 55 77 99 1 close
+  array int 44 55 77 99 1 close;
 
 
 R G B A pointer
