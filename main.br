@@ -1,0 +1,39 @@
+// should be used with bruterra;
+set List from lua.require {lib.list};
+set io from lua.global.terralib.includec {stdio.h};
+set main from lua.eval 
+{
+    local Bytes = br.List(uint8);
+    local Disk = br.List(uint8);
+
+    struct RGBA
+    {
+        r:uint8;
+        g:uint8;
+        b:uint8;
+        a:uint8;
+    };
+
+    struct GenericObject
+    {
+        data:Bytes;
+        position:RGBA;
+    };
+
+    local Memory = br.List(GenericObject);
+    local Memory2 = br.List(Memory);
+    local Memory3 = br.List(Memory2);
+    local Memory4 = br.List(Memory3);
+    
+    
+    return terra()
+        var memory:Memory4 = Memory4.new();
+        memory:push(Memory3.new(256, Memory2.new(256, Memory.new(256,[GenericObject]{
+            data = Bytes.new(1,0), 
+            position = [RGBA]{r = 1, g = 1, b = 1, a = 1}
+        }))));
+        br.io.printf("Hello, World!%d\n");
+    end
+};
+// main;
+set exports.main $main;
