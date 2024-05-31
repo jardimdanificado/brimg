@@ -7,39 +7,28 @@ set main from lua.eval
     local Bytes = br.List(uint8);
     local Disk = br.List(uint8);
 
-    struct RGBA
+    struct Pointer
     {
-        r:uint8;
-        g:uint8;
-        b:uint8;
-        a:uint8;
+        stack:uint8;
+        bank:uint8;
+        index:uint8;
     };
 
-    local Memory = br.List(RGBA);
-    local Memory2 = br.List(Memory);
-    local Memory3 = br.List(Memory2);
-    local Memory4 = br.List(Memory3);
+    local stacks = 
+    {
+        _int = br.List(int32);
+        _float = br.List(float);
+        _pointer = br.List(Pointer);
+        _byte = br.List(uint8);
+        _function = br.List(Pointer);
+    }
+
+    local Memory = br.List(Pointer);
     
     return terra()
-        var memory:Memory4 = Memory4.new();
-        
-        for r = 0, (br.config.memsize.r) do 
-            memory:push(Memory3.new());
-            for g = 0, (br.config.memsize.g) do
-                memory.data[r]:push(Memory2.new());
-                for b = 0, (br.config.memsize.b) do
-                    memory.data[r].data[g]:push(Memory.new());
-                    for a = 0, (br.config.memsize.a) do
-                        memory.data[r].data[g].data[b]:push([RGBA]{r = 0, g = 0, b = 0, a = 0});
-                    end
-                end
-            end
-        end
-        br.io.printf("Hello, World!%d\n",memory.data[0].data[75].data[45].size);
-        memory.data[0].data[0].data[0].data[0].r = 244;
-        br.io.printf("Hello, World!%d\n",memory.data[0].data[75].data[45].data[52].r);
-        br.io.printf("Hello, World!%d\n",memory.data[0].data[0].data[0].data[0].r);
-        br.io.printf("Hello, World!%d\n",memory.data[0].data[0].data[44].data[0].r);
+        var memory:Memory = Memory.new();
+
+
         br.io.scanf("Hello, World!%d\n");
     end
 };
