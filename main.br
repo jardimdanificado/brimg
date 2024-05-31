@@ -14,13 +14,7 @@ set main from lua.eval
         a:uint8;
     };
 
-    struct GenericObject
-    {
-        data:Bytes;
-        position:RGBA;
-    };
-
-    local Memory = br.List(GenericObject);
+    local Memory = br.List(RGBA);
     local Memory2 = br.List(Memory);
     local Memory3 = br.List(Memory2);
     local Memory4 = br.List(Memory3);
@@ -28,11 +22,24 @@ set main from lua.eval
     
     return terra()
         var memory:Memory4 = Memory4.new();
-        memory:push(Memory3.new(256, Memory2.new(256, Memory.new(256,[GenericObject]{
-            data = Bytes.new(1,0), 
-            position = [RGBA]{r = 1, g = 1, b = 1, a = 1}
-        }))));
-        br.io.printf("Hello, World!%d\n");
+        
+        for w = 0, 1 do 
+            memory:push(Memory3.new());
+            for k = 0, 255 do
+                memory.data[w]:push(Memory2.new());
+                for j = 0, 255 do
+                    memory.data[w].data[k]:push(Memory.new());
+                    for i = 0, 255 do
+                        memory.data[w].data[k].data[j]:push([RGBA]{r = 0, g = 0, b = 0, a = 0});
+                    end
+                end
+            end
+        end
+        memory.data[0].data[0].data[0].data[0].r = 244;
+        br.io.printf("Hello, World!%d\n",memory.data[0].data[75].data[45].data[52].r);
+        br.io.printf("Hello, World!%d\n",memory.data[0].data[0].data[0].data[0].r);
+        br.io.printf("Hello, World!%d\n",memory.data[0].data[0].data[44].data[0].r);
+        br.io.scanf("Hello, World!%d\n");
     end
 };
 // main;
