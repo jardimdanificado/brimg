@@ -25,54 +25,54 @@ system = 0
 
 // system 
 
-0,0,0 = NULL
-0,0,1 = title
-0,0,2 = 
-0,0,3 = 
-0,0,4 = 
-0,0,5 = current disk
-0,0,6 = current token index
+0 = NULL
+1 = title
+2 = 
+3 = 
+4 = 
+5 = current disk
+6 = current token index
 
 
-0,0,10 = +
-0,0,11 = -
-0,0,12 = /
-0,0,13 = *
-0,0,14 = %
-0,0,15 = ^
+10 = +
+11 = -
+12 = /
+13 = *
+14 = %
+15 = ^
 
-0,0,16 = set
-0,0,17 = free
-0,0,18 = exit
+16 = set
+17 = free
+18 = exit
 
-0,0,20 = play
-0,0,21 = next token
-0,0,22 = goto token
-0,0,23 = end token/close
-0,0,24 = play section
-0,0,25 = write token
-0,0,26 = 
+20 = play
+21 = next token
+22 = goto token
+23 = end token/close
+24 = play section
+25 = write token
+26 = 
 
-0,0,30 = ==
-0,0,31 = >
-0,0,32 = <
-0,0,33 = >=
-0,0,34 = <=
-0,0,35 = !=
+30 = ==
+31 = >
+32 = <
+33 = >=
+34 = <=
+35 = !=
 
-0,0,36 = if $1 goto $2
-0,0,37 = ifelse $1 goto $2 else goto $3
+36 = if $1 goto $2
+37 = ifelse $1 goto $2 else goto $3
 
 // string functions
 
-0,0,0,128 = 
-0,0,0,129 = strcpy
-0,0,0,130 = chrcat
-0,0,0,131 = strcat
-0,0,0,132 = intcat
-0,0,0,133 = strchr
-0,0,0,134 = strstr
-0,0,0,135 = 
+128 = 
+129 = strcpy
+130 = chrcat
+131 = strcat
+132 = intcat
+133 = strchr
+134 = strstr
+135 = 
 
 //file function 
 0,0,0,140 = file read

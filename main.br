@@ -9,9 +9,8 @@ set main from lua.eval
 
     struct Pointer
     {
-        stack:uint8;
-        bank:uint8;
-        index:uint8;
+        stack:uint16;
+        index:uint16;
     };
 
     local stacks = 
@@ -20,14 +19,35 @@ set main from lua.eval
         _float = br.List(float);
         _pointer = br.List(Pointer);
         _byte = br.List(uint8);
-        _function = br.List(Pointer);
+        _function = br.List({} -> {});
     }
 
     local Memory = br.List(Pointer);
-    
-    return terra()
-        var memory:Memory = Memory.new();
 
+    local new = terralib.overloadedfunction("new",{
+        terra(value:uint8)
+            
+        
+        end,
+        terra(value:int32)
+            
+        
+        end
+    });
+
+    return terra()
+        var intStack:stacks._int = stacks._int.new();
+        var byteStack:stacks._byte = stacks._byte.new();
+        var functionStack:stacks._function = stacks._function.new();
+        var floatStack:stacks._float = stacks._float.new();
+        var pointerStack:stacks._pointer = stacks._pointer.new();
+
+        
+        var memory:Memory = Memory.new();
+        memory:push([Pointer]{stack=0,index=0});
+        memory:push([Pointer]{stack=3,index=0});
+
+        
 
         br.io.scanf("Hello, World!%d\n");
     end
