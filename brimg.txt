@@ -1,14 +1,14 @@
+disk: char[]
 
-
-disk(image): char[]
-
+types:
+byte, int, float
 
 // system 
 
 0 = NULL
-1 = title
-2 = 
-3 = 
-4 = 
-5 = current disk
-6 = current token index
+1 = int size(2, 4 or 8)
+2 = float size(4 or 8)
+3-14 = title
+15 = 
+5 = 
+6 = 
