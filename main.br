@@ -1,53 +1,32 @@
 // should be used with bruterra;
 bruter.include config.br;
 set List from lua.require {lib.list};
-set io from lua.global.terralib.includec {stdio.h};
+set file from lua.require {lib.file};
+set io from C.include {stdio.h};
 set main from lua.eval 
 {
     local Bytes = br.List(uint8);
-    local Disk = br.List(uint8);
+    local Disk = br.List(int8);
+    local Disks = br.List(Disk);
 
-    struct Pointer
-    {
-        stack:uint16;
-        index:uint16;
-    };
+    terra Disks:read(path:rawstring)
+        var file:rawstring = br.file.read(path);
+        var disk:Disk = Disk.new();
+        disk.data = file;
+        self:push(disk);
+    end
 
-    local stacks = 
-    {
-        _int = br.List(int32);
-        _float = br.List(float);
-        _pointer = br.List(Pointer);
-        _byte = br.List(uint8);
-        _function = br.List({} -> {});
-    }
-
-    local Memory = br.List(Pointer);
-
-    local new = terralib.overloadedfunction("new",{
-        terra(value:uint8)
-            
-        
-        end,
-        terra(value:int32)
-            
-        
-        end
-    });
-
+    terra Disks:write(path:rawstring, index:int32)
+        var disk:Disk = self.data[index];
+        br.file.write(path,disk.data);
+    end
+    
     return terra()
-        var intStack:stacks._int = stacks._int.new();
-        var byteStack:stacks._byte = stacks._byte.new();
-        var functionStack:stacks._function = stacks._function.new();
-        var floatStack:stacks._float = stacks._float.new();
-        var pointerStack:stacks._pointer = stacks._pointer.new();
 
+        var currentDisk:uint8 = 0;
+        var disks:Disks = Disks.new();
         
-        var memory:Memory = Memory.new();
-        memory:push([Pointer]{stack=0,index=0});
-        memory:push([Pointer]{stack=3,index=0});
 
-        
 
         br.io.scanf("Hello, World!%d\n");
     end
