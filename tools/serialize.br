@@ -1,0 +1,11 @@
+help lua.global.arg;
+set filepath $lua.global.arg.2;
+set filetxt from utils.file.load.text $filepath;
+set filetxt from utils.string.replace $filetxt {\n} { };
+set filetxt from utils.string.replace $filetxt {  } { };
+set splited from utils.string.split $filetxt { };
+set result {};
+each index word in $splited {
+    set result from utils.string.concat $result ($lua.global.string.char ($lua.global.tonumber $word));
+};
+utils.file.save.text $lua.global.arg.3 $result;

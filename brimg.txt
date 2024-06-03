@@ -6,8 +6,8 @@ byte, int, float
 // system 
 
 0 = NULL
-1 = int size(2, 4 or 8)
-2 = float size(4 or 8)
+1 = 
+2 = 
 3-14 = title
 15 = 
 5 = 
