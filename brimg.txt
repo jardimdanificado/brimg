@@ -3,24 +3,23 @@ disk: unsigned char[]
 types:
 byte, int, float
 
-// system 
+// system disk(0)
 
 0 = NULL
 1 = 
 2 = 
 3-14 = title
 15 = 
-5 = 
-6 = 
+16 = 
+17 = 
 
-// functions
+// disk functions
 
 0 - 
-1 - set 
-2 - insert
-3 - push
-4 - remove 
-5 - move
-6 - swap
-7 - drag 
-8 - shift
+1 - set (position, value)
+2 - insert (value, position or #disk)
+3 - remove (position, size or 1)
+4 - move (origin, destiny, size or 1)
+5 - swap (origin, destiny, size or 1)
+6 - shift (start, endindex, direction)
+7 - random (destiny, size)
