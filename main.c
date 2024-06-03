@@ -81,44 +81,73 @@ Machine newMachine()
 //get int
 int getInt(unsigned char b0, unsigned char b1, unsigned char b2, unsigned char b3) 
 {
-    if (bigendian) {
-        return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
-    } else {
-        return (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
-    }
-}
-
-//get float
-float getFloat(unsigned char b0, unsigned char b1, unsigned char b2, unsigned char b3) {
     union {
-        float f;
         uint32_t i;
+        char b[4];
     } u;
 
     if (bigendian) {
-        u.i = ((uint32_t)b0 << 24) | ((uint32_t)b1 << 16) | ((uint32_t)b2 << 8) | (uint32_t)b3;
+        u.b[0] = b0;
+        u.b[1] = b1;
+        u.b[2] = b2;
+        u.b[3] = b3;
     } else {
-        u.i = ((uint32_t)b3 << 24) | ((uint32_t)b2 << 16) | ((uint32_t)b1 << 8) | (uint32_t)b0;
+        u.b[3] = b0;
+        u.b[2] = b1;
+        u.b[1] = b2;
+        u.b[0] = b3;
+    }
+
+    return u.i;
+}
+
+float getFloat( unsigned char b0, unsigned char b1, unsigned char b2, unsigned char b3)
+{
+ 
+    union {
+        float f;
+        unsigned char b[4];
+    } u;
+
+    if (bigendian) {
+        u.b[0] = b0;
+        u.b[1] = b1;
+        u.b[2] = b2;
+        u.b[3] = b3;
+    } else {
+        u.b[3] = b0;
+        u.b[2] = b1;
+        u.b[1] = b2;
+        u.b[0] = b3;
     }
 
     return u.f;
 }
 
-int main() 
+int main(int argc, char *argv[]) 
 {
+    char *inpath = (argc >= 2) ? argv[1] : "./tools/example.img";
+
+
     int n = 1;
 
     bigendian = !(*(char *)&n == 1);
-    //RGB *disk0 = (RGB *)malloc(sizeof(RGB)*disk0size);
-
-    // Alocando memória dinamicamente para a matriz
+    printf("bigendian: %d\n", bigendian);
+    
     Machine machine = newMachine();
-    machine.readDiskFile(machine.storage, "./tools/example.img");
+    machine.readDiskFile(machine.storage, inpath);//disk are always little endian, so we need to change the order of the bytes
     printf("content: %s\n", machine.storage->disk[0]);
     printf("size: %d\n", machine.storage->size);
     printf("as float: %f\n", getFloat(machine.storage->disk[0][0], machine.storage->disk[0][1], machine.storage->disk[0][2], machine.storage->disk[0][3]));
     printf("as int: %d\n", getInt(machine.storage->disk[0][0], machine.storage->disk[0][1], machine.storage->disk[0][2], machine.storage->disk[0][3]));
     
+    union {
+        float f;
+        unsigned char b[4];
+    } u;
+
+    u.f = 3.999999;
+    printf("float: %d %d %d %d\n", u.b[0], u.b[1], u.b[2], u.b[3]);
     
     return 0;
 }
