@@ -111,7 +111,7 @@ set main from lua.eval
         var currentDisk:uint8 = 0;
         var machine:Machine = Machine.new();
         br.io.printf("Loading disk\n");
-        machine:load("./tools/example.braw"); 
+        machine:load("./tools/example.bin"); 
 
 
         br.io.scanf("Hello, World!%d\n");

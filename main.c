@@ -97,14 +97,15 @@ void *unpush(List *list, size_t index)
     return data;  // Return the removed data (or something else as needed)
 }
 
-void *get(List *list, size_t index) 
-{
-    if (index >= list->size) {
-        // Handle out-of-bounds index if needed
-        return NULL;
-    }
-    return list->data[index];
-}
+typedef struct {
+    char *name;
+    void *data;
+    size_t size;
+} Disk;
+
+typedef struct {
+    
+} Machine;
 
 void ****newMemory()
 {
@@ -126,83 +127,6 @@ void ****newMemory()
     //memory[0][0][10] = sum;
 
     return memory;
-}
-
-RGB gettoken(int disk, int index)
-{
-    RGB token;
-    
-    if (disk < disks->size) {
-        List disk0 = *(List *)disks->data[disk];
-        if (index < disk0.size) {
-            token = *(RGB *)disk0.data[index];
-        }
-    }
-
-    return token;
-}
-
-RGB currenttoken()
-{
-    return gettoken((int) memory[0][0][5], (int) memory[0][0][6]);
-}
-
-RGB nexttoken()
-{
-    return gettoken(memory[0][0][5], memory[0][0][6]+1);
-}
-
-int Int()
-{
-    int value = 0;
-    RGB token = nexttoken();
-    memory[0][0][6]+=2;
-    if (bigendian) 
-    {
-        value = (token.r << 16) | (token.g << 8) | token.b;
-    } 
-    else 
-    {
-        value = (token.b << 16) | (token.g << 8) | token.r;
-    }
-    return value;
-}
-
-byte *String()
-{
-    RGB token = nexttoken();
-    byte *str = "";
-    while (token.r != 0 && token.g != 0 && token.b != 0) 
-    {
-        str += token.r;
-        str += token.g;
-        str += token.b;
-        memory[0][0][6]+=1;
-        token = nexttoken();
-    }
-    
-    memory[0][0][6]+=2;
-    str[0] = token.r;
-    str[1] = token.g;
-    str[2] = token.b;
-    return str;
-}
-
-void *parseToken(int disk, int index)
-{
-    RGB token = gettoken(disk, index);
-    if (token.r == 'I') 
-    {
-        return Int();
-    }
-    return NULL;
-}
-
-int setmemory(byte r, byte g, byte b)
-{
-    RGB token = currenttoken();
-    memory[r][g][b] = &token;
-    return 0;
 }
 
 int main() 
