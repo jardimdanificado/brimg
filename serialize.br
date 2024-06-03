@@ -8,4 +8,12 @@ set result ``;
 each word in $splited {
     set result from utils.string.concat $result ($lua.global.string.char ($lua.global.tonumber $word));
 };
-utils.file.save.text $lua.global.arg.3 $result;
+
+if {return $lua.global.arg.3}
+{
+    utils.file.save.text $lua.global.arg.3 $result;
+}
+else
+{
+    utils.file.save.text (utils.string.concat $lua.global.arg.2 {.img}) $result;
+};

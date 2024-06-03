@@ -2,3 +2,5 @@ main
 .vscode
 tools/example.braw
 test.img
+test.img.braw
+test.braw
