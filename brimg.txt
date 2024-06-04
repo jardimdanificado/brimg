@@ -1,7 +1,10 @@
 disk: unsigned char[]
 
 types:
-byte, int, float
+0 = void*
+1 = byte
+2 = int 4 bytes
+3 = float 4 bytes
 
 // system disk(0)
 
@@ -21,7 +24,28 @@ byte, int, float
 3 - remove (position, size or 1)
 4 - move (origin, destiny, size or 1)
 5 - swap (origin, destiny, size or 1)
-6 - shift (start, endindex, direction)
+6 - shift (start, size, direction)
 7 - random (destiny, size or 1)
 8 - copy (origin, destiny, size or 1)
-9 - fill (start, endindex, value)
+9 - fill (start, size, value)
+10 - duplicate (origin, destiny, size or 1)
+11 - reverse (start, size)
+12 - sort (start, size)
+
+// disk managment functions
+
+32 - readdisk (path)
+33 - writedisk (position, value)
+34 - removedisk (position)
+35 - movedisk (origin, destiny)
+36 - swapdisk (origin, destiny)
+37 - shiftdisk (start, endindex, direction)
+38 - copydisk (origin, destiny)
+39 - filldisk (start, endindex, disk)
+
+// interdisk functions
+
+64 - intermove (disk1, disk2, origin, destiny, size or 1)
+65 - intercopy (disk1, disk2, position1, position2, size or 1)
+66 - intershift (disk1, disk2, direction)
+67 - interswap (disk1, disk2, position1, position2, size or 1)

@@ -34,7 +34,6 @@ typedef struct {
     DiskStorage *storage;
     StandardFunctions *std;
     int size;
-    void (*addDisk)(DiskStorage *self, Disk *disk);
     void (*removeDisk)(DiskStorage *self, int index);
     void (*readDiskFile)(DiskStorage *self, char *filename);
     void (*writeDiskFile)(DiskStorage *self, char *filename, int index);
@@ -227,13 +226,6 @@ StandardFunctions newStandardFunctions()
 // DiskManagement functions
 // DiskManagement functions
 
-void addDisk(DiskStorage *storage, Disk *disk)
-{
-    storage->size++;
-    storage->disk = (Disk *)realloc(storage->disk, storage->size * sizeof(Disk));
-    storage->disk[storage->size - 1] = *disk;
-}
-
 void removeDisk(DiskStorage *self, int index)
 {
     if (index < 0 || index >= self->size) {
@@ -286,7 +278,6 @@ Machine newMachine()
     Machine machine;
     machine.size = 0;
     machine.storage = (DiskStorage *)malloc(sizeof(DiskStorage));
-    machine.addDisk = addDisk;
     machine.removeDisk = removeDisk;
     machine.readDiskFile = readDiskFile;
     machine.writeDiskFile = writeDiskFile;
