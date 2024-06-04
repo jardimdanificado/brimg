@@ -1,6 +1,0 @@
-set config from [];
-set config.memsize from obj
-r 1
-g 256
-b 256
-a 256;
