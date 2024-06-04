@@ -25,7 +25,7 @@ typedef struct {
     void (*swap)(Disk *disk, int index1, int index2, int size);
     void (*shift)(Disk *disk, int index, int size, int direction);
     void (*random)(Disk *disk, int index, int size);
-    void (*copy)(Disk *disk, int index, int size);
+    void (*copy)(Disk *disk, int index, int destiny, int size);
     void (*fill)(Disk *disk, int index, int size, unsigned char data);
 } StandardFunctions;
 
@@ -65,10 +65,19 @@ void _insert(Disk *disk, int index, char *str)
 
 void _remove(Disk *disk, int index, int size)
 {
-    for (int i = index; i < size; i++) {
-        (*disk)[i] = (*disk)[i + size];
+    int disksize = strlen(*disk);
+    for (int i = index; i < disksize; i++)
+    {
+        if (i + size < disksize)
+        {
+            (*disk)[i] = (*disk)[i + size];
+        }
+        else
+        {
+            (*disk)[i] = 0;
+        }
     }
-    *disk = (Disk)realloc(*disk, (size - size) * sizeof(Disk));
+    *disk = (Disk)realloc(*disk, (disksize - size) * sizeof(Disk));
 }
 
 void _move(Disk *disk, int origin, int destiny, int size)
@@ -76,26 +85,30 @@ void _move(Disk *disk, int origin, int destiny, int size)
     int disksize = strlen(*disk);
     if (origin > destiny)
     {
-        for (int i = 0; i < size; i++)
-        {
-            (*disk)[destiny + i] = (*disk)[origin + i];
-        }
-        for (int i = destiny + size; i < disksize; i++)
-        {
-            (*disk)[i] = (*disk)[i + size];
-        }
+        int temp = origin;
+        origin = destiny;
+        destiny = temp;
     }
-    else
+    if (origin < 0 || destiny < 0 || origin >= disksize || destiny >= disksize || origin + size > disksize || destiny + size > disksize)
     {
-        for (int i = size - 1; i >= 0; i--)
-        {
-            (*disk)[destiny + i] = (*disk)[origin + i];
-        }
-        for (int i = origin; i < disksize; i++)
-        {
-            (*disk)[i] = (*disk)[i + size];
-        }
+        printf("Error: Index out of bounds\n");
+        return;
     }
+    Disk temp = (Disk)malloc(size * sizeof(Disk));
+    for (int i = 0; i < size; i++)
+    {
+        temp[i] = (*disk)[origin + i];
+    }
+    for (int i = 0; i < size; i++)
+    {
+        (*disk)[origin + i] = (*disk)[destiny + i];
+    }
+    for (int i = 0; i < size; i++)
+    {
+        (*disk)[destiny + i] = temp[i];
+    }
+    free(temp);
+
 }
 
 void _swap(Disk *disk, int index1, int index2, int size)
@@ -128,6 +141,7 @@ void _swap(Disk *disk, int index1, int index2, int size)
 void _shift(Disk *disk, int index, int size, int _shift)
 {
     int disksize = strlen(*disk);
+    // slide items based of _shift - to the left, + to the right, 0 change nothing, 0123456789 -> 0781234569 with shift 3 in a interval from 1 to 8
     if (index < 0 || index >= disksize || index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
@@ -135,55 +149,52 @@ void _shift(Disk *disk, int index, int size, int _shift)
     }
     if (_shift > 0)
     {
-        for (int i = disksize - 1; i >= index + size; i--)
+        for (int i = 0; i < _shift; i++)
         {
-            // if going out shift size shift them to the start of the shift
-            if (i > index + size)
+            unsigned char temp = (*disk)[index];
+            for (int j = index; j < index + size - 1; j++)
             {
-                (*disk)[i] = (*disk)[i - size + _shift];
+                (*disk)[j] = (*disk)[j + 1];
             }
-            else
-            {
-                (*disk)[i] = 0;
-            }
+            (*disk)[index + size - 1] = temp;
         }
     }
-    else
+    else if (_shift < 0)
     {
-        for (int i = index; i < disksize; i++)
+        for (int i = 0; i < -_shift; i++)
         {
-            // if going out shift size shift them to the start of the shift
-            if (i < index + size)
+            unsigned char temp = (*disk)[index + size - 1];
+            for (int j = index + size - 1; j > index; j--)
             {
-                (*disk)[i] = (*disk)[i - _shift];
+                (*disk)[j] = (*disk)[j - 1];
             }
-            else
-            {
-                (*disk)[i] = 0;
-            }
+            (*disk)[index] = temp;
         }
     }
 }
 
 void _random(Disk *disk, int index, int size)
 {
+    //set seed 
+    srand(time(NULL));
+
     for (int i = 0; i < size; i++)
     {
         (*disk)[index + i] = rand() % 256;
     }
 }
 
-void _copy(Disk *disk, int index, int size)
+void _copy(Disk *disk, int index, int destiny, int size)
 {
     int disksize = strlen(*disk);
-    if (index < 0 || index >= disksize || index + size > disksize)
+    if (index < 0 || destiny < 0 || index >= disksize || destiny >= disksize || index + size > disksize || destiny + size > disksize)
     {
         printf("Error: Index out of bounds\n");
         return;
     }
     for (int i = 0; i < size; i++)
     {
-        (*disk)[index + i] = (*disk)[index + i - size];
+        (*disk)[destiny + i] = (*disk)[index + i];
     }
 }
 
@@ -331,8 +342,15 @@ int main(int argc, char *argv[])
     printf("as float: %f\n", getFloat(machine.storage->disk[0][0], machine.storage->disk[0][1], machine.storage->disk[0][2], machine.storage->disk[0][3]));
     printf("as int: %d\n", getInt(machine.storage->disk[0][0], machine.storage->disk[0][1], machine.storage->disk[0][2], machine.storage->disk[0][3]));
     
-    machine.std->set(&machine.storage->disk[0], 0, 123);
-    machine.std->insert(&machine.storage->disk[0], 1, "hello");
+    machine.std->set(&machine.storage->disk[0], 0, 123);//working fine
+    machine.std->insert(&machine.storage->disk[0], 1, "hello");//working fine
+    machine.std->remove(&machine.storage->disk[0], 1, 2);//working fine
+    machine.std->move(&machine.storage->disk[0], 1, 10, 4);//seems to be working fine
+    machine.std->swap(&machine.storage->disk[0], 10, 1, 4);//seems to be working fine
+    machine.std->shift(&machine.storage->disk[0], 0, 10, 3);//quite working
+    machine.std->random(&machine.storage->disk[0], 0, 10);//working fine
+    machine.std->copy(&machine.storage->disk[0], 0, 10, 4);//working fine
+    machine.std->fill(&machine.storage->disk[0], 0, 10, 44);//working fine
     printf("content: %s\n", machine.storage->disk[0]);
 
 
