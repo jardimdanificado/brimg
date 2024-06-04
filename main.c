@@ -4,6 +4,7 @@
 #include <math.h>
 #include <limits.h>
 #include <stdint.h>
+#include <time.h>
 
 #define SIZE 256
 
@@ -36,6 +37,7 @@ typedef struct {
     void (*addDisk)(DiskStorage *self, Disk *disk);
     void (*removeDisk)(DiskStorage *self, int index);
     void (*readDiskFile)(DiskStorage *self, char *filename);
+    void (*writeDiskFile)(DiskStorage *self, char *filename, int index);
 } Machine;
 
 // StandardFunctions
@@ -267,6 +269,18 @@ void readDiskFile(DiskStorage *self, char *filename)
     self->disk[self->size - 1] = disk;
 }
 
+void writeDiskFile(DiskStorage *self, char *filename, int index)
+{
+    if (index < 0 || index >= self->size) {
+        printf("Error: Index out of bounds\n");
+        return;
+    }
+
+    FILE *file = fopen(filename , "wb");
+    fwrite(self->disk[index], strlen(self->disk[index]), 1, file);
+    fclose(file);
+}
+
 Machine newMachine()
 {
     Machine machine;
@@ -275,6 +289,7 @@ Machine newMachine()
     machine.addDisk = addDisk;
     machine.removeDisk = removeDisk;
     machine.readDiskFile = readDiskFile;
+    machine.writeDiskFile = writeDiskFile;
     machine.std = (StandardFunctions *)malloc(sizeof(StandardFunctions));
     *machine.std = newStandardFunctions();
     return machine;
@@ -353,7 +368,7 @@ int main(int argc, char *argv[])
     machine.std->fill(&machine.storage->disk[0], 0, 10, 44);//working fine
     printf("content: %s\n", machine.storage->disk[0]);
 
-
+    machine.writeDiskFile(machine.storage, "./example2.img", 0);
     union {
         float f;
         unsigned char b[4];
