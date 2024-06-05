@@ -32,4 +32,8 @@ types:
 12 - find (offset, size)
 13 - replace (position, size, value)
 14 - replaceall (position, size, value)
-15 - 
+15 - setint (position, value)
+16 - setfloat (position, value)
+
+// structs
+
