@@ -1,49 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <limits.h>
-#include <stdint.h>
-#include <time.h>
-
-#define SIZE 256
-
-#define byte uint8_t
-byte bigendian;
-
-typedef union {
-    float f;
-    uint32_t i;
-    uint8_t b[4];
-} Number;
-
-typedef uint8_t * Disk;
-
-typedef struct {
-    Disk* disk;
-    int size;
-} DiskStorage;
-
-typedef struct {
-    void (*set)(Disk *disk, int index, uint8_t data);
-    void (*insert)(Disk *disk, int index, char *str);
-    void (*remove)(Disk *disk, int index, int size);
-    void (*move)(Disk *disk, int origin, int destiny, int size);
-    void (*swap)(Disk *disk, int index1, int index2, int size);
-    void (*shift)(Disk *disk, int index, int size, int direction);
-    void (*random)(Disk *disk, int index, int size);
-    void (*copy)(Disk *disk, int index, int destiny, int size);
-    void (*fill)(Disk *disk, int index, int size, uint8_t data);
-} StandardFunctions;
-
-typedef struct {
-    DiskStorage *storage;
-    StandardFunctions *std;
-    int size;
-    void (*removeDisk)(DiskStorage *self, int index);
-    void (*readDiskFile)(DiskStorage *self, char *filename);
-    void (*writeDiskFile)(DiskStorage *self, char *filename, int index);
-} Machine;
+#include "brimg.h"
 
 // StandardFunctions
 // StandardFunctions
@@ -213,122 +168,42 @@ void _fill(Disk *disk, int index, int size, uint8_t data)
     }
 }
 
-StandardFunctions newStandardFunctions()
-{
-    StandardFunctions std;
-    std.set = _set;
-    std.insert = _insert;
-    std.remove = _remove;
-    std.move = _move;
-    std.swap = _swap;
-    std.shift = _shift;
-    std.random = _random;
-    std.copy = _copy;
-    std.fill = _fill;
-    return std;
-}
-
 // DiskManagement functions
 // DiskManagement functions
 // DiskManagement functions
 
-void removeDisk(DiskStorage *self, int index)
+char *txtload(char *filename)
 {
-    if (index < 0 || index >= self->size) {
-        printf("Error: Index out of bounds\n");
-        return;
-    }
-
-    self->size--;
-    for (int i = index; i < self->size; i++) {
-        self->disk[i] = self->disk[i + 1];
-    }
-    self->disk = (Disk *)realloc(self->disk, self->size * sizeof(Disk));
-}
-
-void readDiskFile(DiskStorage *self, char *filename)
-{
-    FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
         printf("Error: File not found\n");
-        return;
+        return NULL;
     }
 
     fseek(file, 0, SEEK_END);
     long size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    Disk disk = (Disk)malloc(size);
-    fread(disk, size, 1, file);
+    char *buffer = (char *)malloc(size + 1);
+    fread(buffer, size, 1, file);
     fclose(file);
 
-    self->size++;
-    self->disk = (Disk *)realloc(self->disk, self->size * sizeof(Disk));
-    self->disk[self->size - 1] = disk;
+    buffer[size] = '\0';
+    return buffer;
 }
 
-void writeDiskFile(DiskStorage *self, char *filename, int index)
+void txtsave(char *filename, char *data)
 {
-    if (index < 0 || index >= self->size) {
-        printf("Error: Index out of bounds\n");
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
+    {
+        printf("Error: File not found\n");
         return;
     }
 
-    FILE *file = fopen(filename , "wb");
-    fwrite(self->disk[index], strlen(self->disk[index]), 1, file);
+    fwrite(data, strlen(data), 1, file);
     fclose(file);
-}
-
-Machine newMachine()
-{
-    Machine machine;
-    machine.size = 0;
-    machine.storage = (DiskStorage *)malloc(sizeof(DiskStorage));
-    machine.removeDisk = removeDisk;
-    machine.readDiskFile = readDiskFile;
-    machine.writeDiskFile = writeDiskFile;
-    machine.std = (StandardFunctions *)malloc(sizeof(StandardFunctions));
-    *machine.std = newStandardFunctions();
-    return machine;
-}
-
-//get int
-int getInt(uint8_t *bytes) 
-{
-    Number u;
-
-    if (bigendian) {
-        u.b[0] = bytes[0];
-        u.b[1] = bytes[1];
-        u.b[2] = bytes[2];
-        u.b[3] = bytes[3];
-    } else {
-        u.b[3] = bytes[0];
-        u.b[2] = bytes[1];
-        u.b[1] = bytes[2];
-        u.b[0] = bytes[3];
-    }
-
-    return u.i;
-}
-
-float getFloat(uint8_t *bytes)
-{
-    Number u;
-
-    if (bigendian) {
-        u.b[0] = bytes[0];
-        u.b[1] = bytes[1];
-        u.b[2] = bytes[2];
-        u.b[3] = bytes[3];
-    } else {
-        u.b[3] = bytes[0];
-        u.b[2] = bytes[1];
-        u.b[1] = bytes[2];
-        u.b[0] = bytes[3];
-    }
-
-    return u.f;
 }
 
 Number getNumber(uint8_t *bytes)
@@ -350,52 +225,92 @@ Number getNumber(uint8_t *bytes)
     return u;
 }
 
-
-uint8_t* getBytes(Machine machine, int diskIndex, int index, int size)
+uint8_t* getBytes(Disk disk, int index, int size)
 {
     uint8_t *bytes = (uint8_t *)malloc(size * sizeof(uint8_t));
     for (int i = 0; i < size; i++)
     {
-        bytes[i] = machine.storage->disk[diskIndex][index + i];
+        bytes[i] = disk[index + i];
     }
     return bytes;
 }
 
+// tcc
+// tcc
+// tcc
+
+void handle_error(void *opaque, const char *msg) {
+    fprintf(opaque, "%s\n", msg);
+}
+
+TCCState* create_tcc_state() 
+{
+    TCCState *s = tcc_new();
+    if (!s) {
+        fprintf(stderr, "Could not create tcc state\n");
+        exit(1);
+    }
+    tcc_set_error_func(s, stderr, handle_error);
+    tcc_set_output_type(s, TCC_OUTPUT_MEMORY);
+    return s;
+}
+
+void compile_code(TCCState *s, const char *code) {
+    if (tcc_compile_string(s, code) == -1)
+        exit(1);
+}
+
+void add_symbols(TCCState *s, const char *name, void *addr) {
+    tcc_add_symbol(s, name, addr);
+}
+
+void* get_symbol(TCCState *s, const char *name) {
+    void *sym = tcc_get_symbol(s, name);
+    if (!sym) {
+        fprintf(stderr, "Could not find symbol %s\n", name);
+        exit(1);
+    }
+    return sym;
+}
+
+TCCState *new_state(const char *code) {
+    TCCState *s = create_tcc_state();
+    compile_code(s, code);
+    
+    return s;
+}
+
 int main(int argc, char *argv[]) 
 {
-    char *inpath = (argc >= 2) ? argv[1] : "./tools/example.img";
-
-
+    char *inpath = argv[1];
+    char *outpath = argv[2];
     int n = 1;
 
     bigendian = !(*(char *)&n == 1);
     printf("bigendian: %d\n", bigendian);
     
-    Machine machine = newMachine();
-    machine.readDiskFile(machine.storage, inpath);//disk are always little endian, so we need to change the order of the bytes
-    printf("size: %d\n", machine.storage->size);
-    printf("as float: %f\n", getNumber(getBytes(machine, 0, 0, 4)).f);
-    printf("as int: %d\n", getNumber(getBytes(machine, 0, 0, 4)).i);
-    
-    machine.std->set(&machine.storage->disk[0], 0, 123);//working fine
-    machine.std->insert(&machine.storage->disk[0], 1, "hello");//working fine
-    machine.std->remove(&machine.storage->disk[0], 1, 2);//working fine
-    machine.std->move(&machine.storage->disk[0], 1, 10, 4);//seems to be working fine
-    machine.std->swap(&machine.storage->disk[0], 10, 1, 4);//seems to be working fine
-    machine.std->shift(&machine.storage->disk[0], 0, 10, 3);//quite working
-    machine.std->random(&machine.storage->disk[0], 0, 10);//working fine
-    machine.std->copy(&machine.storage->disk[0], 0, 10, 4);//working fine
-    machine.std->fill(&machine.storage->disk[0], 0, 10, 44);//working fine
-    printf("content: %s\n", machine.storage->disk[0]);
+    TCCState *s = new_state(txtload(inpath));
 
-    machine.writeDiskFile(machine.storage, "./example2.img", 0);
-    union {
-        float f;
-        uint8_t b[4];
-    } u;
+    add_symbols(s, "getNumber", getNumber);
+    add_symbols(s, "getBytes", getBytes);
+    add_symbols(s, "_set", _set);
+    add_symbols(s, "_insert", _insert);
+    add_symbols(s, "_remove", _remove);
+    add_symbols(s, "_move", _move);
+    add_symbols(s, "_swap", _swap);
+    add_symbols(s, "_shift", _shift);
+    add_symbols(s, "_random", _random);
+    add_symbols(s, "_copy", _copy);
+    add_symbols(s, "_fill", _fill);
+    add_symbols(s, "txtload", txtload);
+    add_symbols(s, "txtsave", txtsave);
 
-    u.f = 3.999999;
-    printf("float: %d %d %d %d\n", u.b[0], u.b[1], u.b[2], u.b[3]);
-    
+    if (tcc_relocate(s) < 0)
+        exit(1);
+
+    void (*func)(int) = (void (*)(int))get_symbol(s, "main");
+
+    func(32);
+    tcc_delete(s);
     return 0;
 }
