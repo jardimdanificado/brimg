@@ -28,9 +28,8 @@ types:
 7 - random (destiny, size or 1)
 8 - copy (origin, destiny, size or 1)
 9 - fill (start, size, value)
-10 - duplicate (origin, destiny, size or 1)
-11 - reverse (start, size)
-12 - sort (start, size)
+10 - reverse (start, size)
+11 - sort (start, size)
 
 // disk managment functions
 

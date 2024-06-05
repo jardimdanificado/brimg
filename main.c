@@ -8,10 +8,16 @@
 
 #define SIZE 256
 
-#define byte unsigned char
+#define byte uint8_t
 byte bigendian;
 
-typedef unsigned char * Disk;
+typedef union {
+    float f;
+    uint32_t i;
+    uint8_t b[4];
+} Number;
+
+typedef uint8_t * Disk;
 
 typedef struct {
     Disk* disk;
@@ -19,7 +25,7 @@ typedef struct {
 } DiskStorage;
 
 typedef struct {
-    void (*set)(Disk *disk, int index, unsigned char data);
+    void (*set)(Disk *disk, int index, uint8_t data);
     void (*insert)(Disk *disk, int index, char *str);
     void (*remove)(Disk *disk, int index, int size);
     void (*move)(Disk *disk, int origin, int destiny, int size);
@@ -27,7 +33,7 @@ typedef struct {
     void (*shift)(Disk *disk, int index, int size, int direction);
     void (*random)(Disk *disk, int index, int size);
     void (*copy)(Disk *disk, int index, int destiny, int size);
-    void (*fill)(Disk *disk, int index, int size, unsigned char data);
+    void (*fill)(Disk *disk, int index, int size, uint8_t data);
 } StandardFunctions;
 
 typedef struct {
@@ -43,7 +49,7 @@ typedef struct {
 // StandardFunctions
 // StandardFunctions
 
-void _set(Disk *disk, int index, unsigned char data)
+void _set(Disk *disk, int index, uint8_t data)
 {
     (*disk)[index] = data;
 }
@@ -133,7 +139,7 @@ void _swap(Disk *disk, int index1, int index2, int size)
     }
     for (int i = 0; i < size; i++)
     {
-        unsigned char temp = (*disk)[index1 + i];
+        uint8_t temp = (*disk)[index1 + i];
         (*disk)[index1 + i] = (*disk)[index2 + i];
         (*disk)[index2 + i] = temp;
     }
@@ -152,7 +158,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     {
         for (int i = 0; i < _shift; i++)
         {
-            unsigned char temp = (*disk)[index];
+            uint8_t temp = (*disk)[index];
             for (int j = index; j < index + size - 1; j++)
             {
                 (*disk)[j] = (*disk)[j + 1];
@@ -164,7 +170,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     {
         for (int i = 0; i < -_shift; i++)
         {
-            unsigned char temp = (*disk)[index + size - 1];
+            uint8_t temp = (*disk)[index + size - 1];
             for (int j = index + size - 1; j > index; j--)
             {
                 (*disk)[j] = (*disk)[j - 1];
@@ -199,7 +205,7 @@ void _copy(Disk *disk, int index, int destiny, int size)
     }
 }
 
-void _fill(Disk *disk, int index, int size, unsigned char data)
+void _fill(Disk *disk, int index, int size, uint8_t data)
 {
     for (int i = 0; i < size; i++)
     {
@@ -287,49 +293,72 @@ Machine newMachine()
 }
 
 //get int
-int getInt(unsigned char b0, unsigned char b1, unsigned char b2, unsigned char b3) 
+int getInt(uint8_t *bytes) 
 {
-    union {
-        uint32_t i;
-        char b[4];
-    } u;
+    Number u;
 
     if (bigendian) {
-        u.b[0] = b0;
-        u.b[1] = b1;
-        u.b[2] = b2;
-        u.b[3] = b3;
+        u.b[0] = bytes[0];
+        u.b[1] = bytes[1];
+        u.b[2] = bytes[2];
+        u.b[3] = bytes[3];
     } else {
-        u.b[3] = b0;
-        u.b[2] = b1;
-        u.b[1] = b2;
-        u.b[0] = b3;
+        u.b[3] = bytes[0];
+        u.b[2] = bytes[1];
+        u.b[1] = bytes[2];
+        u.b[0] = bytes[3];
     }
 
     return u.i;
 }
 
-float getFloat( unsigned char b0, unsigned char b1, unsigned char b2, unsigned char b3)
+float getFloat(uint8_t *bytes)
 {
- 
-    union {
-        float f;
-        unsigned char b[4];
-    } u;
+    Number u;
 
     if (bigendian) {
-        u.b[0] = b0;
-        u.b[1] = b1;
-        u.b[2] = b2;
-        u.b[3] = b3;
+        u.b[0] = bytes[0];
+        u.b[1] = bytes[1];
+        u.b[2] = bytes[2];
+        u.b[3] = bytes[3];
     } else {
-        u.b[3] = b0;
-        u.b[2] = b1;
-        u.b[1] = b2;
-        u.b[0] = b3;
+        u.b[3] = bytes[0];
+        u.b[2] = bytes[1];
+        u.b[1] = bytes[2];
+        u.b[0] = bytes[3];
     }
 
     return u.f;
+}
+
+Number getNumber(uint8_t *bytes)
+{
+    Number u;
+
+    if (bigendian) {
+        u.b[0] = bytes[0];
+        u.b[1] = bytes[1];
+        u.b[2] = bytes[2];
+        u.b[3] = bytes[3];
+    } else {
+        u.b[3] = bytes[0];
+        u.b[2] = bytes[1];
+        u.b[1] = bytes[2];
+        u.b[0] = bytes[3];
+    }
+
+    return u;
+}
+
+
+uint8_t* getBytes(Machine machine, int diskIndex, int index, int size)
+{
+    uint8_t *bytes = (uint8_t *)malloc(size * sizeof(uint8_t));
+    for (int i = 0; i < size; i++)
+    {
+        bytes[i] = machine.storage->disk[diskIndex][index + i];
+    }
+    return bytes;
 }
 
 int main(int argc, char *argv[]) 
@@ -345,8 +374,8 @@ int main(int argc, char *argv[])
     Machine machine = newMachine();
     machine.readDiskFile(machine.storage, inpath);//disk are always little endian, so we need to change the order of the bytes
     printf("size: %d\n", machine.storage->size);
-    printf("as float: %f\n", getFloat(machine.storage->disk[0][0], machine.storage->disk[0][1], machine.storage->disk[0][2], machine.storage->disk[0][3]));
-    printf("as int: %d\n", getInt(machine.storage->disk[0][0], machine.storage->disk[0][1], machine.storage->disk[0][2], machine.storage->disk[0][3]));
+    printf("as float: %f\n", getNumber(getBytes(machine, 0, 0, 4)).f);
+    printf("as int: %d\n", getNumber(getBytes(machine, 0, 0, 4)).i);
     
     machine.std->set(&machine.storage->disk[0], 0, 123);//working fine
     machine.std->insert(&machine.storage->disk[0], 1, "hello");//working fine
@@ -362,7 +391,7 @@ int main(int argc, char *argv[])
     machine.writeDiskFile(machine.storage, "./example2.img", 0);
     union {
         float f;
-        unsigned char b[4];
+        uint8_t b[4];
     } u;
 
     u.f = 3.999999;
