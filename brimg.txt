@@ -1,10 +1,12 @@
 disk: unsigned char[]
 
 types:
-0 = pointer 4 bytes
+0 = void 0 bytes
 1 = byte
 2 = int 4 bytes
 3 = float 4 bytes
+4 = string ? bytes
+5+ = custom types
 
 // disk 
 //byte 0 to 255 are "reserved" for the system
@@ -34,6 +36,8 @@ types:
 14 - replaceall (position, size, value)
 15 - setint (position, value)
 16 - setfloat (position, value)
+17 - goto (position)
+18 - if (condition, 
 
 // structs
 
@@ -56,9 +60,9 @@ people getpeople(index)
 {
  people joao;
  joao.age = disk[index]
- joao.weight = getNumber(getBytes(disk,index,4)).f
- joao.height = getNumber(disk,index + 5)).f
- joao.name = getString(disk,index + 9,size)
+ joao.weight = getNumber(disk,index,4).f
+ joao.height = getNumber(disk,index + 5).f
+ joao.name = getString(disk,index + 9, 21 - 9)
  joao.id = getNumber(disk, index + 21).i
- return joao
+ return joao;
 }
