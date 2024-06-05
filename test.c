@@ -2,6 +2,7 @@
 
 int main()
 {
-    Disk disk0 = txtload("test.txt");//disk are always little endian, so we need to change the order of the bytes
-    printf("Disk0: %s\n", disk0);
+    Disk disk0 = diskread("test.img");//disk are always little endian, so we need to change the order of the bytes
+    int size = strlen(disk0);
+    printf("Disk0: %d\n", size);
 }

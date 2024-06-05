@@ -172,7 +172,7 @@ void _fill(Disk *disk, int index, int size, uint8_t data)
 // DiskManagement functions
 // DiskManagement functions
 
-char *txtload(char *filename)
+char *diskread(char *filename)
 {
     FILE *file = fopen(filename, "r");
     if (file == NULL)
@@ -193,7 +193,7 @@ char *txtload(char *filename)
     return buffer;
 }
 
-void txtsave(char *filename, char *data)
+void diskwrite(char *filename, char *data)
 {
     FILE *file = fopen(filename, "w");
     if (file == NULL)
@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
     bigendian = !(*(char *)&n == 1);
     printf("bigendian: %d\n", bigendian);
     
-    TCCState *s = new_state(txtload(inpath));
+    TCCState *s = new_state(diskread(inpath));
 
     add_symbols(s, "getNumber", getNumber);
     add_symbols(s, "getBytes", getBytes);
@@ -302,8 +302,8 @@ int main(int argc, char *argv[])
     add_symbols(s, "_random", _random);
     add_symbols(s, "_copy", _copy);
     add_symbols(s, "_fill", _fill);
-    add_symbols(s, "txtload", txtload);
-    add_symbols(s, "txtsave", txtsave);
+    add_symbols(s, "diskread", diskread);
+    add_symbols(s, "diskwrite", diskwrite);
 
     if (tcc_relocate(s) < 0)
         exit(1);
