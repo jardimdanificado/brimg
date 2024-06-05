@@ -1,20 +1,19 @@
 disk: unsigned char[]
 
 types:
-0 = void*
+0 = pointer 4 bytes
 1 = byte
 2 = int 4 bytes
 3 = float 4 bytes
 
-// system disk(0)
+// disk 
+//byte 0 to 255 are "reserved" for the system
 
 0 = NULL
-1 = 
-2 = 
-3-14 = title
-15 = 
-16 = 
-17 = 
+1-4 = current index
+5-8 = 
+
+32-48 = title
 
 // disk functions
 
@@ -31,5 +30,6 @@ types:
 10 - reverse (start, size)
 11 - sort (start, size)
 12 - find (offset, size)
-13 - replace (offset, size, value)
-14 - 
+13 - replace (position, size, value)
+14 - replaceall (position, size, value)
+15 - 
