@@ -1,0 +1,6 @@
+struct people
+0 byte age
+1 float weight
+5 float height
+9 string name
+21 int id;

@@ -8,7 +8,7 @@
 #include <libtcc.h>
 
 #define SIZE 256
-#define VERSION "0.0.1"
+#define VERSION "0.0.2"
 
 #define byte uint8_t
 byte bigendian;
@@ -33,8 +33,13 @@ typedef struct {
     void (*fill)(Disk *disk, int index, int size, uint8_t data);
 } StandardFunctions;
 
-Number getNumber(uint8_t *bytes);
-uint8_t* getBytes(Disk disk, int index, int size);
+Number get_number(uint8_t *bytes);
+uint8_t* get_bytes(Disk disk, int index, int size);
+uint8_t get_byte(Disk disk, int index);
+char* get_string(Disk disk, int index, int size);
+int get_int(Disk disk, int index);
+float get_float(Disk disk, int index);
+
 
 void _set(Disk *disk, int index, uint8_t data);
 void _insert(Disk *disk, int index, char *str);
@@ -45,6 +50,7 @@ void _shift(Disk *disk, int index, int size, int _shift);
 void _random(Disk *disk, int index, int size);
 void _copy(Disk *disk, int index, int destiny, int size);
 void _fill(Disk *disk, int index, int size, uint8_t data);
+
 
 char* diskread(char *filename);
 void diskwrite(char *filename, char *data);

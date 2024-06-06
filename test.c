@@ -1,4 +1,5 @@
 #include "brimg.h"
+#include "structs.h"
 
 int main()
 {

@@ -206,7 +206,33 @@ void diskwrite(char *filename, char *data)
     fclose(file);
 }
 
-Number getNumber(uint8_t *bytes)
+uint8_t* get_bytes(Disk disk, int index, int size)
+{
+    uint8_t *bytes = (uint8_t *)malloc(size * sizeof(uint8_t));
+    for (int i = 0; i < size; i++)
+    {
+        bytes[i] = disk[index + i];
+    }
+    return bytes;
+}
+
+
+uint8_t get_byte(Disk disk, int index)
+{
+    return disk[index];
+}
+
+char* get_string(Disk disk, int index, int size)
+{
+    char *str = (char *)malloc(size * sizeof(char));
+    for (int i = 0; i < size; i++)
+    {
+        str[i] = disk[index + i];
+    }
+    return str;
+}
+
+Number get_number(uint8_t *bytes)
 {
     Number u;
 
@@ -225,14 +251,16 @@ Number getNumber(uint8_t *bytes)
     return u;
 }
 
-uint8_t* getBytes(Disk disk, int index, int size)
+int get_int(Disk disk, int index)
 {
-    uint8_t *bytes = (uint8_t *)malloc(size * sizeof(uint8_t));
-    for (int i = 0; i < size; i++)
-    {
-        bytes[i] = disk[index + i];
-    }
-    return bytes;
+    Number u = get_number(get_bytes(disk, index, 4));
+    return u.i;
+}
+
+float get_float(Disk disk, int index)
+{
+    Number u = get_number(get_bytes(disk, index, 4));
+    return u.f;
 }
 
 // tcc
@@ -291,8 +319,12 @@ int main(int argc, char *argv[])
     
     TCCState *s = new_state(diskread(inpath));
 
-    add_symbols(s, "getNumber", getNumber);
-    add_symbols(s, "getBytes", getBytes);
+    add_symbols(s, "get_number", get_number);
+    add_symbols(s, "get_bytes", get_bytes);
+    add_symbols(s, "get_byte", get_byte);
+    add_symbols(s, "get_string", get_string);
+    add_symbols(s, "get_int", get_int);
+    add_symbols(s, "get_float", get_float);
     add_symbols(s, "_set", _set);
     add_symbols(s, "_insert", _insert);
     add_symbols(s, "_remove", _remove);
