@@ -172,7 +172,7 @@ void _fill(Disk *disk, int index, int size, uint8_t data)
 // DiskManagement functions
 // DiskManagement functions
 
-char *diskread(char *filename)
+char *disk_read(char *filename)
 {
     FILE *file = fopen(filename, "r");
     if (file == NULL)
@@ -193,7 +193,7 @@ char *diskread(char *filename)
     return buffer;
 }
 
-void diskwrite(char *filename, char *data)
+void disk_write(char *filename, char *data)
 {
     FILE *file = fopen(filename, "w");
     if (file == NULL)
@@ -205,6 +205,10 @@ void diskwrite(char *filename, char *data)
     fwrite(data, strlen(data), 1, file);
     fclose(file);
 }
+
+// type gets
+// type gets
+// type gets
 
 uint8_t* get_bytes(Disk disk, int index, int size)
 {
@@ -263,6 +267,45 @@ float get_float(Disk disk, int index)
     return u.f;
 }
 
+// sets 
+// sets 
+// sets 
+
+void set_byte(Disk *disk, int index, uint8_t data)
+{
+    _set(disk, index, data);
+}
+
+void set_string(Disk *disk, int index, char *str, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        _set(disk, index + i, str[i]);
+    }
+}
+
+void set_int(Disk *disk, int index, int data)
+{
+    Number u;
+    u.i = data;
+    uint8_t *bytes = get_bytes((uint8_t *)&u, 0, 4);
+    for (int i = 0; i < 4; i++)
+    {
+        _set(disk, index + i, bytes[i]);
+    }
+}
+
+void set_float(Disk *disk, int index, float data)
+{
+    Number u;
+    u.f = data;
+    uint8_t *bytes = get_bytes((uint8_t *)&u, 0, 4);
+    for (int i = 0; i < 4; i++)
+    {
+        _set(disk, index + i, bytes[i]);
+    }
+}
+
 // tcc
 // tcc
 // tcc
@@ -317,7 +360,7 @@ int main(int argc, char *argv[])
     bigendian = !(*(char *)&n == 1);
     printf("bigendian: %d\n", bigendian);
     
-    TCCState *s = new_state(diskread(inpath));
+    TCCState *s = new_state(disk_read(inpath));
 
     add_symbols(s, "get_number", get_number);
     add_symbols(s, "get_bytes", get_bytes);
@@ -325,6 +368,11 @@ int main(int argc, char *argv[])
     add_symbols(s, "get_string", get_string);
     add_symbols(s, "get_int", get_int);
     add_symbols(s, "get_float", get_float);
+    add_symbols(s, "set_byte", set_byte);
+    add_symbols(s, "set_string", set_string);
+    add_symbols(s, "set_int", set_int);
+    add_symbols(s, "set_float", set_float);
+
     add_symbols(s, "_set", _set);
     add_symbols(s, "_insert", _insert);
     add_symbols(s, "_remove", _remove);
@@ -334,8 +382,8 @@ int main(int argc, char *argv[])
     add_symbols(s, "_random", _random);
     add_symbols(s, "_copy", _copy);
     add_symbols(s, "_fill", _fill);
-    add_symbols(s, "diskread", diskread);
-    add_symbols(s, "diskwrite", diskwrite);
+    add_symbols(s, "disk_read", disk_read);
+    add_symbols(s, "disk_write", disk_write);
 
     if (tcc_relocate(s) < 0)
         exit(1);

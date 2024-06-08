@@ -5,11 +5,11 @@ struct people
 9 string name
 21 int id;
 
-code {
-    
+code 
+{
     int main()
     {
-        Disk disk0 = diskread("test.img");//disk are always little endian, so we need to change the order of the bytes
+        Disk disk0 = disk_read("test.img");//disk are always little endian, so we need to change the order of the bytes
         int size = strlen(disk0);
         printf("Disk0: %d\n", size);
     }

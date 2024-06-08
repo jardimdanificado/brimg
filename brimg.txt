@@ -48,21 +48,22 @@ struct people
 9 string name
 21 int id;
 
-struct {
- byte age;
- float weight;
- float height;
- char* name;
- int id;
+typedef struct 
+{
+    byte age;
+    float weight;
+    float height;
+    char* name;
+    int id;
 } people;
 
-people getpeople(index)
+people get_people(Disk *disk, int index)
 {
- people joao;
- joao.age = disk[index]
- joao.weight = getNumber(disk,index,4).f
- joao.height = getNumber(disk,index + 5).f
- joao.name = getString(disk,index + 9, 21 - 9)
- joao.id = getNumber(disk, index + 21).i
- return joao;
+    people _obj;
+    _obj.age = get_byte(disk, index + 0);
+    _obj.weight = get_float(disk, index + 1);
+    _obj.height = get_float(disk, index + 5);
+    _obj.name = get_string(disk, index + 9, 12);
+    _obj.id = get_int(*disk, index + 21);
+    return _obj;
 }

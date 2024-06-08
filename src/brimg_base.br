@@ -1,3 +1,6 @@
+
+set vm.c_code_cache {};
+
 set structs from [];
 
 set struct from lua.function {...} 
@@ -29,17 +32,27 @@ set bakestructs from lua.function {}
             else
                 tmp = tmp .. "    " .. "_obj." .. v.name .. " = get_" .. v.type .. "(*disk, index + " .. v.index .. ");\n";
             end
-
         end
         tmp = tmp .. "    " .. "return _obj;\n";
         tmp = tmp .. "}\n\n";
+        
+        tmp = tmp .. "void set_" .. obj.name .. "(Disk *disk, int index, " .. obj.name .. " _obj)\n{\n";
+            for k,v in ipairs(obj) do
+                if v.type == "string" then
+                    local _len = obj[k+1] and obj[k+1].index-obj[k].index or 4;
+                    tmp = tmp .. "    " .. "set_" .. v.type .. "(disk, index + " .. v.index .. ", _obj." .. v.name .. ", " .. _len .. ");\n";
+                else
+                    tmp = tmp .. "    " .. "set_" .. v.type .. "(disk, index + " .. v.index .. ", _obj." .. v.name .. ");\n";
+                end
+            end
+            tmp = tmp .. "}\n\n";
+
         finaltxt = finaltxt .. tmp;
     end
-    print(finaltxt);
     return finaltxt;
 };
 
-lua.eval {
+// lua.eval {
     if(arg[2]) then 
         local file = br.utils.file.load.text(arg[2]);
         br.bruter.eval(file);
@@ -47,3 +60,19 @@ lua.eval {
         br.utils.file.save.text(arg[3], file);
     end
 };
+
+set code from lua.function {str} {
+    br.vm.c_code_cache = br.vm.c_code_cache .. str;
+};
+help $lua.global.arg;
+
+bruter.include $lua.global.arg.2;
+
+set baked_structs from bakestructs;
+
+lua.eval {
+    br.vm.c_code = br.vm.c_code .. br.baked_structs;
+    br.vm.c_code = br.vm.c_code .. br.vm.c_code_cache;
+};
+
+utils.file.save.text $lua.global.arg.3 $vm.c_code;
