@@ -1,9 +1,18 @@
-struct people
+struct Person
 0 byte age
 1 float weight
 5 float height
 9 string name
 21 int id;
+
+struct Vector2
+0 float x
+4 float y;
+
+struct Vector3
+0 float x
+4 float y
+8 float z;
 
 code 
 {

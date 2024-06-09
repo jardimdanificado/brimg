@@ -1,4 +1,49 @@
 
+lua.eval 
+{
+    if br.utils.table.includes(arg, "-o") or br.utils.table.includes(arg, "--output") then
+        local temp = br.utils.table.find(arg, "-o") or br.utils.table.find(arg, "--output")
+        br.vm.outputpath = arg[temp + 1]
+        table.remove(arg, temp)
+        table.remove(arg, temp)
+    end
+
+    if br.utils.table.includes(arg, "--serialize") then
+        local position = br.utils.table.find(arg, "--serialize");
+        table.remove(arg, position);
+        br.help(arg)
+        br.filepath = arg[2]
+        br.filetxt = br.utils.file.load.text(br.filepath)
+        br.splited = br.utils.string.split(br.filetxt, " ")
+        br.result = ""
+        for i = 1, #br.splited-1 do
+            if br.splited[i] then
+                br.result = br.result .. string.char(tonumber(br.splited[i]))
+            end
+        end
+        br.utils.file.save.text(br.vm.outputpath, br.result)
+        os.exit()
+    end
+
+    if br.utils.table.includes(arg, "--deserialize") then
+        local position = br.utils.table.find(arg, "--deserialize");
+        table.remove(arg, position);
+        br.help(arg)
+        br.filepath = arg[2]
+        br.filetxt = br.utils.file.load.text(br.filepath)
+        br.result = ""
+        for i = 1, #br.filetxt do
+            br.result = br.result .. string.byte(br.filetxt:sub(i, i)) .. " "
+        end
+        if br.vm.outputpath then
+            br.utils.file.save.text(br.vm.outputpath, br.result)
+        else
+            br.utils.file.save.text(br.utils.string.concat(arg[2], ".txt"), br.result)
+        end
+        os.exit()
+    end
+};
+
 set vm.c_code_cache {};
 
 set structs from [];

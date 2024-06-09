@@ -2,14 +2,17 @@
 rm -rf release
 mkdir release
 
-tcc -o release/brimg ../src/brimg.c -ltcc
+tcc -o release/brimgc ../src/brimg.c -ltcc
 bruter build.br
+cp brimgt ./release/brimgt
+chmod +x ./release/brimgt
 cd ..
 
 # tests
 rm example/test.img
-bruter tools/serializer.br example/test.txt example/test.img
-bruter tools/deserializer.br example/test.img example/test.braw
+brimgt example/test.txt --output example/test.img --serialize
+brimgt example/test.img --output example/test.braw --deserialize
+
 cd example
-bruter ../build/release/brimg.br test.br test.c
-../build/release/brimg test.c
+brimgt test.br test.c
+brimgc test.c
