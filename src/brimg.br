@@ -42,6 +42,21 @@ lua.eval
         end
         os.exit()
     end
+
+    if br.utils.table.includes(arg, "--help") or br.utils.table.includes(arg,"-h") then
+        print("Usage: bruter <source file> [-o <output file>] [-h] [-v] [--help] [--version]")
+        print("Options:")
+        print("  --help        Display this information")
+        print("  -h            Display this information")
+        print("  --output      Output the file to the specified path")
+        print("  -o            Output the file to the specified path")
+        print("  --serialize   Serialize a file")
+        print("  --deserialize Deserialize a file")
+        --[[print("  --version  Display the version")]]
+        --[[print("  -v         Display the version")]]
+
+        os.exit(0)
+    end
 };
 
 set vm.c_code_cache {};

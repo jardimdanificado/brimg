@@ -8,7 +8,7 @@
 #include <libtcc.h>
 
 #define SIZE 256
-#define VERSION "0.0.3"
+#define VERSION "0.0.4"
 
 #define byte uint8_t
 byte bigendian;
