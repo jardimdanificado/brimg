@@ -80,15 +80,20 @@ set bakestructs from lua.function {}
     for structType ,obj in ipairs(br.structs) do
         local tmp = "typedef struct \n{\n";
         for k,v in ipairs(obj) do
-            tmp = tmp .. "    " .. ((v.type == "string") and "char*" or v.type) .. " " .. v.name .. ";\n";
+            if tonumber(v.type) then 
+                local size = string.match(v.type, "%d+");
+                tmp = tmp .. "    byte " .. v.name .. "[" .. size .. "];\n";
+            else
+                tmp = tmp .. "    " .. v.type .. " " .. v.name .. ";\n";
+            end
         end
         tmp = tmp .. "} " .. obj.name .. ";\n\n";
         tmp = tmp .. obj.name .. " get_" .. obj.name .. "(Disk *disk, int index)\n{\n";
         tmp = tmp .. "    " .. obj.name .. " _obj;\n";
         for k,v in ipairs(obj) do
-            if v.type == "string" then
-                local _len = obj[k+1] and obj[k+1].index-obj[k].index or 4;
-                tmp = tmp .. "    " .. "_obj." .. v.name .. " = get_" .. v.type .. "(*disk, index + " .. v.index .. ", " .. _len .. ");\n";
+            if tonumber(v.type) then 
+                local size = string.match(v.type, "%d+");
+                tmp = tmp .. "    " .. "memcpy(_obj." .. v.name .. ", get_string(*disk, index + " .. v.index .. ", " .. size .. "), " .. size .. ");\n";
             else
                 tmp = tmp .. "    " .. "_obj." .. v.name .. " = get_" .. v.type .. "(*disk, index + " .. v.index .. ");\n";
             end
@@ -98,9 +103,9 @@ set bakestructs from lua.function {}
         
         tmp = tmp .. "void set_" .. obj.name .. "(Disk *disk, int index, " .. obj.name .. " _obj)\n{\n";
             for k,v in ipairs(obj) do
-                if v.type == "string" then
-                    local _len = obj[k+1] and obj[k+1].index-obj[k].index or 4;
-                    tmp = tmp .. "    " .. "set_" .. v.type .. "(disk, index + " .. v.index .. ", _obj." .. v.name .. ", " .. _len .. ");\n";
+                if tonumber(v.type) then 
+                    local size = string.match(v.type, "%d+");
+                    tmp = tmp .. "    " .. "set_string(disk, index + " .. v.index .. ", _obj." .. v.name .. ", " .. size .. ");\n";
                 else
                     tmp = tmp .. "    " .. "set_" .. v.type .. "(disk, index + " .. v.index .. ", _obj." .. v.name .. ");\n";
                 end

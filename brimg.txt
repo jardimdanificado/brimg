@@ -3,10 +3,14 @@ disk: unsigned char[]
 types:
 0 = void 0 bytes
 1 = byte 1 byte
-2 = int 4 bytes
-3 = float 4 bytes
-4 = string ? bytes
-5+ = custom types
+2 = short 2 bytes
+3 = int 4 bytes
+4 = long 8 bytes
+5 = float 4 bytes
+6 = double 8 bytes
+7 = long double 16 bytes
+8 = array(string) ? bytes
+9+ = custom types
 
 // disk 
 // byte 0 to 255 are "reserved" for the system
@@ -63,18 +67,18 @@ version = x.y.z
 // structs
 
 struct people
-0 byte age
+0 char age
 1 float weight
 5 float height
-9 string name
+9 12 name
 21 int id;
 
 typedef struct 
 {
-    byte age;
+    int age;
     float weight;
     float height;
-    char* name;
+    byte name[12];
     int id;
 } people;
 

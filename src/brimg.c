@@ -4,12 +4,12 @@
 // StandardFunctions
 // StandardFunctions
 
-void _set(Disk *disk, int index, uint8_t data)
+void _set(Disk *disk, int index, unsigned char data)
 {
     (*disk)[index] = data;
 }
 
-void _insert(Disk *disk, int index, char *str)
+void _insert(Disk *disk, int index, byte *str)
 {
     int size = strlen(str);
     int disksize = strlen(*disk);
@@ -94,7 +94,7 @@ void _swap(Disk *disk, int index1, int index2, int size)
     }
     for (int i = 0; i < size; i++)
     {
-        uint8_t temp = (*disk)[index1 + i];
+        unsigned char temp = (*disk)[index1 + i];
         (*disk)[index1 + i] = (*disk)[index2 + i];
         (*disk)[index2 + i] = temp;
     }
@@ -113,7 +113,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     {
         for (int i = 0; i < _shift; i++)
         {
-            uint8_t temp = (*disk)[index];
+            unsigned char temp = (*disk)[index];
             for (int j = index; j < index + size - 1; j++)
             {
                 (*disk)[j] = (*disk)[j + 1];
@@ -125,7 +125,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     {
         for (int i = 0; i < -_shift; i++)
         {
-            uint8_t temp = (*disk)[index + size - 1];
+            unsigned char temp = (*disk)[index + size - 1];
             for (int j = index + size - 1; j > index; j--)
             {
                 (*disk)[j] = (*disk)[j - 1];
@@ -160,7 +160,7 @@ void _copy(Disk *disk, int index, int destiny, int size)
     }
 }
 
-void _fill(Disk *disk, int index, int size, uint8_t data)
+void _fill(Disk *disk, int index, int size, unsigned char data)
 {
     for (int i = 0; i < size; i++)
     {
@@ -172,7 +172,7 @@ void _fill(Disk *disk, int index, int size, uint8_t data)
 // DiskManagement functions
 // DiskManagement functions
 
-char *disk_read(char *filename)
+byte *disk_read(char *filename)
 {
     FILE *file = fopen(filename, "r");
     if (file == NULL)
@@ -185,7 +185,7 @@ char *disk_read(char *filename)
     long size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char *buffer = (char *)malloc(size + 1);
+    byte *buffer = (byte *)malloc(size + 1);
     fread(buffer, size, 1, file);
     fclose(file);
 
@@ -193,7 +193,7 @@ char *disk_read(char *filename)
     return buffer;
 }
 
-void disk_write(char *filename, char *data)
+void disk_write(char *filename, byte *data)
 {
     FILE *file = fopen(filename, "w");
     if (file == NULL)
@@ -210,9 +210,9 @@ void disk_write(char *filename, char *data)
 // type gets
 // type gets
 
-uint8_t* get_bytes(Disk disk, int index, int size)
+unsigned char* get_bytes(Disk disk, int index, int size)
 {
-    uint8_t *bytes = (uint8_t *)malloc(size * sizeof(uint8_t));
+    unsigned char *bytes = (unsigned char *)malloc(size * sizeof(unsigned char));
     for (int i = 0; i < size; i++)
     {
         bytes[i] = disk[index + i];
@@ -221,14 +221,19 @@ uint8_t* get_bytes(Disk disk, int index, int size)
 }
 
 
-uint8_t get_byte(Disk disk, int index)
+unsigned char get_byte(Disk disk, int index)
 {
     return disk[index];
 }
 
-char* get_string(Disk disk, int index, int size)
+char get_char(Disk disk, int index)
 {
-    char *str = (char *)malloc(size * sizeof(char));
+    return disk[index];
+}
+
+byte* get_string(Disk disk, int index, int size)
+{
+    byte *str = (byte *)malloc(size * sizeof(byte));
     for (int i = 0; i < size; i++)
     {
         str[i] = disk[index + i];
@@ -236,7 +241,7 @@ char* get_string(Disk disk, int index, int size)
     return str;
 }
 
-Number get_number(uint8_t *bytes)
+Number get_number(unsigned char *bytes)
 {
     Number u;
 
@@ -271,12 +276,17 @@ float get_float(Disk disk, int index)
 // sets 
 // sets 
 
-void set_byte(Disk *disk, int index, uint8_t data)
+void set_byte(Disk *disk, int index, unsigned char data)
 {
     _set(disk, index, data);
 }
 
-void set_string(Disk *disk, int index, char *str, int size)
+void set_char(Disk *disk, int index, char data)
+{
+    _set(disk, index, data);
+}
+
+void set_string(Disk *disk, int index, byte *str, int size)
 {
     for (int i = 0; i < size; i++)
     {
@@ -288,7 +298,7 @@ void set_int(Disk *disk, int index, int data)
 {
     Number u;
     u.i = data;
-    uint8_t *bytes = get_bytes((uint8_t *)&u, 0, 4);
+    unsigned char *bytes = get_bytes((unsigned char *)&u, 0, 4);
     for (int i = 0; i < 4; i++)
     {
         _set(disk, index + i, bytes[i]);
@@ -299,7 +309,7 @@ void set_float(Disk *disk, int index, float data)
 {
     Number u;
     u.f = data;
-    uint8_t *bytes = get_bytes((uint8_t *)&u, 0, 4);
+    unsigned char *bytes = get_bytes((unsigned char *)&u, 0, 4);
     for (int i = 0; i < 4; i++)
     {
         _set(disk, index + i, bytes[i]);
@@ -365,13 +375,16 @@ int main(int argc, char *argv[])
     add_symbols(s, "get_number", get_number);
     add_symbols(s, "get_bytes", get_bytes);
     add_symbols(s, "get_byte", get_byte);
+    add_symbols(s, "get_char", get_char);
     add_symbols(s, "get_string", get_string);
     add_symbols(s, "get_int", get_int);
     add_symbols(s, "get_float", get_float);
     add_symbols(s, "set_byte", set_byte);
+    add_symbols(s, "set_char", set_char);
     add_symbols(s, "set_string", set_string);
     add_symbols(s, "set_int", set_int);
     add_symbols(s, "set_float", set_float);
+
 
     add_symbols(s, "_set", _set);
     add_symbols(s, "_insert", _insert);
