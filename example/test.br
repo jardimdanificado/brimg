@@ -1,5 +1,5 @@
 struct Person
-0 char age
+0 byte age
 4 float weight
 8 float height
 12 12 name
