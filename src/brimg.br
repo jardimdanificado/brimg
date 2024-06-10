@@ -61,9 +61,14 @@ lua.eval
 
 set vm.c_code_cache {};
 
+// yeah byte has 1 byte size, but we use 4 bytes for it for alignment reasons;
+// same for short;
+set typesizes from obj byte 4 short 4 int 4 long 8 float 4 double 8;
+
 set structs from [];
 
-set struct from lua.function {...} 
+// manually allocate each member of a struct; 
+set manual from lua.function {...} 
 {
     local args = {...};
     local obj = {};
@@ -74,6 +79,23 @@ set struct from lua.function {...}
     table.insert(br.structs, obj);
 };
 
+set auto from lua.function {...}
+{
+    local args = {...};
+    local obj = {};
+    local index = 0;
+    for i=2, #args, 2 do
+        local _type = args[i];
+        local name = args[i+1];
+        local size = tonumber(_type) and (math.ceil(tonumber(_type) / 4) * 4) or br.typesizes[_type];
+        table.insert(obj, {index=index, type=_type, name=name});
+        index = index + size;
+    end
+    obj.name = args[1];
+    table.insert(br.structs, obj);
+};
+
+
 set bakestructs from lua.function {} 
 {
     local finaltxt = "";
@@ -82,6 +104,7 @@ set bakestructs from lua.function {}
         for k,v in ipairs(obj) do
             if tonumber(v.type) then 
                 local size = string.match(v.type, "%d+");
+                size = (math.ceil(tonumber(size) / 4) * 4)
                 tmp = tmp .. "    byte " .. v.name .. "[" .. size .. "];\n";
             else
                 tmp = tmp .. "    " .. v.type .. " " .. v.name .. ";\n";
@@ -93,6 +116,7 @@ set bakestructs from lua.function {}
         for k,v in ipairs(obj) do
             if tonumber(v.type) then 
                 local size = string.match(v.type, "%d+");
+                size = (math.ceil(tonumber(size) / 4) * 4)
                 tmp = tmp .. "    " .. "memcpy(_obj." .. v.name .. ", get_string(*disk, index + " .. v.index .. ", " .. size .. "), " .. size .. ");\n";
             else
                 tmp = tmp .. "    " .. "_obj." .. v.name .. " = get_" .. v.type .. "(*disk, index + " .. v.index .. ");\n";
@@ -105,6 +129,7 @@ set bakestructs from lua.function {}
             for k,v in ipairs(obj) do
                 if tonumber(v.type) then 
                     local size = string.match(v.type, "%d+");
+                    size = (math.ceil(tonumber(size) / 4) * 4)
                     tmp = tmp .. "    " .. "set_string(disk, index + " .. v.index .. ", _obj." .. v.name .. ", " .. size .. ");\n";
                 else
                     tmp = tmp .. "    " .. "set_" .. v.type .. "(disk, index + " .. v.index .. ", _obj." .. v.name .. ");\n";

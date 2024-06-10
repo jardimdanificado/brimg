@@ -8,7 +8,7 @@
 #include <libtcc.h>
 
 #define SIZE 256
-#define VERSION "0.0.5"
+#define VERSION "0.0.6"
 
 #define byte unsigned char
 byte bigendian;
@@ -38,12 +38,20 @@ char get_char(Disk disk, int index);
 byte* get_string(Disk disk, int index, int size);
 int get_int(Disk disk, int index);
 float get_float(Disk disk, int index);
+short get_short(Disk disk, int index);
+double get_double(Disk disk, int index);
+long get_long(Disk disk, int index);
+long double get_long_double(Disk disk, int index);
 
 void set_byte(Disk *disk, int index, unsigned char data);
 void set_char(Disk *disk, int index, char data);
 void set_string(Disk *disk, int index, byte *str, int size);
 void set_int(Disk *disk, int index, int data);
 void set_float(Disk *disk, int index, float data);
+void set_short(Disk *disk, int index, short data);
+void set_double(Disk *disk, int index, double data);
+void set_long(Disk *disk, int index, long data);
+void set_long_double(Disk *disk, int index, long double data);
 
 
 void _set(Disk *disk, int index, unsigned char data);

@@ -231,6 +231,91 @@ char get_char(Disk disk, int index)
     return disk[index];
 }
 
+short get_short(Disk disk, int index)
+{
+    return disk[index] | disk[index + 1] << 8;
+}
+
+long get_long(Disk disk, int index)
+{
+    union {
+        long l;
+        unsigned char b[4];
+    } u;
+    if (bigendian) {
+        u.b[0] = disk[index + 0];
+        u.b[1] = disk[index + 1];
+        u.b[2] = disk[index + 2];
+        u.b[3] = disk[index + 3];
+    } else {
+        u.b[3] = disk[index + 0];
+        u.b[2] = disk[index + 1];
+        u.b[1] = disk[index + 2];
+        u.b[0] = disk[index + 3];
+    };
+    return u.l;
+}
+
+double get_double(Disk disk, int index)
+{
+    union {
+        double d;
+        unsigned char b[8];
+    } u;
+    if (bigendian) {
+        u.b[0] = disk[index + 0];
+        u.b[1] = disk[index + 1];
+        u.b[2] = disk[index + 2];
+        u.b[3] = disk[index + 3];
+        u.b[4] = disk[index + 4];
+        u.b[5] = disk[index + 5];
+        u.b[6] = disk[index + 6];
+        u.b[7] = disk[index + 7];
+    } else {
+        u.b[7] = disk[index + 0];
+        u.b[6] = disk[index + 1];
+        u.b[5] = disk[index + 2];
+        u.b[4] = disk[index + 3];
+        u.b[3] = disk[index + 4];
+        u.b[2] = disk[index + 5];
+        u.b[1] = disk[index + 6];
+        u.b[0] = disk[index + 7];
+    };
+    return u.d;
+}
+
+long double get_long_double(Disk disk, int index)
+{
+    union {
+        long double d;
+        unsigned char b[10];
+    } u;
+    if (bigendian) {
+        u.b[0] = disk[index + 0];
+        u.b[1] = disk[index + 1];
+        u.b[2] = disk[index + 2];
+        u.b[3] = disk[index + 3];
+        u.b[4] = disk[index + 4];
+        u.b[5] = disk[index + 5];
+        u.b[6] = disk[index + 6];
+        u.b[7] = disk[index + 7];
+        u.b[8] = disk[index + 8];
+        u.b[9] = disk[index + 9];
+    } else {
+        u.b[9] = disk[index + 0];
+        u.b[8] = disk[index + 1];
+        u.b[7] = disk[index + 2];
+        u.b[6] = disk[index + 3];
+        u.b[5] = disk[index + 4];
+        u.b[4] = disk[index + 5];
+        u.b[3] = disk[index + 6];
+        u.b[2] = disk[index + 7];
+        u.b[1] = disk[index + 8];
+        u.b[0] = disk[index + 9];
+    };
+    return u.d;
+}
+
 byte* get_string(Disk disk, int index, int size)
 {
     byte *str = (byte *)malloc(size * sizeof(byte));
@@ -316,6 +401,103 @@ void set_float(Disk *disk, int index, float data)
     }
 }
 
+void set_short(Disk *disk, int index, short data)
+{
+    union {
+        short s;
+        unsigned char b[2];
+    } u;
+    u.s = data;
+    if (bigendian) {
+        _set(disk, index + 0, u.b[0]);
+        _set(disk, index + 1, u.b[1]);
+    } else {
+        _set(disk, index + 1, u.b[0]);
+        _set(disk, index + 0, u.b[1]);
+    }
+
+}
+
+void set_double(Disk *disk, int index, double data)
+{
+    union {
+        double d;
+        unsigned char b[8];
+    } u;
+    u.d = data;
+    if (bigendian) {
+        _set(disk, index + 0, u.b[0]);
+        _set(disk, index + 1, u.b[1]);
+        _set(disk, index + 2, u.b[2]);
+        _set(disk, index + 3, u.b[3]);
+        _set(disk, index + 4, u.b[4]);
+        _set(disk, index + 5, u.b[5]);
+        _set(disk, index + 6, u.b[6]);
+        _set(disk, index + 7, u.b[7]);
+    } else {
+        _set(disk, index + 7, u.b[0]);
+        _set(disk, index + 6, u.b[1]);
+        _set(disk, index + 5, u.b[2]);
+        _set(disk, index + 4, u.b[3]);
+        _set(disk, index + 3, u.b[4]);
+        _set(disk, index + 2, u.b[5]);
+        _set(disk, index + 1, u.b[6]);
+        _set(disk, index + 0, u.b[7]);
+    }
+}
+
+void set_long(Disk *disk, int index, long data)
+{
+    union {
+        long l;
+        unsigned char b[4];
+    } u;
+    u.l = data;
+    if (bigendian) {
+        _set(disk, index + 0, u.b[0]);
+        _set(disk, index + 1, u.b[1]);
+        _set(disk, index + 2, u.b[2]);
+        _set(disk, index + 3, u.b[3]);
+    } else {
+        _set(disk, index + 3, u.b[0]);
+        _set(disk, index + 2, u.b[1]);
+        _set(disk, index + 1, u.b[2]);
+        _set(disk, index + 0, u.b[3]);
+    }
+}
+
+void set_long_double(Disk *disk, int index, long double data)
+{
+    union {
+        long double d;
+        unsigned char b[10];
+    } u;
+    u.d = data;
+    if (bigendian) {
+        _set(disk, index + 0, u.b[0]);
+        _set(disk, index + 1, u.b[1]);
+        _set(disk, index + 2, u.b[2]);
+        _set(disk, index + 3, u.b[3]);
+        _set(disk, index + 4, u.b[4]);
+        _set(disk, index + 5, u.b[5]);
+        _set(disk, index + 6, u.b[6]);
+        _set(disk, index + 7, u.b[7]);
+        _set(disk, index + 8, u.b[8]);
+        _set(disk, index + 9, u.b[9]);
+    } else {
+        _set(disk, index + 9, u.b[0]);
+        _set(disk, index + 8, u.b[1]);
+        _set(disk, index + 7, u.b[2]);
+        _set(disk, index + 6, u.b[3]);
+        _set(disk, index + 5, u.b[4]);
+        _set(disk, index + 4, u.b[5]);
+        _set(disk, index + 3, u.b[6]);
+        _set(disk, index + 2, u.b[7]);
+        _set(disk, index + 1, u.b[8]);
+        _set(disk, index + 0, u.b[9]);
+    }
+}
+
 // tcc
 // tcc
 // tcc
@@ -379,11 +561,20 @@ int main(int argc, char *argv[])
     add_symbols(s, "get_string", get_string);
     add_symbols(s, "get_int", get_int);
     add_symbols(s, "get_float", get_float);
+    add_symbols(s, "get_short", get_short);
+    add_symbols(s, "get_double", get_double);
+    add_symbols(s, "get_long", get_long);
+    add_symbols(s, "get_long_double", get_long_double);
+
     add_symbols(s, "set_byte", set_byte);
     add_symbols(s, "set_char", set_char);
     add_symbols(s, "set_string", set_string);
     add_symbols(s, "set_int", set_int);
     add_symbols(s, "set_float", set_float);
+    add_symbols(s, "set_short", set_short);
+    add_symbols(s, "set_double", set_double);
+    add_symbols(s, "set_long", set_long);
+    add_symbols(s, "set_long_double", set_long_double);
 
 
     add_symbols(s, "_set", _set);
