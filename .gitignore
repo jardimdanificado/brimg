@@ -1,9 +1,10 @@
 main
 .vscode
 tools/example.braw
-test.img
-test.img.braw
-test.braw
+*.img
+*.img.braw
+*.braw
 structs.h
 release
 test.c
+example/brimg.h

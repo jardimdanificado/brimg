@@ -1,7 +1,0 @@
-lua.eval 
-{
-    local brimgh = br.utils.file.load.text("../src/brimg.h");
-    local brimg = br.utils.file.load.text("../src/brimg.br");
-    local c_code = "set vm.c_code `\n" .. brimgh .. "\n`;\n" .. brimg;
-    br.utils.file.save.text("release/brimg.br", c_code);
-};

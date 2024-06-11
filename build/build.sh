@@ -3,16 +3,19 @@ rm -rf release
 mkdir release
 
 tcc -o release/brimgc ../src/brimg.c -ltcc
-bruter build.br
+cp ../src/brimg.lua ./release/brimg.lua
+cp ../src/brimg.h ./release/brimg.h
 cp brimgt ./release/brimgt
 chmod +x ./release/brimgt
 cd ..
 
 # tests
-rm example/test.img
-brimgt example/test.txt --output example/test.img --serialize
-brimgt example/test.img --output example/test.braw --deserialize
+rm example/disk0.img
+rm example/brimg.h
+cp src/brimg.h example/brimg.h
+brimgt example/disk0.txt --output example/disk0.img --serialize
+brimgt example/disk0.img --output example/disk0.braw --deserialize
 
 cd example
-brimgt test.br test.c
+brimgt main.c test.c
 brimgc test.c
