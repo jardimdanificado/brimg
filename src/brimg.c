@@ -592,7 +592,6 @@ int main(int argc, char *argv[])
     add_symbols(s, "_fill", _fill);
     add_symbols(s, "_reverse", _reverse);
     add_symbols(s, "_sort", _sort);
-    add_symbols(s, "_find", _find);
     add_symbols(s, "_replace", _replace);
     add_symbols(s, "_replace_all", _replace_all);
 
