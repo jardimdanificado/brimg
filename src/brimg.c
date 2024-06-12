@@ -292,19 +292,6 @@ void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* re
     }
 }
 
-void _goto(Disk *disk, int position)
-{
-    int disksize = strlen(*disk);
-    if (position < 0 || position >= disksize)
-    {
-        printf("Error: Index out of bounds\n");
-        return;
-    }
-    set_int(disk, 4, position);
-}
-
-
-
 // DiskManagement functions
 // DiskManagement functions
 // DiskManagement functions

@@ -8,7 +8,7 @@
 #include <libtcc.h>
 
 #define SIZE 256
-#define VERSION "0.0.7"
+#define VERSION "0.0.8"
 
 #define byte unsigned char
 byte bigendian;
@@ -24,6 +24,12 @@ void _shift(Disk *disk, int index, int size, int _shift);
 void _random(Disk *disk, int index, int size);
 void _copy(Disk *disk, int index, int destiny, int size);
 void _fill(Disk *disk, int index, int size, byte data);
+void _reverse(Disk *disk, int index, int size);
+void _sort(Disk *disk, int index, int size);
+void _find(Disk *disk, int offsetmin, int offsetmax, int resultposition, byte* data);
+void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
+void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
+
 
 byte* get_bytes(Disk disk, int index, int size);
 byte get_byte(Disk disk, int index);
