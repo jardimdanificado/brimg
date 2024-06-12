@@ -10,7 +10,7 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 9
+#define VERSION_Z 10
 
 #define byte unsigned char
 byte bigendian;
@@ -28,7 +28,6 @@ void _copy(Disk *disk, int index, int destiny, int size);
 void _fill(Disk *disk, int index, int size, byte data);
 void _reverse(Disk *disk, int index, int size);
 void _sort(Disk *disk, int index, int size);
-void _find(Disk *disk, int offsetmin, int offsetmax, int resultposition, byte* data);
 void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
 void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
 

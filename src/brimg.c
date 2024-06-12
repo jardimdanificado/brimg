@@ -209,21 +209,6 @@ void _sort(Disk *disk, int index, int size)
     }
 }
 
-void _find(Disk *disk, int offsetmin, int offsetmax, int resultposition, byte* data)
-{
-    int disksize = strlen(*disk);
-    char *point = strstr(*disk + offsetmin, data);
-    int index = (int*)(point) - (int*)(*disk);
-    if (index < offsetmin || index > offsetmax)
-    {
-        set_int(disk, resultposition, -1);
-    }
-    else
-    {
-        set_int(disk, resultposition, index);
-    }
-}
-
 // replace first occurence of data with replacement
 void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement)
 {
