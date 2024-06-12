@@ -23,8 +23,6 @@ version = x.y.z
 3 = version z
 4-8 = current index
 
-32-48 = title
-
 // disk functions
 
 0 - 
@@ -42,25 +40,19 @@ version = x.y.z
 12 - find (offset, size)
 13 - replace (position, size, value)
 14 - replaceall (position, size, value)
-15 - if (condition, value1, value2, gotoPosition)
-16 - ifnot (condition, value1, value2, gotoPosition)
-17 - ifelse (condition, value1, value2, gotoPosition1, gotoPosition2)
+15 - if (condition, size, value1, value2, goto1, goto2)
 
-256 - get_byte (position)
-257 - get_int (position)
-258 - get_float (position)
-259 - get_string (position, size)
+256 - print (position, size)
 
 
 // conditions 0-255
-
-0 - 
-1 - ==
-2 - !=
-3 - >
-4 - <
+ 
+0 - ==
+1 - !=
+2 - <
+3 - <=
+4 - >
 5 - >=
-6 - <=
 
 
 // structs

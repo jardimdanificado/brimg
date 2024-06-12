@@ -14,10 +14,24 @@ if br.utils.table.includes(arg, "--serialize") then
     br.help(arg)
     br.filepath = arg[2]
     br.filetxt = br.utils.file.load.text(br.filepath)
+    -- remove all lines that start with //
+    br.filetxt = br.utils.string.replace(br.filetxt, "//.-\n", "");
+
+
+    -- remove all newlines, tabs and double spaces
+    br.filetxt = br.utils.string.replace(br.filetxt, "\n", " ");
+    br.filetxt = br.utils.string.replace(br.filetxt, "\r", " ");
+    br.filetxt = br.utils.string.replace(br.filetxt, "\t", " ");
+    br.filetxt = br.utils.string.replace(br.filetxt, "%.", " ");
+    br.filetxt = br.utils.string.replace(br.filetxt, "%,", " ");
+    while br.utils.string.includes(br.filetxt, "  ") do
+        br.filetxt = br.utils.string.replace(br.filetxt, "  ", " ");
+    end
+    
     br.splited = br.utils.string.split(br.filetxt, " ")
     br.result = ""
-    for i = 1, #br.splited-1 do
-        if br.splited[i] then
+    for i = 1, #br.splited do
+        if br.splited[i] and tonumber(br.splited[i]) then
             br.result = br.result .. string.char(tonumber(br.splited[i]))
         end
     end

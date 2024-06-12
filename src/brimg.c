@@ -292,6 +292,18 @@ void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* re
     }
 }
 
+// etc
+// etc
+// etc
+void _print(Disk disk, int index, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        printf("%c", disk[index + i]);
+    }
+    printf("\n");
+}
+
 // DiskManagement functions
 // DiskManagement functions
 // DiskManagement functions
@@ -361,17 +373,10 @@ long get_long(Disk disk, int index)
         long l;
         byte b[4];
     } u;
-    if (bigendian) {
-        u.b[0] = disk[index + 0];
-        u.b[1] = disk[index + 1];
-        u.b[2] = disk[index + 2];
-        u.b[3] = disk[index + 3];
-    } else {
-        u.b[3] = disk[index + 0];
-        u.b[2] = disk[index + 1];
-        u.b[1] = disk[index + 2];
-        u.b[0] = disk[index + 3];
-    };
+    u.b[0] = disk[index + 0];
+    u.b[1] = disk[index + 1];
+    u.b[2] = disk[index + 2];
+    u.b[3] = disk[index + 3];
     return u.l;
 }
 
@@ -381,25 +386,14 @@ double get_double(Disk disk, int index)
         double d;
         byte b[8];
     } u;
-    if (bigendian) {
-        u.b[0] = disk[index + 0];
-        u.b[1] = disk[index + 1];
-        u.b[2] = disk[index + 2];
-        u.b[3] = disk[index + 3];
-        u.b[4] = disk[index + 4];
-        u.b[5] = disk[index + 5];
-        u.b[6] = disk[index + 6];
-        u.b[7] = disk[index + 7];
-    } else {
-        u.b[7] = disk[index + 0];
-        u.b[6] = disk[index + 1];
-        u.b[5] = disk[index + 2];
-        u.b[4] = disk[index + 3];
-        u.b[3] = disk[index + 4];
-        u.b[2] = disk[index + 5];
-        u.b[1] = disk[index + 6];
-        u.b[0] = disk[index + 7];
-    };
+    u.b[0] = disk[index + 0];
+    u.b[1] = disk[index + 1];
+    u.b[2] = disk[index + 2];
+    u.b[3] = disk[index + 3];
+    u.b[4] = disk[index + 4];
+    u.b[5] = disk[index + 5];
+    u.b[6] = disk[index + 6];
+    u.b[7] = disk[index + 7];
     return u.d;
 }
 
@@ -409,29 +403,16 @@ long double get_long_double(Disk disk, int index)
         long double d;
         byte b[10];
     } u;
-    if (bigendian) {
-        u.b[0] = disk[index + 0];
-        u.b[1] = disk[index + 1];
-        u.b[2] = disk[index + 2];
-        u.b[3] = disk[index + 3];
-        u.b[4] = disk[index + 4];
-        u.b[5] = disk[index + 5];
-        u.b[6] = disk[index + 6];
-        u.b[7] = disk[index + 7];
-        u.b[8] = disk[index + 8];
-        u.b[9] = disk[index + 9];
-    } else {
-        u.b[9] = disk[index + 0];
-        u.b[8] = disk[index + 1];
-        u.b[7] = disk[index + 2];
-        u.b[6] = disk[index + 3];
-        u.b[5] = disk[index + 4];
-        u.b[4] = disk[index + 5];
-        u.b[3] = disk[index + 6];
-        u.b[2] = disk[index + 7];
-        u.b[1] = disk[index + 8];
-        u.b[0] = disk[index + 9];
-    };
+    u.b[0] = disk[index + 0];
+    u.b[1] = disk[index + 1];
+    u.b[2] = disk[index + 2];
+    u.b[3] = disk[index + 3];
+    u.b[4] = disk[index + 4];
+    u.b[5] = disk[index + 5];
+    u.b[6] = disk[index + 6];
+    u.b[7] = disk[index + 7];
+    u.b[8] = disk[index + 8];
+    u.b[9] = disk[index + 9];
     return u.d;
 }
 
@@ -506,12 +487,7 @@ void set_short(Disk *disk, int index, short data)
         byte b[2];
     } u;
     u.s = data;
-    if (bigendian) {
-        _set(disk, index, (byte[2]){u.b[0],u.b[1]});
-    } else {
-        _set(disk, index, (byte[2]){u.b[1],u.b[0]});
-    }
-
+    _set(disk, index, (byte[2]){u.b[0],u.b[1]});
 }
 
 void set_double(Disk *disk, int index, double data)
@@ -521,14 +497,7 @@ void set_double(Disk *disk, int index, double data)
         byte b[8];
     } u;
     u.d = data;
-    if (bigendian) 
-    {
-        _set(disk, index, (byte[8]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7]});
-    } 
-    else 
-    {
-        _set(disk, index, (byte[8]){u.b[7],u.b[6],u.b[5],u.b[4],u.b[3],u.b[2],u.b[1],u.b[0]});
-    }
+    _set(disk, index, (byte[8]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7]});
 }
 
 void set_long(Disk *disk, int index, long data)
@@ -538,11 +507,7 @@ void set_long(Disk *disk, int index, long data)
         byte b[4];
     } u;
     u.l = data;
-    if (bigendian) {
-        _set(disk, index, (byte[4]){u.b[0],u.b[1],u.b[2],u.b[3]});
-    } else {
-        _set(disk, index, (byte[4]){u.b[3],u.b[2],u.b[1],u.b[0]});
-    }
+    _set(disk, index, (byte[4]){u.b[0],u.b[1],u.b[2],u.b[3]});
 }
 
 void set_long_double(Disk *disk, int index, long double data)
@@ -552,14 +517,7 @@ void set_long_double(Disk *disk, int index, long double data)
         byte b[10];
     } u;
     u.d = data;
-    if (bigendian) 
-    {
-        _set(disk, index, (byte[10]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7],u.b[8],u.b[9]});
-    } 
-    else 
-    {
-        _set(disk, index, (byte[10]){u.b[9],u.b[8],u.b[7],u.b[6],u.b[5],u.b[4],u.b[3],u.b[2],u.b[1],u.b[0]});
-    }
+    _set(disk, index, (byte[10]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7],u.b[8],u.b[9]});
 }
 
 // tcc
@@ -647,8 +605,15 @@ int main(int argc, char *argv[])
     add_symbols(s, "_random", _random);
     add_symbols(s, "_copy", _copy);
     add_symbols(s, "_fill", _fill);
+    add_symbols(s, "_reverse", _reverse);
+    add_symbols(s, "_sort", _sort);
+    add_symbols(s, "_find", _find);
+    add_symbols(s, "_replace", _replace);
+    add_symbols(s, "_replace_all", _replace_all);
+
     add_symbols(s, "disk_read", disk_read);
     add_symbols(s, "disk_write", disk_write);
+
 
     if (tcc_relocate(s) < 0)
         exit(1);

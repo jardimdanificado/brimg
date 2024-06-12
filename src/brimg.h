@@ -8,7 +8,9 @@
 #include <libtcc.h>
 
 #define SIZE 256
-#define VERSION "0.0.8"
+#define VERSION_X 0
+#define VERSION_Y 0
+#define VERSION_Z 9
 
 #define byte unsigned char
 byte bigendian;
@@ -29,6 +31,8 @@ void _sort(Disk *disk, int index, int size);
 void _find(Disk *disk, int offsetmin, int offsetmax, int resultposition, byte* data);
 void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
 void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
+
+void _print(Disk disk, int index, int size);
 
 
 byte* get_bytes(Disk disk, int index, int size);
