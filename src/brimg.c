@@ -4,9 +4,12 @@
 // StandardFunctions
 // StandardFunctions
 
-void _set(Disk *disk, int index, unsigned char data)
+void _set(Disk *disk, int index, byte *data)
 {
-    (*disk)[index] = data;
+    for (int i = 0; i < strlen(data); i++)
+    {
+        (*disk)[index + i] = data[i];
+    }
 }
 
 void _insert(Disk *disk, int index, byte *str)
@@ -94,7 +97,7 @@ void _swap(Disk *disk, int index1, int index2, int size)
     }
     for (int i = 0; i < size; i++)
     {
-        unsigned char temp = (*disk)[index1 + i];
+        byte temp = (*disk)[index1 + i];
         (*disk)[index1 + i] = (*disk)[index2 + i];
         (*disk)[index2 + i] = temp;
     }
@@ -113,7 +116,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     {
         for (int i = 0; i < _shift; i++)
         {
-            unsigned char temp = (*disk)[index];
+            byte temp = (*disk)[index];
             for (int j = index; j < index + size - 1; j++)
             {
                 (*disk)[j] = (*disk)[j + 1];
@@ -125,7 +128,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     {
         for (int i = 0; i < -_shift; i++)
         {
-            unsigned char temp = (*disk)[index + size - 1];
+            byte temp = (*disk)[index + size - 1];
             for (int j = index + size - 1; j > index; j--)
             {
                 (*disk)[j] = (*disk)[j - 1];
@@ -160,13 +163,147 @@ void _copy(Disk *disk, int index, int destiny, int size)
     }
 }
 
-void _fill(Disk *disk, int index, int size, unsigned char data)
+void _fill(Disk *disk, int index, int size, byte data)
 {
     for (int i = 0; i < size; i++)
     {
         (*disk)[index + i] = data;
     }
 }
+
+void _reverse(Disk *disk, int index, int size)
+{
+    int disksize = strlen(*disk);
+    if (index < 0 || index >= disksize || index + size > disksize)
+    {
+        printf("Error: Index out of bounds\n");
+        return;
+    }
+    for (int i = 0; i < size / 2; i++)
+    {
+        byte temp = (*disk)[index + i];
+        (*disk)[index + i] = (*disk)[index + size - 1 - i];
+        (*disk)[index + size - 1 - i] = temp;
+    }
+}
+
+void _sort(Disk *disk, int index, int size)
+{
+    int disksize = strlen(*disk);
+    if (index < 0 || index >= disksize || index + size > disksize)
+    {
+        printf("Error: Index out of bounds\n");
+        return;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = i + 1; j < size; j++)
+        {
+            if ((*disk)[index + i] > (*disk)[index + j])
+            {
+                byte temp = (*disk)[index + i];
+                (*disk)[index + i] = (*disk)[index + j];
+                (*disk)[index + j] = temp;
+            }
+        }
+    }
+}
+
+void _find(Disk *disk, int offsetmin, int offsetmax, int resultposition, byte* data)
+{
+    int disksize = strlen(*disk);
+    char *point = strstr(*disk + offsetmin, data);
+    int index = (int*)(point) - (int*)(*disk);
+    if (index < offsetmin || index > offsetmax)
+    {
+        set_int(disk, resultposition, -1);
+    }
+    else
+    {
+        set_int(disk, resultposition, index);
+    }
+}
+
+// replace first occurence of data with replacement
+void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement)
+{
+    int disksize = strlen(*disk);
+    char *point = strstr(*disk + offsetmin, data);
+    int index = (int*)(point) - (int*)(*disk);
+    if (index < offsetmin || index > offsetmax)
+    {
+        return;
+    }
+    int size = strlen(data);
+    int diff = strlen(replacement) - size;
+    if (diff > 0)
+    {
+        *disk = (Disk)realloc(*disk, (disksize + diff) * sizeof(Disk));
+    }
+    else if (diff < 0)
+    {
+        *disk = (Disk)realloc(*disk, (disksize + diff) * sizeof(Disk));
+        disksize = strlen(*disk);
+        diff = -diff;
+        for (int j = disksize - 1; j >= index + size; j--)
+        {
+            (*disk)[j + diff] = (*disk)[j];
+        }
+    }
+    for (int j = 0; j < strlen(replacement); j++)
+    {
+        (*disk)[index + j] = replacement[j];
+    }
+}
+
+void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement)
+{
+    int disksize = strlen(*disk);
+    int size = strlen(data);
+    int diff = strlen(replacement) - size;
+    int count = 0;
+    for (int i = offsetmin; i < offsetmax; i++)
+    {
+        char *point = strstr(*disk + i, data);
+        int index = (int*)(point) - (int*)(*disk);
+        if (index < offsetmin || index > offsetmax)
+        {
+            break;
+        }
+        count++;
+        if (diff > 0)
+        {
+            *disk = (Disk)realloc(*disk, (disksize + diff) * sizeof(Disk));
+        }
+        else if (diff < 0)
+        {
+            *disk = (Disk)realloc(*disk, (disksize + diff) * sizeof(Disk));
+            disksize = strlen(*disk);
+            diff = -diff;
+            for (int j = disksize - 1; j >= index + size; j--)
+            {
+                (*disk)[j + diff] = (*disk)[j];
+            }
+        }
+        for (int j = 0; j < strlen(replacement); j++)
+        {
+            (*disk)[index + j] = replacement[j];
+        }
+    }
+}
+
+void _goto(Disk *disk, int position)
+{
+    int disksize = strlen(*disk);
+    if (position < 0 || position >= disksize)
+    {
+        printf("Error: Index out of bounds\n");
+        return;
+    }
+    set_int(disk, 4, position);
+}
+
+
 
 // DiskManagement functions
 // DiskManagement functions
@@ -210,9 +347,9 @@ void disk_write(char *filename, byte *data)
 // type gets
 // type gets
 
-unsigned char* get_bytes(Disk disk, int index, int size)
+byte* get_bytes(Disk disk, int index, int size)
 {
-    unsigned char *bytes = (unsigned char *)malloc(size * sizeof(unsigned char));
+    byte *bytes = (byte *)malloc(size * sizeof(byte));
     for (int i = 0; i < size; i++)
     {
         bytes[i] = disk[index + i];
@@ -221,12 +358,7 @@ unsigned char* get_bytes(Disk disk, int index, int size)
 }
 
 
-unsigned char get_byte(Disk disk, int index)
-{
-    return disk[index];
-}
-
-char get_char(Disk disk, int index)
+byte get_byte(Disk disk, int index)
 {
     return disk[index];
 }
@@ -240,7 +372,7 @@ long get_long(Disk disk, int index)
 {
     union {
         long l;
-        unsigned char b[4];
+        byte b[4];
     } u;
     if (bigendian) {
         u.b[0] = disk[index + 0];
@@ -260,7 +392,7 @@ double get_double(Disk disk, int index)
 {
     union {
         double d;
-        unsigned char b[8];
+        byte b[8];
     } u;
     if (bigendian) {
         u.b[0] = disk[index + 0];
@@ -288,7 +420,7 @@ long double get_long_double(Disk disk, int index)
 {
     union {
         long double d;
-        unsigned char b[10];
+        byte b[10];
     } u;
     if (bigendian) {
         u.b[0] = disk[index + 0];
@@ -326,34 +458,21 @@ byte* get_string(Disk disk, int index, int size)
     return str;
 }
 
-Number get_number(unsigned char *bytes)
-{
-    Number u;
-
-    if (bigendian) {
-        u.b[0] = bytes[0];
-        u.b[1] = bytes[1];
-        u.b[2] = bytes[2];
-        u.b[3] = bytes[3];
-    } else {
-        u.b[3] = bytes[0];
-        u.b[2] = bytes[1];
-        u.b[1] = bytes[2];
-        u.b[0] = bytes[3];
-    }
-
-    return u;
-}
-
 int get_int(Disk disk, int index)
 {
-    Number u = get_number(get_bytes(disk, index, 4));
+    union {
+        int i;
+        byte b[4];
+    } u;
     return u.i;
 }
 
 float get_float(Disk disk, int index)
 {
-    Number u = get_number(get_bytes(disk, index, 4));
+    union {
+        float f;
+        byte b[4];
+    } u;
     return u.f;
 }
 
@@ -361,59 +480,49 @@ float get_float(Disk disk, int index)
 // sets 
 // sets 
 
-void set_byte(Disk *disk, int index, unsigned char data)
+void set_byte(Disk *disk, int index, byte data)
 {
-    _set(disk, index, data);
-}
-
-void set_char(Disk *disk, int index, char data)
-{
-    _set(disk, index, data);
+    _set(disk, index, (byte[1]){data});
 }
 
 void set_string(Disk *disk, int index, byte *str, int size)
 {
-    for (int i = 0; i < size; i++)
-    {
-        _set(disk, index + i, str[i]);
-    }
+    _set(disk, index, str);
 }
 
 void set_int(Disk *disk, int index, int data)
 {
-    Number u;
+    union {
+        int i;
+        byte b[4];
+    } u;
     u.i = data;
-    unsigned char *bytes = get_bytes((unsigned char *)&u, 0, 4);
-    for (int i = 0; i < 4; i++)
-    {
-        _set(disk, index + i, bytes[i]);
-    }
+    byte *bytes = get_bytes((byte *)&u, 0, 4);
+    _set(disk, index, bytes);
 }
 
 void set_float(Disk *disk, int index, float data)
 {
-    Number u;
+    union {
+        float f;
+        byte b[4];
+    } u;
     u.f = data;
-    unsigned char *bytes = get_bytes((unsigned char *)&u, 0, 4);
-    for (int i = 0; i < 4; i++)
-    {
-        _set(disk, index + i, bytes[i]);
-    }
+    byte *bytes = get_bytes((byte *)&u, 0, 4);
+    _set(disk, index, bytes);
 }
 
 void set_short(Disk *disk, int index, short data)
 {
     union {
         short s;
-        unsigned char b[2];
+        byte b[2];
     } u;
     u.s = data;
     if (bigendian) {
-        _set(disk, index + 0, u.b[0]);
-        _set(disk, index + 1, u.b[1]);
+        _set(disk, index, (byte[2]){u.b[0],u.b[1]});
     } else {
-        _set(disk, index + 1, u.b[0]);
-        _set(disk, index + 0, u.b[1]);
+        _set(disk, index, (byte[2]){u.b[1],u.b[0]});
     }
 
 }
@@ -422,27 +531,16 @@ void set_double(Disk *disk, int index, double data)
 {
     union {
         double d;
-        unsigned char b[8];
+        byte b[8];
     } u;
     u.d = data;
-    if (bigendian) {
-        _set(disk, index + 0, u.b[0]);
-        _set(disk, index + 1, u.b[1]);
-        _set(disk, index + 2, u.b[2]);
-        _set(disk, index + 3, u.b[3]);
-        _set(disk, index + 4, u.b[4]);
-        _set(disk, index + 5, u.b[5]);
-        _set(disk, index + 6, u.b[6]);
-        _set(disk, index + 7, u.b[7]);
-    } else {
-        _set(disk, index + 7, u.b[0]);
-        _set(disk, index + 6, u.b[1]);
-        _set(disk, index + 5, u.b[2]);
-        _set(disk, index + 4, u.b[3]);
-        _set(disk, index + 3, u.b[4]);
-        _set(disk, index + 2, u.b[5]);
-        _set(disk, index + 1, u.b[6]);
-        _set(disk, index + 0, u.b[7]);
+    if (bigendian) 
+    {
+        _set(disk, index, (byte[8]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7]});
+    } 
+    else 
+    {
+        _set(disk, index, (byte[8]){u.b[7],u.b[6],u.b[5],u.b[4],u.b[3],u.b[2],u.b[1],u.b[0]});
     }
 }
 
@@ -450,19 +548,13 @@ void set_long(Disk *disk, int index, long data)
 {
     union {
         long l;
-        unsigned char b[4];
+        byte b[4];
     } u;
     u.l = data;
     if (bigendian) {
-        _set(disk, index + 0, u.b[0]);
-        _set(disk, index + 1, u.b[1]);
-        _set(disk, index + 2, u.b[2]);
-        _set(disk, index + 3, u.b[3]);
+        _set(disk, index, (byte[4]){u.b[0],u.b[1],u.b[2],u.b[3]});
     } else {
-        _set(disk, index + 3, u.b[0]);
-        _set(disk, index + 2, u.b[1]);
-        _set(disk, index + 1, u.b[2]);
-        _set(disk, index + 0, u.b[3]);
+        _set(disk, index, (byte[4]){u.b[3],u.b[2],u.b[1],u.b[0]});
     }
 }
 
@@ -470,31 +562,16 @@ void set_long_double(Disk *disk, int index, long double data)
 {
     union {
         long double d;
-        unsigned char b[10];
+        byte b[10];
     } u;
     u.d = data;
-    if (bigendian) {
-        _set(disk, index + 0, u.b[0]);
-        _set(disk, index + 1, u.b[1]);
-        _set(disk, index + 2, u.b[2]);
-        _set(disk, index + 3, u.b[3]);
-        _set(disk, index + 4, u.b[4]);
-        _set(disk, index + 5, u.b[5]);
-        _set(disk, index + 6, u.b[6]);
-        _set(disk, index + 7, u.b[7]);
-        _set(disk, index + 8, u.b[8]);
-        _set(disk, index + 9, u.b[9]);
-    } else {
-        _set(disk, index + 9, u.b[0]);
-        _set(disk, index + 8, u.b[1]);
-        _set(disk, index + 7, u.b[2]);
-        _set(disk, index + 6, u.b[3]);
-        _set(disk, index + 5, u.b[4]);
-        _set(disk, index + 4, u.b[5]);
-        _set(disk, index + 3, u.b[6]);
-        _set(disk, index + 2, u.b[7]);
-        _set(disk, index + 1, u.b[8]);
-        _set(disk, index + 0, u.b[9]);
+    if (bigendian) 
+    {
+        _set(disk, index, (byte[10]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7],u.b[8],u.b[9]});
+    } 
+    else 
+    {
+        _set(disk, index, (byte[10]){u.b[9],u.b[8],u.b[7],u.b[6],u.b[5],u.b[4],u.b[3],u.b[2],u.b[1],u.b[0]});
     }
 }
 
@@ -554,10 +631,8 @@ int main(int argc, char *argv[])
     
     TCCState *s = new_state(disk_read(inpath));
 
-    add_symbols(s, "get_number", get_number);
     add_symbols(s, "get_bytes", get_bytes);
     add_symbols(s, "get_byte", get_byte);
-    add_symbols(s, "get_char", get_char);
     add_symbols(s, "get_string", get_string);
     add_symbols(s, "get_int", get_int);
     add_symbols(s, "get_float", get_float);
@@ -567,7 +642,6 @@ int main(int argc, char *argv[])
     add_symbols(s, "get_long_double", get_long_double);
 
     add_symbols(s, "set_byte", set_byte);
-    add_symbols(s, "set_char", set_char);
     add_symbols(s, "set_string", set_string);
     add_symbols(s, "set_int", set_int);
     add_symbols(s, "set_float", set_float);
