@@ -1,9 +1,9 @@
 0
 // version
-0.0.10
+0.0.11
 
 // current index
-8 0 0 0
+20 0 0 0
 
 // teste
 200 22
@@ -17,11 +17,10 @@
 
 
 222 63
-1 224                
+1 224
 
+// starts here (20)
 
-
-         
 
 
 // current index

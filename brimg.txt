@@ -40,7 +40,19 @@ version = x.y.z
 12 - replace (position, size, value)
 13 - replaceall (position, size, value)
 
+128 - if(condition, size, index1, index2, goto1, goto2)
+
 256 - print (position, size)
+
+// conditions
+
+0 - ==
+1 - !=
+2 - >
+3 - <
+4 - >=
+5 - <=
+
 
 // structs
 

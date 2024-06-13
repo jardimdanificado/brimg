@@ -277,6 +277,94 @@ void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* re
     }
 }
 
+// 
+
+void _if(Disk *disk, byte condition, int size, int posi1, int posi2, int goto1, int goto2)
+{
+    int _true = 0;
+    if (condition == 0) // equal ==
+    {
+        _true = 1;
+        for (int i = 0; i < size; i++)
+        {
+            if ((*disk)[posi1 + i] != (*disk)[posi2 + i])
+            {
+                _true = 0;
+                break;
+            }
+        } 
+    }
+    else if (condition == 1) // not equal !=
+    {
+        _true = 1;
+        for (int i = 0; i < size; i++)
+        {
+            if ((*disk)[posi1 + i] != (*disk)[posi2 + i])
+            {
+                _true = 1;
+                break;
+            }
+        }
+    }
+    else if (condition == 2) // greater >
+    {
+        _true = 1;
+        for (int i = 0; i < size; i++)
+        {
+            if ((*disk)[posi1 + i] <= (*disk)[posi2 + i])
+            {
+                _true = 0;
+                break;
+            }
+        }
+    }
+    else if (condition == 3) // less <
+    {
+        _true = 1;
+        for (int i = 0; i < size; i++)
+        {
+            if ((*disk)[posi1 + i] >= (*disk)[posi2 + i])
+            {
+                _true = 0;
+                break;
+            }
+        }
+    }
+    else if (condition == 4) // greater or equal >=
+    {
+        _true = 1;
+        for (int i = 0; i < size; i++)
+        {
+            if ((*disk)[posi1 + i] < (*disk)[posi2 + i])
+            {
+                _true = 0;
+                break;
+            }
+        }
+    }
+    else if (condition == 5) // less or equal <=
+    {
+        _true = 1;
+        for (int i = 0; i < size; i++)
+        {
+            if ((*disk)[posi1 + i] > (*disk)[posi2 + i])
+            {
+                _true = 0;
+                break;
+            }
+        }
+    }
+
+    union {
+        int i;
+        byte b[4];
+    } u;
+
+    u.i = _true ? goto1 : goto2;
+
+    _set(disk, 4, u.b);
+}
+
 // etc
 // etc
 // etc
