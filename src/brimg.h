@@ -10,16 +10,17 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 12
+#define VERSION_Z 13
 
 #define byte unsigned char
 byte bigendian;
 
 typedef byte * Disk;
 
-void _set(Disk *disk, int index, byte *data);
+void _exit(Disk *disk);
+void _set(Disk *disk, int index, int size, byte *data);
 void _insert(Disk *disk, int index, byte *str);
-void _remove(Disk *disk, int index, int size);
+void _delete(Disk *disk, int index, int size);
 void _move(Disk *disk, int origin, int destiny, int size);
 void _swap(Disk *disk, int index1, int index2, int size);
 void _shift(Disk *disk, int index, int size, int _shift);
@@ -30,6 +31,18 @@ void _reverse(Disk *disk, int index, int size);
 void _sort(Disk *disk, int index, int size);
 void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
 void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
+
+
+void _ifelse(Disk *disk, int position, int goto1, int goto2);
+void _equal(Disk *disk, int posi1, int posi2, int size, int result);
+void _not_equal(Disk *disk, int posi1, int posi2, int size, int result);
+void _greater(Disk *disk, int posi1, int posi2, int size, int result);
+void _less(Disk *disk, int posi1, int posi2, int size, int result);
+void _less_or_equal(Disk *disk, int posi1, int posi2, int size, int result);
+void _greater_or_equal(Disk *disk, int posi1, int posi2, int size, int result);
+void _and(Disk *disk, int posi, int size, int result);
+void _or(Disk *disk, int posi, int size, int result);
+
 
 void _print(Disk disk, int index, int size);
 
@@ -52,6 +65,8 @@ void set_short(Disk *disk, int index, short data);
 void set_double(Disk *disk, int index, double data);
 void set_long(Disk *disk, int index, long data);
 void set_long_double(Disk *disk, int index, long double data);
+
+Disk run(Disk disk);
 
 byte* disk_read(char *filename);
 void disk_write(char *filename, byte *data);

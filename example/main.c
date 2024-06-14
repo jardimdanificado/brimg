@@ -6,6 +6,7 @@
 int main()
 {
     Disk disk0 = disk_read("disk0.img");
+    run(disk0);
     Person p;
     p.age = 244;
     p.weight = 99980.5;

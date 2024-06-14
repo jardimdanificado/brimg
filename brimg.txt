@@ -17,7 +17,7 @@ types:
 
 version = x.y.z
 
-0 = NULL
+0 = state
 1 = version x
 2 = version y
 3 = version z
@@ -28,7 +28,7 @@ version = x.y.z
 0 - 
 1 - set (position, value)
 2 - insert (value, position)
-3 - remove (position, size or 1)
+3 - delete (position, size or 1)
 4 - move (origin, destiny, size or 1)
 5 - swap (origin, destiny, size or 1)
 6 - shift (start, size, direction)
@@ -42,18 +42,18 @@ version = x.y.z
 
 // conditions
 
-127 - if (position, goto1, goto2)
-128 - equal(position1, position2, size, result)
-129 - not_equal(position1, position2, size, result)
-130 - greater(position1, position2, size, result)
-131 - less(position1, position2, size, result)
-132 - greater_or_equal(position1, position2, size, result)
-133 - less_or_equal(position1, position2, size, result)
-134 - and(position, size, result)
-135 - or(position, size, result)
+14 - if (position, goto1, goto2)
+15 - equal(position1, position2, size, result)
+16 - not_equal(position1, position2, size, result)
+17 - greater(position1, position2, size, result)
+18 - less(position1, position2, size, result)
+19 - greater_or_equal(position1, position2, size, result)
+20 - less_or_equal(position1, position2, size, result)
+21 - and(position, size, result)
+22 - or(position, size, result)
 
 // other
-256 - print (position, size)
+23 - print (position, size)
 
 // structs
 

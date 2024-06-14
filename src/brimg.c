@@ -1,12 +1,21 @@
 #include "brimg.h"
 
+
 // StandardFunctions
 // StandardFunctions
 // StandardFunctions
 
-void _set(Disk *disk, int index, byte *data)
+void _exit(Disk *disk)
 {
-    for (int i = 0; i < strlen(data); i++)
+    printf("Exiting...\n");
+    free(*disk);
+    *disk = NULL;
+    exit(0);
+}
+
+void _set(Disk *disk, int index, int size,byte *data)
+{
+    for (int i = 0; i < size; i++)
     {
         (*disk)[index + i] = data[i];
     }
@@ -28,7 +37,7 @@ void _insert(Disk *disk, int index, byte *str)
 
 }
 
-void _remove(Disk *disk, int index, int size)
+void _delete(Disk *disk, int index, int size)
 {
     int disksize = strlen(*disk);
     for (int i = index; i < disksize; i++)
@@ -389,7 +398,7 @@ void _or(Disk *disk, int posi, int size, int result)
     (*disk)[result] = _true;
 }
 
-void _if(Disk *disk, int position, int goto1, int goto2)
+void _ifelse(Disk *disk, int position, int goto1, int goto2)
 {
     int _true = (*disk)[position];
     
@@ -400,7 +409,7 @@ void _if(Disk *disk, int position, int goto1, int goto2)
 
     u.i = _true ? goto1 : goto2;
 
-    _set(disk, 4, u.b);
+    _set(disk, 4, 4,u.b);
 }
 
 // etc
@@ -543,6 +552,10 @@ int get_int(Disk disk, int index)
         int i;
         byte b[4];
     } u;
+    u.b[0] = disk[index + 0];
+    u.b[1] = disk[index + 1];
+    u.b[2] = disk[index + 2];
+    u.b[3] = disk[index + 3];
     return u.i;
 }
 
@@ -552,6 +565,10 @@ float get_float(Disk disk, int index)
         float f;
         byte b[4];
     } u;
+    u.b[0] = disk[index + 0];
+    u.b[1] = disk[index + 1];
+    u.b[2] = disk[index + 2];
+    u.b[3] = disk[index + 3];
     return u.f;
 }
 
@@ -561,12 +578,12 @@ float get_float(Disk disk, int index)
 
 void set_byte(Disk *disk, int index, byte data)
 {
-    _set(disk, index, (byte[1]){data});
+    _set(disk, index, 1,(byte[1]){data});
 }
 
 void set_string(Disk *disk, int index, byte *str, int size)
 {
-    _set(disk, index, str);
+    _set(disk, index, strlen(str), str);
 }
 
 void set_int(Disk *disk, int index, int data)
@@ -576,8 +593,7 @@ void set_int(Disk *disk, int index, int data)
         byte b[4];
     } u;
     u.i = data;
-    byte *bytes = get_bytes((byte *)&u, 0, 4);
-    _set(disk, index, bytes);
+    _set(disk, index, 4, u.b);
 }
 
 void set_float(Disk *disk, int index, float data)
@@ -588,7 +604,7 @@ void set_float(Disk *disk, int index, float data)
     } u;
     u.f = data;
     byte *bytes = get_bytes((byte *)&u, 0, 4);
-    _set(disk, index, bytes);
+    _set(disk, index, 4, bytes);
 }
 
 void set_short(Disk *disk, int index, short data)
@@ -598,7 +614,7 @@ void set_short(Disk *disk, int index, short data)
         byte b[2];
     } u;
     u.s = data;
-    _set(disk, index, (byte[2]){u.b[0],u.b[1]});
+    _set(disk, index, 2, (byte[2]){u.b[0],u.b[1]});
 }
 
 void set_double(Disk *disk, int index, double data)
@@ -608,17 +624,17 @@ void set_double(Disk *disk, int index, double data)
         byte b[8];
     } u;
     u.d = data;
-    _set(disk, index, (byte[8]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7]});
+    _set(disk, index, 8, (byte[8]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7]});
 }
 
 void set_long(Disk *disk, int index, long data)
 {
     union {
         long l;
-        byte b[4];
+        byte b[8];
     } u;
     u.l = data;
-    _set(disk, index, (byte[4]){u.b[0],u.b[1],u.b[2],u.b[3]});
+    _set(disk, index, 8, (byte[8]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7]});
 }
 
 void set_long_double(Disk *disk, int index, long double data)
@@ -628,7 +644,7 @@ void set_long_double(Disk *disk, int index, long double data)
         byte b[10];
     } u;
     u.d = data;
-    _set(disk, index, (byte[10]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7],u.b[8],u.b[9]});
+    _set(disk, index, 10, (byte[10]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7],u.b[8],u.b[9]});
 }
 
 // tcc
@@ -676,8 +692,257 @@ TCCState *new_state(const char *code) {
     return s;
 }
 
+
+// callers
+// callers
+// callers
+
+Disk caller_exit(Disk disk, int index)
+{
+    _exit(&disk);
+    return disk;
+}
+
+Disk caller_set(Disk disk, int index)
+{
+    printf("set\n");
+    int size = get_int(disk, index + 5);
+    byte *data = get_bytes(disk, index + 9, size);
+    _set(&disk, get_int(disk, index+1), size, data);
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 9 + size);
+    return disk;
+}
+
+Disk caller_insert(Disk disk, int index)
+{
+    int size = get_int(disk, index + 5);
+    byte *str = get_bytes(disk, index + 9, size);
+    _insert(&disk, get_int(disk, index + 1), str);
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 9 + size);
+    return disk;
+}
+
+Disk caller_delete(Disk disk, int index)
+{
+    _delete(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_move(Disk disk, int index)
+{
+    _move(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_swap(Disk disk, int index)
+{
+    _swap(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_shift(Disk disk, int index)
+{
+    _shift(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_random(Disk disk, int index)
+{
+    _random(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 9);
+    return disk;
+}
+
+Disk caller_copy(Disk disk, int index)
+{
+    _copy(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_fill(Disk disk, int index)
+{
+    _fill(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_byte(disk, index + 9));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_reverse(Disk disk, int index)
+{
+    _reverse(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 9);
+    return disk;
+}
+
+Disk caller_sort(Disk disk, int index)
+{
+    _sort(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 9);
+    return disk;
+}
+
+Disk caller_replace(Disk disk, int index)
+{
+    byte *data = get_bytes(disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    byte *replacement = get_bytes(disk, get_int(disk, index + 9), get_int(disk, index + 13));
+    _replace(&disk, get_int(disk, index + 17), get_int(disk, index + 21), data, replacement);
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 25);
+    return disk;
+}
+
+Disk caller_replace_all(Disk disk, int index)
+{
+    byte *data = get_bytes(disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    byte *replacement = get_bytes(disk, get_int(disk, index + 9), get_int(disk, index + 13));
+    _replace_all(&disk, get_int(disk, index + 17), get_int(disk, index + 21), data, replacement);
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 25);
+    return disk;
+}
+
+Disk caller_ifelse(Disk disk, int index)
+{
+    _ifelse(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_equal(Disk disk, int index)
+{
+    _equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
+    set_int(&disk, 4, index + 17);
+    return disk;
+}
+
+Disk caller_not_equal(Disk disk, int index)
+{
+    _not_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
+    set_int(&disk, 4, index + 17);
+    return disk;
+}
+
+Disk caller_greater(Disk disk, int index)
+{
+    _greater(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
+    set_int(&disk, 4, index + 17);
+    return disk;
+}
+
+Disk caller_less(Disk disk, int index)
+{
+    _less(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
+    set_int(&disk, 4, index + 17);
+    return disk;
+}
+
+Disk caller_less_or_equal(Disk disk, int index)
+{
+    _less_or_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
+    set_int(&disk, 4, index + 17);
+    return disk;
+}
+
+Disk caller_greater_or_equal(Disk disk, int index)
+{
+    _greater_or_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
+    set_int(&disk, 4, index + 17);
+    return disk;
+}
+
+Disk caller_and(Disk disk, int index)
+{
+    _and(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_or(Disk disk, int index)
+{
+    _or(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
+    set_int(&disk, 4, index + 13);
+    return disk;
+}
+
+Disk caller_print(Disk disk, int index)
+{
+    _print(disk, get_int(disk, index + 1), get_int(disk, index + 5));
+    //set disk index to next instruction
+    printf("print %d \n",get_int(disk, index + 1));
+    set_int(&disk, 4, index + 9);
+    return disk;
+}
+
+// functions
+Disk (*functions[])(Disk, int) = 
+{
+    caller_exit,
+    caller_set,
+    caller_insert,
+    caller_delete,
+    caller_move,
+    caller_swap,
+    caller_shift,
+    caller_random,
+    caller_copy,
+    caller_fill,
+    caller_reverse,
+    caller_sort,
+    caller_replace,
+    caller_replace_all,
+    caller_ifelse,
+    caller_equal,
+    caller_not_equal,
+    caller_greater,
+    caller_less,
+    caller_less_or_equal,
+    caller_greater_or_equal,
+    caller_and,
+    caller_or,
+    caller_print,
+};
+
+// runner
+// runner
+// runner
+
+
+
+// runs the byte code
+Disk run(Disk disk)
+{
+    int i = get_int(disk, 4); 
+    while (disk[0] != 0)
+    {
+        i = get_int(disk, 4);
+        disk = functions[disk[i]](disk, i);
+    }
+    return disk;
+}
+
+
+
+// main
+// main
+// main
 int main(int argc, char *argv[]) 
 {
+
     char *inpath = argv[1];
     char *outpath = argv[2];
     int n = 1;
@@ -706,10 +971,10 @@ int main(int argc, char *argv[])
     add_symbols(s, "set_long", set_long);
     add_symbols(s, "set_long_double", set_long_double);
 
-
+    add_symbols(s, "_exit", _exit);
     add_symbols(s, "_set", _set);
     add_symbols(s, "_insert", _insert);
-    add_symbols(s, "_remove", _remove);
+    add_symbols(s, "_delete", _delete);
     add_symbols(s, "_move", _move);
     add_symbols(s, "_swap", _swap);
     add_symbols(s, "_shift", _shift);
@@ -720,6 +985,18 @@ int main(int argc, char *argv[])
     add_symbols(s, "_sort", _sort);
     add_symbols(s, "_replace", _replace);
     add_symbols(s, "_replace_all", _replace_all);
+    add_symbols(s, "_ifelse", _ifelse);
+    add_symbols(s, "_equal", _equal);
+    add_symbols(s, "_not_equal", _not_equal);
+    add_symbols(s, "_greater", _greater);
+    add_symbols(s, "_less", _less);
+    add_symbols(s, "_less_or_equal", _less_or_equal);
+    add_symbols(s, "_greater_or_equal", _greater_or_equal);
+    add_symbols(s, "_and", _and);
+    add_symbols(s, "_or", _or);
+    add_symbols(s, "_print", _print);
+    
+    add_symbols(s, "run", run);
 
     add_symbols(s, "disk_read", disk_read);
     add_symbols(s, "disk_write", disk_write);
