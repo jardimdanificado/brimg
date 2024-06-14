@@ -24,7 +24,7 @@ int main()
     {
         printf("%d: %d\n", disk0[i], u.b[i]);
     }
-    int size = strlen(&disk0);
+    int size = strlen((char*)disk0);
     printf("Disk0: %s\n", disk0);
     printf("Size: %d\n", size);
 }

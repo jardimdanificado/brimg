@@ -40,19 +40,20 @@ version = x.y.z
 12 - replace (position, size, value)
 13 - replaceall (position, size, value)
 
-128 - if(condition, size, index1, index2, goto1, goto2)
-
-256 - print (position, size)
-
 // conditions
 
-0 - ==
-1 - !=
-2 - >
-3 - <
-4 - >=
-5 - <=
+127 - if (position, goto1, goto2)
+128 - equal(position1, position2, size, result)
+129 - not_equal(position1, position2, size, result)
+130 - greater(position1, position2, size, result)
+131 - less(position1, position2, size, result)
+132 - greater_or_equal(position1, position2, size, result)
+133 - less_or_equal(position1, position2, size, result)
+134 - and(position, size, result)
+135 - or(position, size, result)
 
+// other
+256 - print (position, size)
 
 // structs
 
