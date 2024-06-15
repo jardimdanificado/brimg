@@ -250,39 +250,19 @@ void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replac
     }
 }
 
-void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement)
+void _find(Disk *disk, int index, int size, byte* data, int result)
 {
     int disksize = strlen(*disk);
-    int size = strlen(data);
-    int diff = strlen(replacement) - size;
-    int count = 0;
-    for (int i = offsetmin; i < offsetmax; i++)
+    char *point = strstr(*disk + index, data);
+    index = (int*)(point) - (int*)(*disk);
+    if (index < 0 || index >= disksize || index + size > disksize)
     {
-        char *point = strstr(*disk + i, data);
-        int index = (int*)(point) - (int*)(*disk);
-        if (index < offsetmin || index > offsetmax)
-        {
-            break;
-        }
-        count++;
-        if (diff > 0)
-        {
-            *disk = (Disk)realloc(*disk, (disksize + diff) * sizeof(Disk));
-        }
-        else if (diff < 0)
-        {
-            *disk = (Disk)realloc(*disk, (disksize + diff) * sizeof(Disk));
-            disksize = strlen(*disk);
-            diff = -diff;
-            for (int j = disksize - 1; j >= index + size; j--)
-            {
-                (*disk)[j + diff] = (*disk)[j];
-            }
-        }
-        for (int j = 0; j < strlen(replacement); j++)
-        {
-            (*disk)[index + j] = replacement[j];
-        }
+        printf("Error: Index out of bounds\n");
+    }
+    else
+    {
+        int position = (int*)(point) - (int*)(*disk);
+        set_int(disk, result, position);
     }
 }
 
@@ -806,14 +786,9 @@ Disk caller_replace(Disk disk, int index)
     return disk;
 }
 
-Disk caller_replace_all(Disk disk, int index)
+Disk caller_find(Disk disk, int index)
 {
-    byte *data = get_bytes(disk, get_int(disk, index + 1), get_int(disk, index + 5));
-    byte *replacement = get_bytes(disk, get_int(disk, index + 9), get_int(disk, index + 13));
-    _replace_all(&disk, get_int(disk, index + 17), get_int(disk, index + 21), data, replacement);
-    //set disk index to next instruction
-    set_int(&disk, 4, index + 25);
-    return disk;
+
 }
 
 Disk caller_ifelse(Disk disk, int index)
@@ -904,7 +879,7 @@ Disk (*functions[])(Disk, int) =
     caller_reverse,
     caller_sort,
     caller_replace,
-    caller_replace_all,
+    caller_find,
     caller_ifelse,
     caller_equal,
     caller_not_equal,
@@ -984,7 +959,7 @@ int main(int argc, char *argv[])
     add_symbols(s, "_reverse", _reverse);
     add_symbols(s, "_sort", _sort);
     add_symbols(s, "_replace", _replace);
-    add_symbols(s, "_replace_all", _replace_all);
+    add_symbols(s, "_find", _find);
     add_symbols(s, "_ifelse", _ifelse);
     add_symbols(s, "_equal", _equal);
     add_symbols(s, "_not_equal", _not_equal);

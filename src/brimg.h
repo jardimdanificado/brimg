@@ -30,7 +30,7 @@ void _fill(Disk *disk, int index, int size, byte data);
 void _reverse(Disk *disk, int index, int size);
 void _sort(Disk *disk, int index, int size);
 void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
-void _replace_all(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
+void _find(Disk *disk, int index, int size, byte* data, int result);
 
 
 void _ifelse(Disk *disk, int position, int goto1, int goto2);

@@ -52,6 +52,9 @@ version = x.y.z
 21 - and(position, size, result)
 22 - or(position, size, result)
 
+// multi-disk functions
+
+
 // other
 23 - print (position, size)
 
