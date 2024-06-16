@@ -1,16 +1,57 @@
 #include "brimg.h"
 
+// tcc
+// tcc
+// tcc
 
-// StandardFunctions
-// StandardFunctions
-// StandardFunctions
+void handle_error(void *opaque, const char *msg) {
+    fprintf(opaque, "%s\n", msg);
+}
 
-void _exit(Disk *disk)
+TCCState* create_tcc_state() 
 {
-    printf("Exiting...\n");
-    free(*disk);
-    *disk = NULL;
-    exit(0);
+    TCCState *s = tcc_new();
+    if (!s) {
+        fprintf(stderr, "Could not create tcc state\n");
+        exit(1);
+    }
+    tcc_set_error_func(s, stderr, handle_error);
+    tcc_set_output_type(s, TCC_OUTPUT_MEMORY);
+    return s;
+}
+
+void compile_code(TCCState *s, const char *code) {
+    if (tcc_compile_string(s, code) == -1)
+        exit(1);
+}
+
+void add_symbols(TCCState *s, const char *name, void *addr) {
+    tcc_add_symbol(s, name, addr);
+}
+
+void* get_symbol(TCCState *s, const char *name) {
+    void *sym = tcc_get_symbol(s, name);
+    if (!sym) {
+        fprintf(stderr, "Could not find symbol %s\n", name);
+        exit(1);
+    }
+    return sym;
+}
+
+TCCState *new_state(const char *code) {
+    TCCState *s = create_tcc_state();
+    compile_code(s, code);
+    
+    return s;
+}
+
+// StandardFunctions
+// StandardFunctions
+// StandardFunctions
+
+void _state(Disk *disk, byte state)
+{
+    (*disk)[0] = state;
 }
 
 void _set(Disk *disk, int index, int size,byte *data)
@@ -404,6 +445,11 @@ void _print(Disk disk, int index, int size)
     printf("\n");
 }
 
+void _goto(Disk *disk, int position)
+{
+    set_int(disk, 4, position);
+}
+
 // DiskManagement functions
 // DiskManagement functions
 // DiskManagement functions
@@ -627,59 +673,15 @@ void set_long_double(Disk *disk, int index, long double data)
     _set(disk, index, 10, (byte[10]){u.b[0],u.b[1],u.b[2],u.b[3],u.b[4],u.b[5],u.b[6],u.b[7],u.b[8],u.b[9]});
 }
 
-// tcc
-// tcc
-// tcc
+// callers
+// callers
+// callers
 
-void handle_error(void *opaque, const char *msg) {
-    fprintf(opaque, "%s\n", msg);
-}
-
-TCCState* create_tcc_state() 
+Disk caller_state(Disk disk, int index)
 {
-    TCCState *s = tcc_new();
-    if (!s) {
-        fprintf(stderr, "Could not create tcc state\n");
-        exit(1);
-    }
-    tcc_set_error_func(s, stderr, handle_error);
-    tcc_set_output_type(s, TCC_OUTPUT_MEMORY);
-    return s;
-}
-
-void compile_code(TCCState *s, const char *code) {
-    if (tcc_compile_string(s, code) == -1)
-        exit(1);
-}
-
-void add_symbols(TCCState *s, const char *name, void *addr) {
-    tcc_add_symbol(s, name, addr);
-}
-
-void* get_symbol(TCCState *s, const char *name) {
-    void *sym = tcc_get_symbol(s, name);
-    if (!sym) {
-        fprintf(stderr, "Could not find symbol %s\n", name);
-        exit(1);
-    }
-    return sym;
-}
-
-TCCState *new_state(const char *code) {
-    TCCState *s = create_tcc_state();
-    compile_code(s, code);
-    
-    return s;
-}
-
-
-// callers
-// callers
-// callers
-
-Disk caller_exit(Disk disk, int index)
-{
-    _exit(&disk);
+    _state(&disk, get_byte(disk, index + 1));
+    //set disk index to next instruction
+    set_int(&disk, 4, index + 2);
     return disk;
 }
 
@@ -863,10 +865,16 @@ Disk caller_print(Disk disk, int index)
     return disk;
 }
 
+Disk caller_goto(Disk disk, int index)
+{
+    _goto(&disk, get_int(disk, index + 1));
+    return disk;
+}
+
 // functions
 Disk (*functions[])(Disk, int) = 
 {
-    caller_exit,
+    caller_state,
     caller_set,
     caller_insert,
     caller_delete,
@@ -890,13 +898,12 @@ Disk (*functions[])(Disk, int) =
     caller_and,
     caller_or,
     caller_print,
+    caller_goto
 };
 
 // runner
 // runner
 // runner
-
-
 
 // runs the byte code
 Disk run(Disk disk)
@@ -904,13 +911,12 @@ Disk run(Disk disk)
     int i = get_int(disk, 4); 
     while (disk[0] != 0)
     {
+        printf("disk0: %d\n", disk[0]);
         i = get_int(disk, 4);
         disk = functions[disk[i]](disk, i);
     }
     return disk;
 }
-
-
 
 // main
 // main
@@ -946,7 +952,7 @@ int main(int argc, char *argv[])
     add_symbols(s, "set_long", set_long);
     add_symbols(s, "set_long_double", set_long_double);
 
-    add_symbols(s, "_exit", _exit);
+    add_symbols(s, "_state", _state);
     add_symbols(s, "_set", _set);
     add_symbols(s, "_insert", _insert);
     add_symbols(s, "_delete", _delete);
@@ -970,6 +976,7 @@ int main(int argc, char *argv[])
     add_symbols(s, "_and", _and);
     add_symbols(s, "_or", _or);
     add_symbols(s, "_print", _print);
+    add_symbols(s, "_goto", _print);
     
     add_symbols(s, "run", run);
 

@@ -10,14 +10,14 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 13
+#define VERSION_Z 14
 
 #define byte unsigned char
 byte bigendian;
 
-typedef byte * Disk;
+typedef byte* Disk;
 
-void _exit(Disk *disk);
+void _state(Disk *disk, byte state);
 void _set(Disk *disk, int index, int size, byte *data);
 void _insert(Disk *disk, int index, byte *str);
 void _delete(Disk *disk, int index, int size);
@@ -45,7 +45,7 @@ void _or(Disk *disk, int posi, int size, int result);
 
 
 void _print(Disk disk, int index, int size);
-
+void _goto(Disk *disk, int position);
 
 byte* get_bytes(Disk disk, int index, int size);
 byte get_byte(Disk disk, int index);
