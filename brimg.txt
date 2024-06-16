@@ -25,9 +25,9 @@ version = x.y.z
 
 // disk functions
 
-0 - 
-1 - set (position, value)
-2 - insert (value, position)
+0 - state(state) fb
+1 - set (position, size, data) f iiii iiii ?
+2 - insert (value, position) 
 3 - delete (position, size or 1)
 4 - move (origin, destiny, size or 1)
 5 - swap (origin, destiny, size or 1)
