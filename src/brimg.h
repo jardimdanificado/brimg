@@ -17,6 +17,7 @@ byte bigendian;
 
 typedef byte* Disk;
 
+// C api
 void _state(Disk *disk, byte state);
 void _set(Disk *disk, int index, int size, byte *data);
 void _insert(Disk *disk, int index, byte *str);

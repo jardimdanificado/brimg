@@ -25,39 +25,94 @@ version = x.y.z
 
 // disk functions
 
-0 - state(state) fb
-1 - set (position, size, data) f iiii iiii ?
-2 - insert (value, position) 
-3 - delete (position, size or 1)
-4 - move (origin, destiny, size or 1)
-5 - swap (origin, destiny, size or 1)
-6 - shift (start, size, direction)
-7 - random (destiny, size or 1)
-8 - copy (origin, destiny, size or 1)
-9 - fill (start, size, value)
-10 - reverse (start, size)
-11 - sort (start, size)
-12 - find (position) ? 
+0 - state(state):
+f b
+
+1 - set (position, size, data):
+f iiii iiii ?
+
+2 - insert (position, size, data):
+f iiii iiii ?
+
+3 - delete (position, size or 1):
+f iiii iiii
+
+4 - move (origin, destiny, size or 1):
+f iiii iiii iiii
+
+5 - swap (origin, destiny, size or 1):
+f iiii iiii iiii
+
+6 - shift (start, size, direction):
+f iiii iiii b
+
+7 - random (destiny, size or 1):
+f iiii iiii
+
+8 - copy (origin, destiny, size or 1):
+f iiii iiii iiii
+
+9 - fill (start, size, value):
+f iiii iiii b
+
+10 - reverse (start, size):
+f iiii iiii
+
+11 - sort (start, size):
+f iiii iiii
+
+12 - find (position, size, patternsize, pattern, result):
+f iiii iiii iiii ? iiii
+
+
 
 // conditions
 
-13 - if (position, size, code)
-14 - ifelse (position, sizeif, sizeelse, ifcode, elsecode)
-15 - equal(position1, position2, size, result)
-16 - not_equal(position1, position2, size, result)
-17 - greater(position1, position2, size, result)
-18 - less(position1, position2, size, result)
-19 - greater_or_equal(position1, position2, size, result)
-20 - less_or_equal(position1, position2, size, result)
-21 - and(position, size, result)
-22 - or(position, size, result)
+13 - if (position, size, code):
+f iiii iiii ?
+
+14 - ifelse (position, sizeif, sizeelse, ifcode, elsecode):
+f iiii iiii iiii ? ?
+
+15 - equal(position1, position2, size, result):
+f iiii iiii iiii ?
+
+16 - not_equal(position1, position2, size, result):
+f iiii iiii iiii ?
+
+17 - greater(position1, position2, size, result):
+f iiii iiii iiii ?
+
+18 - less(position1, position2, size, result):
+f iiii iiii iiii ?
+
+19 - greater_or_equal(position1, position2, size, result):
+f iiii iiii iiii ?
+
+20 - less_or_equal(position1, position2, size, result):
+f iiii iiii iiii ?
+
+21 - and(position, size, result):
+f iiii iiii ?
+
+22 - or(position, size, result):
+f iiii iiii ?
+
 
 // other
 23 - print (position, size)
-24 - goto (position)
+f iiii iiii
 
-// loops
-25 - while (position, size, code)
+// flow control
+24 - goto (position) 
+f iiii
+
+25 - while (condition, size, code) 
+f b iiii ?
+
+26 - for (start, end, step, code) 
+f iiii iiii iiii ?
+
 
 
 // structs
