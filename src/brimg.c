@@ -147,7 +147,7 @@ void _move(Disk *disk, int origin, int destiny, int size)
     if (origin < 0 || destiny < 0 || origin >= disksize || destiny >= disksize || origin + size > disksize || destiny + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     Disk temp = (Disk)malloc(size * sizeof(Disk));
     for (int i = 0; i < size; i++)
@@ -179,12 +179,12 @@ void _swap(Disk *disk, int index1, int index2, int size)
     if (index1 + size > index2)
     {
         printf("Error: Swap indexes overlap\n");
-        return;
+        exit(1);
     }
     else if (index1 < 0 || index2 < 0 || index1 >= disksize || index2 >= disksize || index2 + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     for (int i = 0; i < size; i++)
     {
@@ -201,7 +201,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
     if (index < 0 || index >= disksize || index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     if (_shift > 0)
     {
@@ -246,7 +246,7 @@ void _copy(Disk *disk, int index, int destiny, int size)
     if (index < 0 || destiny < 0 || index >= disksize || destiny >= disksize || index + size > disksize || destiny + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     for (int i = 0; i < size; i++)
     {
@@ -268,7 +268,7 @@ void _reverse(Disk *disk, int index, int size)
     if (index < 0 || index >= disksize || index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     for (int i = 0; i < size / 2; i++)
     {
@@ -284,7 +284,7 @@ void _sort(Disk *disk, int index, int size)
     if (index < 0 || index >= disksize || index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     for (int i = 0; i < size; i++)
     {
@@ -517,7 +517,7 @@ void disk_write(char *filename, byte *data)
     if (file == NULL)
     {
         printf("Error: File not found\n");
-        return;
+        exit(1);
     }
 
     fwrite(data, strlen(data), 1, file);
@@ -762,7 +762,6 @@ void set_long_double(Disk *disk, int index, long double data)
 Disk caller_state(Disk disk, int index)
 {
     disk[0] = get_byte(disk, index + 1);
-    //set disk index to next instruction
     _goto(&disk, index + 2);
     return disk;
 }
@@ -777,7 +776,6 @@ Disk caller_set(Disk disk, int index)
     {
         disk[_index + i] = data[i];
     }
-    //set disk index to next instruction
     _goto(&disk, index + 9 + size);
     return disk;
 }
@@ -800,7 +798,6 @@ Disk caller_insert(Disk disk, int index)
         disk[_index + i] = str[i];
     }
     
-    //set disk index to next instruction
     _goto(&disk, index + 9 + size);
     return disk;
 }
@@ -822,14 +819,12 @@ Disk caller_delete(Disk disk, int index)
         }
     }
     disk = (Disk)realloc(disk, (disksize - size) * sizeof(Disk));
-    //set disk index to next instruction
     _goto(&disk, index + 9);
     return disk;
 }
 
 Disk caller_move(Disk disk, int index)
 {
-    //_move(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
     int disksize = strlen(disk);
     int size = get_int(disk, index + 9);
     int origin = get_int(disk, index + 1);
@@ -844,7 +839,7 @@ Disk caller_move(Disk disk, int index)
     if (origin < 0 || destiny < 0 || origin >= disksize || destiny >= disksize || origin + size > disksize || destiny + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     Disk temp = (Disk)malloc(size * sizeof(Disk));
     for (int i = 0; i < size; i++)
@@ -860,14 +855,12 @@ Disk caller_move(Disk disk, int index)
         (disk)[destiny + i] = temp[i];
     }
     free(temp);
-    //set disk index to next instruction
     _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_swap(Disk disk, int index)
 {
-    //_swap(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
     int disksize = strlen(disk);
     int index1 = get_int(disk, index + 1);
     int index2 = get_int(disk, index + 5);
@@ -881,12 +874,12 @@ Disk caller_swap(Disk disk, int index)
     if (index1 + size > index2)
     {
         printf("Error: Swap indexes overlap\n");
-        return;
+        exit(1);
     }
     else if (index1 < 0 || index2 < 0 || index1 >= disksize || index2 >= disksize || index2 + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     for (int i = 0; i < size; i++)
     {
@@ -894,23 +887,20 @@ Disk caller_swap(Disk disk, int index)
         disk[index1 + i] = disk[index2 + i];
         disk[index2 + i] = temp;
     }
-    //set disk index to next instruction
     _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_shift(Disk disk, int index)
 {
-    //_shift(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
     int size = get_int(disk, index + 5);
     int _shift = get_int(disk, index + 9);
     int _index = get_int(disk, index + 1);
     int disksize = strlen(disk);
-    // slide items based of _shift - to the left, + to the right, 0 change nothing, 0123456789 -> 0781234569 with shift 3 in a interval from 1 to 8
     if (_index < 0 || _index >= disksize || _index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     if (_shift > 0)
     {
@@ -937,7 +927,6 @@ Disk caller_shift(Disk disk, int index)
         }
     }
     
-    //set disk index to next instruction
     _goto(&disk, index + 13);
     return disk;
 }
@@ -945,21 +934,18 @@ Disk caller_shift(Disk disk, int index)
 Disk caller_random(Disk disk, int index)
 {
     int _index = get_int(disk, index + 1);
-    //_random(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
     srand(time(NULL));
     int size = get_int(disk, _index + 5);
     for (int i = 0; i < size; i++)
     {
         disk[_index + i] = rand() % 256;
     }
-    //set disk index to next instruction
     _goto(&disk, _index + 9);
     return disk;
 }
 
 Disk caller_copy(Disk disk, int index)
 {
-    //_copy(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
     int disksize = strlen(disk);
     int size = get_int(disk, index + 9);
     int _index = get_int(disk, index + 1);
@@ -967,20 +953,18 @@ Disk caller_copy(Disk disk, int index)
     if (_index < 0 || destiny < 0 || _index >= disksize || destiny >= disksize || _index + size > disksize || destiny + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     for (int i = 0; i < size; i++)
     {
         disk[destiny + i] = disk[_index + i];
     }
-    //set disk index to next instruction
     _goto(&disk, _index + 13);
     return disk;
 }
 
 Disk caller_fill(Disk disk, int index)
 {
-    //_fill(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_byte(disk, index + 9));
     int size = get_int(disk, index + 5);
     byte data = get_byte(disk, index + 9);
     int _index = get_int(disk, index + 1);
@@ -988,14 +972,12 @@ Disk caller_fill(Disk disk, int index)
     {
         disk[_index + i] = data;
     }
-    //set disk index to next instruction
     _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_reverse(Disk disk, int index)
 {
-    //_reverse(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
     int disksize = strlen(disk);
     int size = get_int(disk, index + 5);
     int _index = get_int(disk, index + 1);
@@ -1003,7 +985,7 @@ Disk caller_reverse(Disk disk, int index)
     if (_index < 0 || _index >= disksize || _index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
 
     for (int i = 0; i < size / 2; i++)
@@ -1012,14 +994,12 @@ Disk caller_reverse(Disk disk, int index)
         disk[_index + i] = disk[_index + size - 1 - i];
         disk[_index + size - 1 - i] = temp;
     }
-    //set disk index to next instruction
     _goto(&disk, index + 9);
     return disk;
 }
 
 Disk caller_sort(Disk disk, int index)
 {
-    //_sort(&disk, get_int(disk, index + 1), get_int(disk, index + 5));
     int disksize = strlen(disk);
     int size = get_int(disk, index + 5);
     int _index = get_int(disk, index + 1);
@@ -1027,7 +1007,7 @@ Disk caller_sort(Disk disk, int index)
     if (_index < 0 || _index >= disksize || _index + size > disksize)
     {
         printf("Error: Index out of bounds\n");
-        return;
+        exit(1);
     }
     
     for (int i = 0; i < size; i++)
@@ -1042,7 +1022,6 @@ Disk caller_sort(Disk disk, int index)
             }
         }
     }
-    //set disk index to next instruction
     _goto(&disk, index + 9);
     return disk;
 }
@@ -1085,7 +1064,6 @@ Disk caller_ifelse(Disk disk, int index)
 
 Disk caller_equal(Disk disk, int index)
 {
-    //_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
@@ -1096,14 +1074,12 @@ Disk caller_equal(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 13)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 17);
     return disk;
 }
 
 Disk caller_not_equal(Disk disk, int index)
 {
-    //_not_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
@@ -1114,14 +1090,12 @@ Disk caller_not_equal(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 13)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 17);
     return disk;
 }
 
 Disk caller_greater(Disk disk, int index)
 {
-    //_greater(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
@@ -1132,14 +1106,12 @@ Disk caller_greater(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 13)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 17);
     return disk;
 }
 
 Disk caller_less(Disk disk, int index)
 {
-    //_less(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
@@ -1150,14 +1122,12 @@ Disk caller_less(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 13)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 17);
     return disk;
 }
 
 Disk caller_less_or_equal(Disk disk, int index)
 {
-    //_less_or_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
@@ -1168,14 +1138,12 @@ Disk caller_less_or_equal(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 13)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 17);
     return disk;
 }
 
 Disk caller_greater_or_equal(Disk disk, int index)
 {
-    //_greater_or_equal(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9), get_int(disk, index + 13));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
@@ -1186,14 +1154,12 @@ Disk caller_greater_or_equal(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 13)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 17);
     return disk;
 }
 
 Disk caller_and(Disk disk, int index)
 {
-    //_and(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 5); i++)
     {
@@ -1204,14 +1170,12 @@ Disk caller_and(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 9)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_or(Disk disk, int index)
 {
-    //_or(&disk, get_int(disk, index + 1), get_int(disk, index + 5), get_int(disk, index + 9));
     byte _true = 0;
     for (int i = 0; i < get_int(disk, index + 5); i++)
     {
@@ -1222,14 +1186,12 @@ Disk caller_or(Disk disk, int index)
         }
     }
     disk[get_int(disk, index + 9)] = _true;
-    //set disk index to next instruction
     _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_print(Disk disk, int index)
 {
-    //_print(disk, get_int(disk, index + 1), get_int(disk, index + 5));
     for (int i = 0; i < get_int(disk, index + 5); i++)
     {
         printf("%c", disk[get_int(disk, index + 1) + i]);
@@ -1242,8 +1204,7 @@ Disk caller_print(Disk disk, int index)
 
 Disk caller_goto(Disk disk, int index)
 {
-    //_goto(&disk, get_int(disk, index + 1));
-    set_int(disk, 4, get_int(disk, index + 1));
+    set_int(&disk, 4, get_int(disk, index + 1));
 
     return disk;
 }
