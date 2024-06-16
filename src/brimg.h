@@ -10,7 +10,7 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 14
+#define VERSION_Z 15
 
 #define byte unsigned char
 byte bigendian;
@@ -29,19 +29,7 @@ void _copy(Disk *disk, int index, int destiny, int size);
 void _fill(Disk *disk, int index, int size, byte data);
 void _reverse(Disk *disk, int index, int size);
 void _sort(Disk *disk, int index, int size);
-void _replace(Disk *disk, int offsetmin, int offsetmax, byte* data, byte* replacement);
 void _find(Disk *disk, int index, int size, byte* data, int result);
-
-
-void _ifelse(Disk *disk, int position, int goto1, int goto2);
-void _equal(Disk *disk, int posi1, int posi2, int size, int result);
-void _not_equal(Disk *disk, int posi1, int posi2, int size, int result);
-void _greater(Disk *disk, int posi1, int posi2, int size, int result);
-void _less(Disk *disk, int posi1, int posi2, int size, int result);
-void _less_or_equal(Disk *disk, int posi1, int posi2, int size, int result);
-void _greater_or_equal(Disk *disk, int posi1, int posi2, int size, int result);
-void _and(Disk *disk, int posi, int size, int result);
-void _or(Disk *disk, int posi, int size, int result);
 
 
 void _print(Disk disk, int index, int size);
@@ -66,7 +54,7 @@ void set_double(Disk *disk, int index, double data);
 void set_long(Disk *disk, int index, long data);
 void set_long_double(Disk *disk, int index, long double data);
 
-Disk run(Disk disk);
+Disk _run(Disk disk);
 
 byte* disk_read(char *filename);
 void disk_write(char *filename, byte *data);

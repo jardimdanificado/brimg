@@ -6,8 +6,8 @@
 int main()
 {
     Disk disk0 = disk_read("disk0.img");
-    // bytecode interpreter test, this may halt the program so any code after this will not run
-    run(disk0);
+    // bytecode interpreter test
+    _run(disk0);
     
     Person p;
     p.age = 244;
@@ -27,7 +27,7 @@ int main()
     {
         printf("%d: %d\n", disk0[i], u.b[i]);
     }
-    int size = strlen((char*)disk0);
+    int size = strlen((Disk)disk0);
     printf("Disk0: %s\n", disk0);
     printf("Size: %d\n", size);
     disk_write("disk1.img", disk0);

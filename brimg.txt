@@ -37,12 +37,12 @@ version = x.y.z
 9 - fill (start, size, value)
 10 - reverse (start, size)
 11 - sort (start, size)
-12 - replace (position, size, value)
-13 - replaceall (position, size, value)
+12 - find (position) ? 
 
 // conditions
 
-14 - if (position, goto1, goto2)
+13 - if (position, size, code)
+14 - ifelse (position, sizeif, sizeelse, ifcode, elsecode)
 15 - equal(position1, position2, size, result)
 16 - not_equal(position1, position2, size, result)
 17 - greater(position1, position2, size, result)
@@ -55,6 +55,10 @@ version = x.y.z
 // other
 23 - print (position, size)
 24 - goto (position)
+
+// loops
+25 - while (position, size, code)
+
 
 // structs
 struct people
