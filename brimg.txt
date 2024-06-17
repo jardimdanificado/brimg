@@ -76,7 +76,7 @@ f iiii iiii iiii ? iiii
 13 - if (position, size, code):
 f iiii iiii ?
 
-14 - 
+14 - NULL
 
 
 15 - equal(position1, position2, size, result):
@@ -117,7 +117,8 @@ f iiii iiii
 24 - goto (position) 
 f iiii
 
-25 - 
+
+25 - NULL
 
 
 // math
@@ -139,12 +140,3 @@ f iiii b
 
 31 - decrement (position, type)
 f iiii b
-
-// math types
-1 - byte
-2 - short
-3 - int
-4 - long
-5 - float
-6 - double
-7 - long double

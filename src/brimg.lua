@@ -8,7 +8,6 @@ end
 if br.utils.table.includes(arg, "--serialize") then
     local position = br.utils.table.find(arg, "--serialize");
     table.remove(arg, position);
-    br.help(arg)
     br.filepath = arg[2]
     br.filetxt = br.utils.file.load.text(br.filepath)
     -- remove all lines that start with //
@@ -39,7 +38,6 @@ end
 if br.utils.table.includes(arg, "--deserialize") then
     local position = br.utils.table.find(arg, "--deserialize");
     table.remove(arg, position);
-    br.help(arg)
     br.filepath = arg[2]
     br.filetxt = br.utils.file.load.text(br.filepath)
     br.result = ""

@@ -229,23 +229,24 @@ void _sort(Disk *disk, int index, int size)
         }
     }
 }
-
+//find (position, size, patternsize, pattern, result):
 void _find(Disk *disk, int index, int size, byte* data, int result)
 {
     int disksize = strlen(*disk);
-    char *point = strstr(*disk + index, data);
-    index = (int*)(point) - (int*)(*disk);
-    if (index < 0 || index >= disksize || index + size > disksize)
+    int position = get_int(*disk, index + 1);
+    int patternsize = get_int(*disk, index + 9);
+    byte *pattern = get_bytes(*disk, index + 13, patternsize);
+    char *point = strstr(*disk + position, pattern);
+    position = (int*)(point) - (int*)(*disk);
+    if (position < 0 || position >= disksize || position + size > disksize)
     {
         printf("Error: Index out of bounds\n");
     }
     else
     {
-        int position = (int*)(point) - (int*)(*disk);
         set_int(disk, result, position);
     }
 }
-
 
 
 
@@ -957,9 +958,27 @@ Disk caller_sort(Disk disk, int index)
     return disk;
 }
 
+//find (position, size, patternsize, pattern, result)
 Disk caller_find(Disk disk, int index)
 {
-    
+    int disksize = strlen(disk);
+    int position = get_int(disk, index + 1);
+    int size = get_int(disk, index + 5);
+    int patternsize = get_int(disk, index + 9);
+    byte *pattern = get_bytes(disk, index + 13, patternsize);
+    int result = get_int(disk, index + 13 + patternsize);
+    char *point = strstr(disk + position, pattern);
+    position = (int*)(point) - (int*)(disk);
+    if (position < 0 || position >= disksize || position + size > disksize)
+    {
+        printf("Error: Index out of bounds\n");
+    }
+    else
+    {
+        set_int(&disk, result, position);
+    }
+    _goto(&disk, index + 13 + patternsize + 4);
+    return disk;
 }
 
 // fbiiii?
