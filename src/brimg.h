@@ -12,7 +12,6 @@
 #define VERSION_Z 19
 
 #define byte unsigned char
-byte bigendian;
 
 typedef byte* Disk;
 
