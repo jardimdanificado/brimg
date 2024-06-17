@@ -1034,18 +1034,18 @@ Disk caller_find(Disk disk, int index)
 // fbiiii?
 Disk caller_if(Disk disk, int index)
 {
-    int size = get_int(disk, index + 2);
-    if(get_byte(disk, index+1) == 0)
+    int size = get_int(disk, index + 5);
+    if(get_byte(disk, get_int(disk, index+1)) == 1)
     {
-        byte *data = get_bytes(disk, index + 6, size);
-        _run(data);
+        _goto(&disk, index + 9);
+        return disk;
     }
-    _goto(&disk, index + 6 + size);
+    _goto(&disk, index + 9 + size);
     return disk;
 }
 
 // f b iiii iiii ? ?
-Disk caller_ifelse(Disk disk, int index)
+/*Disk caller_ifelse(Disk disk, int index)
 {
     int sizeif = get_int(disk, index + 2);
     int sizeelse = get_int(disk, index + 6);
@@ -1060,7 +1060,7 @@ Disk caller_ifelse(Disk disk, int index)
         _run(data);
     }
     return disk;
-}
+}*/
 
 Disk caller_equal(Disk disk, int index)
 {
@@ -1099,7 +1099,7 @@ Disk caller_greater(Disk disk, int index)
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
-        if (disk[get_int(disk, index + 1) + i] <= disk[get_int(disk, index + 5) + i])
+        if (disk[get_int(disk, index + 1) + i] <= disk[get_int(disk, index + 5) + i] && disk[get_int(disk, index + 1) + i] != 0)
         {
             _true = 0;
             break;
@@ -1115,7 +1115,8 @@ Disk caller_less(Disk disk, int index)
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
-        if (disk[get_int(disk, index + 1) + i] >= disk[get_int(disk, index + 5) + i])
+        //printf("%d %d\n", disk[get_int(disk, index + 1) + i], disk[get_int(disk, index + 5) + i]);
+        if (disk[get_int(disk, index + 1) + i] >= disk[get_int(disk, index + 5) + i] && disk[get_int(disk, index + 1) + i] != 0)
         {
             _true = 0;
             break;
@@ -1136,6 +1137,10 @@ Disk caller_less_or_equal(Disk disk, int index)
             _true = 0;
             break;
         }
+        {
+            _true = 0;
+            break;
+        }
     }
     disk[get_int(disk, index + 13)] = _true;
     _goto(&disk, index + 17);
@@ -1148,6 +1153,10 @@ Disk caller_greater_or_equal(Disk disk, int index)
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
         if (disk[get_int(disk, index + 1) + i] < disk[get_int(disk, index + 5) + i])
+        {
+            _true = 0;
+            break;
+        }
         {
             _true = 0;
             break;
@@ -1209,6 +1218,464 @@ Disk caller_goto(Disk disk, int index)
     return disk;
 }
 
+Disk caller_add(Disk disk, int index)
+{
+    int _type = get_byte(disk, index + 1);
+    int _index = get_int(disk, index + 2);
+    int _pointer = get_int(disk, index + 6);
+    switch (_type)
+    {
+    case 1:// byte
+        disk[_index] += disk[_pointer];
+        break;
+    case 2:// short
+        union {
+            short s;
+            byte b[2];
+        } u;
+        short s1 = get_short(disk, _index);
+        short s2 = get_short(disk, _pointer);
+        u.s = s1 + s2;
+        set_short(&disk, _index, u.s);
+        break;
+    case 3:// int
+        union {
+            int i;
+            byte b[4];
+        } u2;
+        int i1 = get_int(disk, _index);
+        int i2 = get_int(disk, _pointer);
+        u2.i = i1 + i2;
+        set_int(&disk, _index, u2.i);
+        break;
+    case 4:// long
+        union {
+            long l;
+            byte b[8];
+        } u3;
+        long l1 = get_long(disk, _index);
+        long l2 = get_long(disk, _pointer);
+        u3.l = l1 + l2;
+        set_long(&disk, _index, u3.l);
+        break;
+    case 5:// float
+        union {
+            float f;
+            byte b[4];
+        } u4;
+        float f1 = get_float(disk, _index);
+        float f2 = get_float(disk, _pointer);
+        u4.f = f1 + f2;
+        set_float(&disk, _index, u4.f);
+        break;
+    case 6:// double
+        union {
+            double d;
+            byte b[8];
+        } u5;
+        double d1 = get_double(disk, _index);
+        double d2 = get_double(disk, _pointer);
+        u5.d = d1 + d2;
+        set_double(&disk, _index, u5.d);
+        break;
+    case 7:// long double
+        union {
+            long double d;
+            byte b[10];
+        } u6;
+        long double d3 = get_long_double(disk, _index);
+        long double d4 = get_long_double(disk, _pointer);
+        u6.d = d3 + d4;
+        set_long_double(&disk, _index, u6.d);
+        break;
+    default:
+        break;
+    }
+    _goto(&disk, index + 13);
+    return disk;
+}
+
+Disk caller_sub(Disk disk, int index)
+{
+    int _type = get_byte(disk, index + 1);
+    int _index = get_int(disk, index + 2);
+    int _pointer = get_int(disk, index + 6);
+    switch (_type)
+    {
+    case 1:// byte
+        disk[_index] -= disk[_pointer];
+        break;
+    case 2:// short
+        union {
+            short s;
+            byte b[2];
+        } u;
+        short s1 = get_short(disk, _index);
+        short s2 = get_short(disk, _pointer);
+        u.s = s1 - s2;
+        set_short(&disk, _index, u.s);
+        break;
+    case 3:// int
+        union {
+            int i;
+            byte b[4];
+        } u2;
+        int i1 = get_int(disk, _index);
+        int i2 = get_int(disk, _pointer);
+        u2.i = i1 - i2;
+        set_int(&disk, _index, u2.i);
+        break;
+    case 4:// long
+        union {
+            long l;
+            byte b[8];
+        } u3;
+        long l1 = get_long(disk, _index);
+        long l2 = get_long(disk, _pointer);
+        u3.l = l1 - l2;
+        set_long(&disk, _index, u3.l);
+        break;
+    case 5:// float
+        union {
+            float f;
+            byte b[4];
+        } u4;
+        float f1 = get_float(disk, _index);
+        float f2 = get_float(disk, _pointer);
+        u4.f = f1 - f2;
+        set_float(&disk, _index, u4.f);
+        break;
+    case 6:// double
+        union {
+            double d;
+            byte b[8];
+        } u5;
+        double d1 = get_double(disk, _index);
+        double d2 = get_double(disk, _pointer);
+        u5.d = d1 - d2;
+        set_double(&disk, _index, u5.d);
+        break;
+    case 7:// long double
+        union {
+            long double d;
+            byte b[10];
+        } u6;
+        long double d3 = get_long_double(disk, _index);
+        long double d4 = get_long_double(disk, _pointer);
+        u6.d = d3 - d4;
+        set_long_double(&disk, _index, u6.d);
+        break;
+    default:
+        break;
+    }
+    _goto(&disk, index + 13);
+    return disk;
+}
+
+Disk caller_mul(Disk disk, int index)
+{
+    int _type = get_byte(disk, index + 1);
+    int _index = get_int(disk, index + 2);
+    int _pointer = get_int(disk, index + 6);
+    switch (_type)
+    {
+    case 1:// byte
+        disk[_index] *= disk[_pointer];
+        break;
+    case 2:// short
+        union {
+            short s;
+            byte b[2];
+        } u;
+        short s1 = get_short(disk, _index);
+        short s2 = get_short(disk, _pointer);
+        u.s = s1 * s2;
+        set_short(&disk, _index, u.s);
+        break;
+    case 3:// int
+        union {
+            int i;
+            byte b[4];
+        } u2;
+        int i1 = get_int(disk, _index);
+        int i2 = get_int(disk, _pointer);
+        u2.i = i1 * i2;
+        set_int(&disk, _index, u2.i);
+        break;
+    case 4:// long
+        union {
+            long l;
+            byte b[8];
+        } u3;
+        long l1 = get_long(disk, _index);
+        long l2 = get_long(disk, _pointer);
+        u3.l = l1 * l2;
+        set_long(&disk, _index, u3.l);
+        break;
+    case 5:// float
+        union {
+            float f;
+            byte b[4];
+        } u4;
+        float f1 = get_float(disk, _index);
+        float f2 = get_float(disk, _pointer);
+        u4.f = f1 * f2;
+        set_float(&disk, _index, u4.f);
+        break;
+    case 6:// double
+        union {
+            double d;
+            byte b[8];
+        } u5;
+        double d1 = get_double(disk, _index);
+        double d2 = get_double(disk, _pointer);
+        u5.d = d1 * d2;
+        set_double(&disk, _index, u5.d);
+        break;
+    case 7:// long double
+        union {
+            long double d;
+            byte b[10];
+        } u6;
+        long double d3 = get_long_double(disk, _index);
+        long double d4 = get_long_double(disk, _pointer);
+        u6.d = d3 * d4;
+        set_long_double(&disk, _index, u6.d);
+        break;
+    default:
+        break;
+    }
+    _goto(&disk, index + 13);
+    return disk;
+}
+
+Disk caller_div(Disk disk, int index)
+{
+    int _type = get_byte(disk, index + 1);
+    int _index = get_int(disk, index + 2);
+    int _pointer = get_int(disk, index + 6);
+    switch (_type)
+    {
+    case 1:// byte
+        disk[_index] /= disk[_pointer];
+        break;
+    case 2:// short
+        union {
+            short s;
+            byte b[2];
+        } u;
+        short s1 = get_short(disk, _index);
+        short s2 = get_short(disk, _pointer);
+        u.s = s1 / s2;
+        set_short(&disk, _index, u.s);
+        break;
+    case 3:// int
+        union {
+            int i;
+            byte b[4];
+        } u2;
+        int i1 = get_int(disk, _index);
+        int i2 = get_int(disk, _pointer);
+        u2.i = i1 / i2;
+        set_int(&disk, _index, u2.i);
+        break;
+    case 4:// long
+        union {
+            long l;
+            byte b[8];
+        } u3;
+        long l1 = get_long(disk, _index);
+        long l2 = get_long(disk, _pointer);
+        u3.l = l1 / l2;
+        set_long(&disk, _index, u3.l);
+        break;
+    case 5:// float
+        union {
+            float f;
+            byte b[4];
+        } u4;
+        float f1 = get_float(disk, _index);
+        float f2 = get_float(disk, _pointer);
+        u4.f = f1 / f2;
+        set_float(&disk, _index, u4.f);
+        break;
+    case 6:// double
+        union {
+            double d;
+            byte b[8];
+        } u5;
+        double d1 = get_double(disk, _index);
+        double d2 = get_double(disk, _pointer);
+        u5.d = d1 / d2;
+        set_double(&disk, _index, u5.d);
+        break;
+    case 7:// long double
+        union {
+            long double d;
+            byte b[10];
+        } u6;
+        long double d3 = get_long_double(disk, _index);
+        long double d4 = get_long_double(disk, _pointer);
+        u6.d = d3 / d4;
+        set_long_double(&disk, _index, u6.d);
+        break;
+    default:
+        break;
+    }
+    _goto(&disk, index + 13);
+    return disk;
+}
+
+Disk caller_increment(Disk disk, int index)
+{
+    int _type = get_byte(disk, index + 1);
+    int _index = get_int(disk, index + 2);
+    switch (_type)
+    {
+    case 1:// byte
+        disk[_index]++;
+        break;
+    case 2:// short
+        union {
+            short s;
+            byte b[2];
+        } u;
+        short s1 = get_short(disk, _index);
+        u.s = s1 + 1;
+        set_short(&disk, _index, u.s);
+        break;
+    case 3:// int
+        union {
+            int i;
+            byte b[4];
+        } u2;
+        int i1 = get_int(disk, _index);
+        u2.i = i1 + 1;
+        set_int(&disk, _index, u2.i);
+        break;
+    case 4:// long
+        union {
+            long l;
+            byte b[8];
+        } u3;
+        long l1 = get_long(disk, _index);
+        u3.l = l1 + 1;
+        set_long(&disk, _index, u3.l);
+        break;
+    case 5:// float
+        union {
+            float f;
+            byte b[4];
+        } u4;
+        float f1 = get_float(disk, _index);
+        u4.f = f1 + 1;
+        set_float(&disk, _index, u4.f);
+        break;
+    case 6:// double
+        union {
+            double d;
+            byte b[8];
+        } u5;
+        double d1 = get_double(disk, _index);
+        u5.d = d1 + 1;
+        set_double(&disk, _index, u5.d);
+        break;
+    case 7:// long double
+        union {
+            long double d;
+            byte b[10];
+        } u6;
+        long double d3 = get_long_double(disk, _index);
+        u6.d = d3 + 1;
+        set_long_double(&disk, _index, u6.d);
+        break;
+    default:
+        break;
+    }
+    _goto(&disk, index + 6);
+    return disk;
+}
+
+Disk caller_decrement(Disk disk, int index)
+{
+    int _type = get_byte(disk, index + 1);
+    int _index = get_int(disk, index + 2);
+    switch (_type)
+    {
+    case 1:// byte
+        disk[_index]--;
+        break;
+    case 2:// short
+        union {
+            short s;
+            byte b[2];
+        } u;
+        short s1 = get_short(disk, _index);
+        u.s = s1 - 1;
+        set_short(&disk, _index, u.s);
+        break;
+    case 3:// int
+        union {
+            int i;
+            byte b[4];
+        } u2;
+        int i1 = get_int(disk, _index);
+        u2.i = i1 - 1;
+        set_int(&disk, _index, u2.i);
+        break;
+    case 4:// long
+        union {
+            long l;
+            byte b[8];
+        } u3;
+        long l1 = get_long(disk, _index);
+        u3.l = l1 - 1;
+        set_long(&disk, _index, u3.l);
+        break;
+    case 5:// float
+        union {
+            float f;
+            byte b[4];
+        } u4;
+        float f1 = get_float(disk, _index);
+        u4.f = f1 - 1;
+        set_float(&disk, _index, u4.f);
+        break;
+    case 6:// double
+        union {
+            double d;
+            byte b[8];
+        } u5;
+        double d1 = get_double(disk, _index);
+        u5.d = d1 - 1;
+        set_double(&disk, _index, u5.d);
+        break;
+    case 7:// long double
+        union {
+            long double d;
+            byte b[10];
+        } u6;
+        long double d3 = get_long_double(disk, _index);
+        u6.d = d3 - 1;
+        set_long_double(&disk, _index, u6.d);
+        break;
+    default:
+        break;
+    }
+    _goto(&disk, index + 6);
+    return disk;
+}
+
+
+
+
+
+
+
+
+
+
+
 // functions
 Disk (*functions[])(Disk, int) = 
 {
@@ -1226,7 +1693,7 @@ Disk (*functions[])(Disk, int) =
     caller_sort,
     caller_find,
     caller_if,
-    caller_ifelse,
+    NULL,//caller_ifelse removed
     caller_equal,
     caller_not_equal,
     caller_greater,
@@ -1236,12 +1703,29 @@ Disk (*functions[])(Disk, int) =
     caller_and,
     caller_or,
     caller_print,
-    caller_goto
+    caller_goto,
+    NULL,//caller_while removed
+    caller_add,
+    caller_sub,
+    caller_mul,
+    caller_div,
+    caller_increment,
+    caller_decrement,
 };
+
+
+
+
+
 
 // runner
 // runner
 // runner
+
+
+
+
+
 
 // runs the byte code
 Disk _run(Disk disk)
@@ -1249,16 +1733,27 @@ Disk _run(Disk disk)
     int i = get_int(disk, 4); 
     while (disk[0] != 0)
     {
-        printf("disk0: %d\n", disk[0]);
         i = get_int(disk, 4);
+        printf("current index: %d\n", i);
         disk = functions[disk[i]](disk, i);
     }
     return disk;
 }
 
+
+
+
+
+
 // main
 // main
 // main
+
+
+
+
+
+
 int main(int argc, char *argv[]) 
 {
 
@@ -1314,10 +1809,11 @@ int main(int argc, char *argv[])
     add_symbols(s, "_print", _print);
     add_symbols(s, "_goto", _goto);
     
-    add_symbols(s, "_run", _run);
 
+    add_symbols(s, "_run", _run);
     add_symbols(s, "disk_read", disk_read);
     add_symbols(s, "disk_write", disk_write);
+
 
 
     if (tcc_relocate(s) < 0)

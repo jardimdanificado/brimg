@@ -71,32 +71,32 @@ f iiii iiii iiii ? iiii
 13 - if (position, size, code):
 f iiii iiii ?
 
-14 - ifelse (position, sizeif, sizeelse, ifcode, elsecode):
+14 - ifelse (position, sizeif, sizeelse, ifcode, elsecode): // removed
 f iiii iiii iiii ? ?
 
 15 - equal(position1, position2, size, result):
-f iiii iiii iiii ?
+f iiii iiii iiii iiii
 
 16 - not_equal(position1, position2, size, result):
-f iiii iiii iiii ?
+f iiii iiii iiii iiii
 
 17 - greater(position1, position2, size, result):
-f iiii iiii iiii ?
+f iiii iiii iiii iiii
 
 18 - less(position1, position2, size, result):
-f iiii iiii iiii ?
+f iiii iiii iiii iiii
 
 19 - greater_or_equal(position1, position2, size, result):
-f iiii iiii iiii ?
+f iiii iiii iiii iiii
 
 20 - less_or_equal(position1, position2, size, result):
-f iiii iiii iiii ?
+f iiii iiii iiii iiii
 
 21 - and(position, size, result):
-f iiii iiii ?
+f iiii iiii iiii
 
 22 - or(position, size, result):
-f iiii iiii ?
+f iiii iiii iiii
 
 
 // other
@@ -107,12 +107,43 @@ f iiii iiii
 24 - goto (position) 
 f iiii
 
-25 - while (condition, size, code) 
-f b iiii ?
+// 25 - while (condition, size, code) -- removed
+// f b iiii ?
 
-26 - for (start, end, step, code) 
-f iiii iiii iiii ?
+26 - add (position1, position2, type)
+f iiii iiii b
 
+27 - sub (position1, position2, type)
+f iiii iiii b
+
+28 - mul (position1, position2, type)
+f iiii iiii b
+
+29 - div (position1, position2, type)
+f iiii iiii b
+
+30 - increment (position, type)
+f iiii b
+
+31 - decrement (position, type)
+f iiii b
+
+// math operations
+0 - add
+1 - sub
+2 - mul
+3 - div
+4 - increment
+5 - decrement
+
+// math types
+1 - byte
+2 - short
+3 - int
+4 - long
+5 - float
+6 - double
+7 - long double
 
 
 // structs
