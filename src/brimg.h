@@ -5,12 +5,11 @@
 #include <limits.h>
 #include <stdint.h>
 #include <time.h>
-#include <libtcc.h>
 
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 16
+#define VERSION_Z 17
 
 #define byte unsigned char
 byte bigendian;

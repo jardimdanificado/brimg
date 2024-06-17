@@ -71,8 +71,8 @@ f iiii iiii iiii ? iiii
 13 - if (position, size, code):
 f iiii iiii ?
 
-14 - ifelse (position, sizeif, sizeelse, ifcode, elsecode): // removed
-f iiii iiii iiii ? ?
+14 - 
+
 
 15 - equal(position1, position2, size, result):
 f iiii iiii iiii iiii
@@ -107,8 +107,8 @@ f iiii iiii
 24 - goto (position) 
 f iiii
 
-// 25 - while (condition, size, code) -- removed
-// f b iiii ?
+25 - 
+
 
 26 - add (position1, position2, type)
 f iiii iiii b

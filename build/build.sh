@@ -2,7 +2,8 @@
 rm -rf release
 mkdir release
 
-tcc -o release/brimgc ../src/brimg.c -ltcc
+tcc -o release/brimgc ../src/brimg.c ../src/brimgc.c -ltcc
+tcc -o release/brimgi ../src/brimg.c ../src/brimgi.c
 cp ../src/brimg.lua ./release/brimg.lua
 cp ../src/brimg.h ./release/brimg.h
 cp brimgt ./release/brimgt
