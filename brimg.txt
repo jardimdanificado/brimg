@@ -23,6 +23,8 @@ version = x.y.z
 3 = version z
 4-7 = current index
 
+
+
 // disk functions
 
 0 - state(state):
@@ -66,6 +68,9 @@ f iiii iiii iiii ? iiii
 
 
 
+
+
+
 // conditions
 
 13 - if (position, size, code):
@@ -99,9 +104,14 @@ f iiii iiii iiii
 f iiii iiii iiii
 
 
+
+
+
 // other
 23 - print (position, size)
 f iiii iiii
+
+
 
 // flow control
 24 - goto (position) 
@@ -109,6 +119,8 @@ f iiii
 
 25 - 
 
+
+// math
 
 26 - add (position1, position2, type)
 f iiii iiii b
@@ -144,32 +156,3 @@ f iiii b
 5 - float
 6 - double
 7 - long double
-
-
-// structs
-struct people
-0 char age
-1 float weight
-5 float height
-9 12 name
-21 int id;
-
-typedef struct 
-{
-    int age;
-    float weight;
-    float height;
-    byte name[12];
-    int id;
-} people;
-
-people get_people(Disk *disk, int index)
-{
-    people _obj;
-    _obj.age = get_byte(disk, index + 0);
-    _obj.weight = get_float(disk, index + 1);
-    _obj.height = get_float(disk, index + 5);
-    _obj.name = get_string(disk, index + 9, 12);
-    _obj.id = get_int(*disk, index + 21);
-    return _obj;
-}
