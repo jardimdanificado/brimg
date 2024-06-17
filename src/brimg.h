@@ -9,7 +9,7 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 18
+#define VERSION_Z 19
 
 #define byte unsigned char
 byte bigendian;

@@ -140,14 +140,6 @@ f iiii b
 31 - decrement (position, type)
 f iiii b
 
-// math operations
-0 - add
-1 - sub
-2 - mul
-3 - div
-4 - increment
-5 - decrement
-
 // math types
 1 - byte
 2 - short
