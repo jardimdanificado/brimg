@@ -140,3 +140,17 @@ f iiii b
 
 31 - decrement (position, type)
 f iiii b
+
+
+// bruter bytecode compiler
+
+0 - 
+1 - literal
+2 - decimal
+3 - hex
+4 - short
+5 - int
+6 - long
+7 - float
+8 - double
+9 - long double
