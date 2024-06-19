@@ -5,6 +5,6 @@ tools/example.braw
 *.img.braw
 *.braw
 structs.h
-release
+build/release
 test.c
 example/brimg.h

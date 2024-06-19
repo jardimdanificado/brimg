@@ -1,0 +1,17 @@
+decimal 1 0 0 21;
+int 20;
+decimal 200 22 222 44 68 69 44 41 222;
+set loop_size (decimal 5);
+set index (decimal 1);
+set loop_cache (decimal 224);
+PRINT; int 64 11;
+LESS; int $index $loop_size 1 $loop_cache;
+IF; 
+    int $loop_cache 11;
+    INCREMENT; //1byte;
+    int $index; //4byte;
+    decimal 1;//1byte;
+    GOTO; //1byte;
+    int 20;//4byte;
+decimal 0 0;
+literal {-*0*AU*$-1ac};
