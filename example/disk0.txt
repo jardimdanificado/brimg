@@ -1,22 +1,15 @@
 // state
 1
 // version
-0.0.21
-
+0.0.22
 // current index
 20 0 0 0
 
 // teste
 200 22
 222 44
-
 68 69
 44 41
-
-
-
-
-
 222 
 
 // loop size

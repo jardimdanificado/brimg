@@ -958,15 +958,15 @@ Disk caller_sort(Disk disk, int index)
     return disk;
 }
 
-//find (position, size, patternsize, pattern, result)
+//find (position, size, result, patternsize, pattern)
 Disk caller_find(Disk disk, int index)
 {
     int disksize = strlen(disk);
     int position = get_int(disk, index + 1);
     int size = get_int(disk, index + 5);
-    int patternsize = get_int(disk, index + 9);
-    byte *pattern = get_bytes(disk, index + 13, patternsize);
-    int result = get_int(disk, index + 13 + patternsize);
+    int result = get_int(disk, index + 9);
+    int patternsize = get_int(disk, index + 13);
+    byte *pattern = get_bytes(disk, index + 17, patternsize);
     char *point = strstr(disk + position, pattern);
     position = (int*)(point) - (int*)(disk);
     if (position < 0 || position >= disksize || position + size > disksize)
@@ -977,7 +977,7 @@ Disk caller_find(Disk disk, int index)
     {
         set_int(&disk, result, position);
     }
-    _goto(&disk, index + 13 + patternsize + 4);
+    _goto(&disk, index + 17 + patternsize);
     return disk;
 }
 
@@ -1684,7 +1684,6 @@ Disk _run(Disk disk)
     while (disk[0] != 0)
     {
         i = get_int(disk, 4);
-        printf("current index: %d\n", i);
         disk = functions[disk[i]](disk, i);
     }
     return disk;
