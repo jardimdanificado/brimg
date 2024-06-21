@@ -1,6 +1,6 @@
 local bit = br.utils.isjit() and require ("bit") or require ("bit32")
 
-local function number_to_bytes(n, byte_count)
+function br.number_to_bytes(n, byte_count)
     local bytes = {}
     for i = 1, byte_count do
         table.insert(bytes, string.char(bit.band(n, 0xFF)))
@@ -9,19 +9,19 @@ local function number_to_bytes(n, byte_count)
     return table.concat(bytes)
 end
 
-function short_to_bytes(n)
-    return number_to_bytes(n, 2)
+function br.short_to_bytes(n)
+    return br.number_to_bytes(n, 2)
 end
 
-function int_to_bytes(n)
-    return number_to_bytes(n, 4)
+function br.int_to_bytes(n)
+    return br.number_to_bytes(n, 4)
 end
 
-function long_to_bytes(n)
-    return number_to_bytes(n, 8)
+function br.long_to_bytes(n)
+    return br.number_to_bytes(n, 8)
 end
 
-function float_to_bytes(n)
+function br.float_to_bytes(n)
     local sign = 0
     if n < 0 then
         sign = 1
@@ -45,7 +45,7 @@ function float_to_bytes(n)
     return string.char(b4, b3, b2, b1)
 end
 
-function double_to_bytes(n)
+function br.double_to_bytes(n)
     local sign = 0
     if n < 0 then
         sign = 1
@@ -109,7 +109,7 @@ br.short = function (...)
     local _position = #br.vm.file;
     
     for k,v in pairs({...}) do
-        br.vm.file = br.vm.file .. short_to_bytes(v)
+        br.vm.file = br.vm.file .. br.short_to_bytes(v)
     end
 
     return _position;
@@ -122,7 +122,7 @@ br.int = function (...)
         if type(v) == "string" then
             return _position;
         end
-        br.vm.file = br.vm.file .. int_to_bytes(v)
+        br.vm.file = br.vm.file .. br.int_to_bytes(v)
     end
 
     return _position;
@@ -132,7 +132,7 @@ br.long = function (...)
     local _position = #br.vm.file;
     
     for k,v in pairs({...}) do
-        br.vm.file = br.vm.file .. long_to_bytes(v)
+        br.vm.file = br.vm.file .. br.long_to_bytes(v)
     end
 
     return _position;
@@ -142,7 +142,7 @@ br.float = function (...)
     local _position = #br.vm.file;
     
     for k,v in pairs({...}) do
-        br.vm.file = br.vm.file .. float_to_bytes(v)
+        br.vm.file = br.vm.file .. br.float_to_bytes(v)
     end
 
     return _position;
@@ -152,7 +152,7 @@ br.double = function (...)
     local _position = #br.vm.file;
     
     for k,v in pairs({...}) do
-        br.vm.file = br.vm.file .. double_to_bytes(v)
+        br.vm.file = br.vm.file .. br.double_to_bytes(v)
     end
 
     return _position;
@@ -185,7 +185,7 @@ br.SET = function (position, ...)
         return _position;
     end
 
-    br.vm.file = br.vm.file .. string.char(1) .. int_to_bytes(position) .. int_to_bytes(size) .. data;
+    br.vm.file = br.vm.file .. string.char(1) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. data;
     return _position;
 end
 
@@ -199,7 +199,7 @@ br.INSERT = function (position, ...)
         return _position;
     end
 
-    br.vm.file = br.vm.file .. string.char(2) .. int_to_bytes(position) .. int_to_bytes(size) .. data;
+    br.vm.file = br.vm.file .. string.char(2) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. data;
     return _position;
 end
 
@@ -209,7 +209,7 @@ br.DELETE = function (position, size)
         br.vm.file = br.vm.file .. string.char(3);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(3) .. int_to_bytes(position) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(3) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -219,7 +219,7 @@ br.MOVE = function (origin, destiny, size)
         br.vm.file = br.vm.file .. string.char(4);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(4) .. int_to_bytes(origin) .. int_to_bytes(destiny) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(4) .. br.int_to_bytes(origin) .. br.int_to_bytes(destiny) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -229,7 +229,7 @@ br.SWAP = function (origin, destiny, size)
         br.vm.file = br.vm.file .. string.char(5);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(5) .. int_to_bytes(origin) .. int_to_bytes(destiny) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(5) .. br.int_to_bytes(origin) .. br.int_to_bytes(destiny) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -239,17 +239,17 @@ br.SHIFT = function (position, size, direction)
         br.vm.file = br.vm.file .. string.char(6);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(6) .. int_to_bytes(position) .. int_to_bytes(size) .. string.char(direction);
+    br.vm.file = br.vm.file .. string.char(6) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. string.char(direction);
     return _position;
 end
 
-br.RANDOM = function (position, size)
+br.RANDOMIZE = function (position, size)
     local _position = #br.vm.file;
     if not position then
         br.vm.file = br.vm.file .. string.char(7);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(7) .. int_to_bytes(position) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(7) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -259,7 +259,7 @@ br.COPY = function (origin, destiny, size)
         br.vm.file = br.vm.file .. string.char(8);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(8) .. int_to_bytes(origin) .. int_to_bytes(destiny) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(8) .. br.int_to_bytes(origin) .. br.int_to_bytes(destiny) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -269,7 +269,7 @@ br.FILL = function (position, size, data)
         br.vm.file = br.vm.file .. string.char(9);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(9) .. int_to_bytes(position) .. int_to_bytes(size) .. string.char(data);
+    br.vm.file = br.vm.file .. string.char(9) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. string.char(data);
     return _position;
 end
 
@@ -279,7 +279,7 @@ br.REVERSE = function (position, size)
         br.vm.file = br.vm.file .. string.char(10);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(10) .. int_to_bytes(position) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(10) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -289,7 +289,7 @@ br.SORT = function (position, size)
         br.vm.file = br.vm.file .. string.char(11);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(11) .. int_to_bytes(position) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(11) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -301,7 +301,7 @@ br.FIND = function (position, size, result, ...)
         br.vm.file = br.vm.file .. string.char(12);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(12) .. int_to_bytes(position) .. int_to_bytes(size) .. int_to_bytes(result) .. int_to_bytes(patternsize) .. pattern;
+    br.vm.file = br.vm.file .. string.char(12) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. br.int_to_bytes(result) .. br.int_to_bytes(patternsize) .. pattern;
     return _position;
 end
 
@@ -311,7 +311,7 @@ br.IF = function (position, size)
         br.vm.file = br.vm.file .. string.char(13);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(13) .. int_to_bytes(position) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(13) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
     return _position;
 end
 
@@ -322,7 +322,7 @@ br.EQUAL = function (position1, position2, size, result)
         br.vm.file = br.vm.file .. string.char(15);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(15) .. int_to_bytes(position1) .. int_to_bytes(position2) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(15) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -333,7 +333,7 @@ br.NOT_EQUAL = function (position1, position2, size, result)
         return _position;
     end
 
-    br.vm.file = br.vm.file .. string.char(16) .. int_to_bytes(position1) .. int_to_bytes(position2) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(16) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -343,7 +343,7 @@ br.GREATER = function (position1, position2, size, result)
         br.vm.file = br.vm.file .. string.char(17);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(17) .. int_to_bytes(position1) .. int_to_bytes(position2) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(17) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -353,7 +353,7 @@ br.LESS = function (position1, position2, size, result)
         br.vm.file = br.vm.file .. string.char(18);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(18) .. int_to_bytes(position1) .. int_to_bytes(position2) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(18) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -363,7 +363,7 @@ br.GREATER_OR_EQUAL = function (position1, position2, size, result)
         br.vm.file = br.vm.file .. string.char(19);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(19) .. int_to_bytes(position1) .. int_to_bytes(position2) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(19) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -373,7 +373,7 @@ br.LESS_OR_EQUAL = function (position1, position2, size, result)
         br.vm.file = br.vm.file .. string.char(20);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(20) .. int_to_bytes(position1) .. int_to_bytes(position2) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(20) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -383,7 +383,7 @@ br.AND = function (position, size, result)
         br.vm.file = br.vm.file .. string.char(21);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(21) .. int_to_bytes(position) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(21) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -393,7 +393,7 @@ br.OR = function (position, size, result)
         br.vm.file = br.vm.file .. string.char(22);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(22) .. int_to_bytes(position) .. int_to_bytes(size) .. int_to_bytes(result);
+    br.vm.file = br.vm.file .. string.char(22) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. br.int_to_bytes(result);
     return _position;
 end
 
@@ -403,21 +403,29 @@ br.PRINT = function (position, size)
         br.vm.file = br.vm.file .. string.char(23);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(23) .. int_to_bytes(position) .. int_to_bytes(size);
+    br.vm.file = br.vm.file .. string.char(23) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
+    return _position;
+end
+
+br.SCAN = function (position, size)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(24);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(24) .. br.int_to_bytes(position) .. br.int_to_bytes(size);
     return _position;
 end
 
 br.GOTO = function (position)
     local _position = #br.vm.file;
     if not position then
-        br.vm.file = br.vm.file .. string.char(24);
+        br.vm.file = br.vm.file .. string.char(25);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(24) .. int_to_bytes(position);
+    br.vm.file = br.vm.file .. string.char(25) .. br.int_to_bytes(position);
     return _position;
 end
-
-
 
 br.ADD = function (position1, position2, type)
     local _position = #br.vm.file;
@@ -425,7 +433,7 @@ br.ADD = function (position1, position2, type)
         br.vm.file = br.vm.file .. string.char(26);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(26) .. int_to_bytes(position1) .. int_to_bytes(position2) .. string.char(type);
+    br.vm.file = br.vm.file .. string.char(26) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
     return _position;
 end
 
@@ -435,7 +443,7 @@ br.SUB = function (position1, position2, type)
         br.vm.file = br.vm.file .. string.char(27);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(27) .. int_to_bytes(position1) .. int_to_bytes(position2) .. string.char(type);
+    br.vm.file = br.vm.file .. string.char(27) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
     return _position;
 end
 
@@ -445,7 +453,7 @@ br.MUL = function (position1, position2, type)
         br.vm.file = br.vm.file .. string.char(28);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(28) .. int_to_bytes(position1) .. int_to_bytes(position2) .. string.char(type);
+    br.vm.file = br.vm.file .. string.char(28) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
     return _position;
 end
 
@@ -455,7 +463,7 @@ br.DIV = function (position1, position2, type)
         br.vm.file = br.vm.file .. string.char(29);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(29) .. int_to_bytes(position1) .. int_to_bytes(position2) .. string.char(type);
+    br.vm.file = br.vm.file .. string.char(29) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
     return _position;
 end
 
@@ -465,15 +473,286 @@ br.INCREMENT = function (position, type)
         br.vm.file = br.vm.file .. string.char(30);
         return _position;
     end
-    br.vm.file = br.vm.file .. string.char(30) .. int_to_bytes(position) .. string.char(type);
+    br.vm.file = br.vm.file .. string.char(30) .. br.int_to_bytes(position) .. string.char(type);
     return _position;
 end
 
 br.DECREMENT = function (position, type)
     local _position = #br.vm.file;
-    br.vm.file = br.vm.file .. string.char(31) .. int_to_bytes(position) .. string.char(type);
+    br.vm.file = br.vm.file .. string.char(31) .. br.int_to_bytes(position) .. string.char(type);
     return _position;
 end
+
+br.MOD = function (position1, position2, result, type)
+    local _position = #br.vm.file;
+    if not position1 then
+        br.vm.file = br.vm.file .. string.char(32);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(32) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(result) .. string.char(type);
+    return _position;
+end
+
+br.POW = function (position1, position2, type)
+    local _position = #br.vm.file;
+    if not position1 then
+        br.vm.file = br.vm.file .. string.char(33);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(33) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
+    return _position;
+end
+
+br.SQRT = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(34);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(34) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.ABS = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(35);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(35) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.MIN = function (position1, position2, result, type)
+    local _position = #br.vm.file;
+    if not position1 then
+        br.vm.file = br.vm.file .. string.char(36);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(36) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(result) .. string.char(type);
+    return _position;
+end
+
+br.MAX = function (position1, position2, result, type)
+    local _position = #br.vm.file;
+    if not position1 then
+        br.vm.file = br.vm.file .. string.char(37);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(37) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. br.int_to_bytes(result) .. string.char(type);
+    return _position;
+end
+
+br.RANDOM = function (position, pmin, pmax, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(38);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(38) .. br.int_to_bytes(position) .. br.int_to_bytes(pmin) .. br.int_to_bytes(pmax) .. string.char(type);
+    return _position;
+end
+
+br.ROUND = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(39);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(39) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.FLOOR = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(40);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(40) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.CEIL = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(41);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(41) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.TRUNC = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(42);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(42) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.SIN = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(43);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(43) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.COS = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(44);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(44) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.TAN = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(45);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(45) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.ASIN = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(46);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(46) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.ACOS = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(47);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(47) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.ATAN = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(48);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(48) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.ATAN2 = function (position1, position2, type)
+    local _position = #br.vm.file;
+    if not position1 then
+        br.vm.file = br.vm.file .. string.char(49);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(49) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
+    return _position;
+end
+
+br.SINH = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(50);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(50) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.COSH = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(51);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(51) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.TANH = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(52);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(52) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.EXP = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(53);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(53) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.FREXP = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(54);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(54) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.LDEXP = function (position1, position2, type)
+    local _position = #br.vm.file;
+    if not position1 then
+        br.vm.file = br.vm.file .. string.char(55);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(55) .. br.int_to_bytes(position1) .. br.int_to_bytes(position2) .. string.char(type);
+    return _position;
+end
+
+br.LOG = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(56);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(56) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.LOG2 = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(57);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(57) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
+br.LOG10 = function (position, type)
+    local _position = #br.vm.file;
+    if not position then
+        br.vm.file = br.vm.file .. string.char(58);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(58) .. br.int_to_bytes(position) .. string.char(type);
+    return _position;
+end
+
 
 
 

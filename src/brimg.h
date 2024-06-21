@@ -9,7 +9,7 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 22
+#define VERSION_Z 23
 
 #define byte unsigned char
 
@@ -32,6 +32,7 @@ void _find(Disk *disk, int index, int size, byte* data, int result);
 
 
 void _print(Disk disk, int index, int size);
+void _scan(Disk *disk, int index, int size);
 void _goto(Disk *disk, int position);
 
 byte* get_bytes(Disk disk, int index, int size);
