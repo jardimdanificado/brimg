@@ -75,7 +75,7 @@ version = x.y.z
 29 - DIV (position1, position2, type)           f iiii iiii b
 30 - INCREMENT (position, type)                 f iiii b
 31 - DECREMENT (position, type)                 f iiii b
-32 - MOD (position1, position2, result, type)   f iiii iiii iiii b
+32 - MOD (position1, position2 type)   f iiii iiii iiii b
 33 - POW (position1, position2, type)           f iiii iiii b
 34 - SQRT (position, type)                      f iiii b
 35 - ABS (position, type)                       f iiii b
