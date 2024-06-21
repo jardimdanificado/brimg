@@ -753,8 +753,25 @@ br.LOG10 = function (position, type)
     return _position;
 end
 
+br.LOAD = function (destiny, size, filename)
+    local _position = #br.vm.file;
+    if not destiny then
+        br.vm.file = br.vm.file .. string.char(59);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(59) .. br.int_to_bytes(destiny) .. br.int_to_bytes(size) .. br.int_to_bytes(#filename) .. filename;
+    return _position;
+end
 
-
+br.SAVE = function (origin, size, filename)
+    local _position = #br.vm.file;
+    if not origin then
+        br.vm.file = br.vm.file .. string.char(60);
+        return _position;
+    end
+    br.vm.file = br.vm.file .. string.char(60) .. br.int_to_bytes(origin) .. br.int_to_bytes(size) .. br.int_to_bytes(#filename) .. filename;
+    return _position;
+end
 
 
 

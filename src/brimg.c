@@ -3605,7 +3605,43 @@ Disk caller_log10(Disk disk, int index)
     return disk;
 }
 
+Disk caller_load(Disk disk, int index)
+{
+    int _position = get_int(disk, index + 1);
+    int _size = get_int(disk, index + 5);
+    int _filename_size = get_int(disk, index + 9);
+    char _filename[_filename_size];
+    for (int i = 0; i < _filename_size; i++)
+    {
+        _filename[i] = disk[index + 13 + i];
+    }
+    Disk _data = disk_read(_filename);
+    _set(&disk, _position, _size, _data);
+    _goto(&disk, index + 13 + _filename_size);
+    return disk;
+}
 
+Disk caller_save(Disk disk, int index)
+{
+    int _position = get_int(disk, index + 1);
+    int _size = get_int(disk, index + 5);
+    int _filename_size = get_int(disk, index + 9);
+    Disk _filename = (Disk)malloc(_filename_size);
+    Disk _data = (Disk)malloc(_size);
+    for (int i = 0; i < _filename_size; i++)
+    {
+        _filename[i] = disk[index + 13 + i];
+    }
+    for (int i = 0; i < _size; i++)
+    {
+        _data[i] = disk[_position + i];
+    }
+    disk_write(_filename, _data);
+    free(_filename);
+    free(_data);
+    _goto(&disk, index + 13 + _filename_size);
+    return disk;
+}
 
 // functions
 Disk (*functions[])(Disk, int) = 
@@ -3669,6 +3705,8 @@ Disk (*functions[])(Disk, int) =
     caller_log,
     caller_log2,
     caller_log10,
+    caller_load,
+    caller_save,
 };
 
 

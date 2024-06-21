@@ -9,7 +9,7 @@
 #define SIZE 256
 #define VERSION_X 0
 #define VERSION_Y 0
-#define VERSION_Z 23
+#define VERSION_Z 24
 
 #define byte unsigned char
 

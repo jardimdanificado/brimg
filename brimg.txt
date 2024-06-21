@@ -105,8 +105,8 @@ version = x.y.z
 
 // file
 
- - LOAD (destiny, size, filenamesize, filename) f iiii iiii iiii ?
- - SAVE (origin, size, filenamesize, filename)  f iiii iiii iiii ?
+59 - LOAD (destiny, size, filenamesize, filename) f iiii iiii iiii ?
+60 - SAVE (origin, size, filenamesize, filename)  f iiii iiii iiii ?
 
 
 // bruter bytecode compiler
