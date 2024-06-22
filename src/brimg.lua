@@ -96,13 +96,13 @@ br.decimal = function (...)
 end
 
 br.dstring = function (...)
-    local _position = #br.vm.file;
+    local _result = "";
     
     for k,v in pairs({...}) do
-        br.vm.file = br.vm.file .. string.char(v)
+        _result = _result .. string.char(v);
     end
 
-    return _position;
+    return _result;
 end
 
 br.short = function (...)

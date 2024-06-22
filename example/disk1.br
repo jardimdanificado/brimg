@@ -1,7 +1,7 @@
 decimal 1 0 0 24;
 int 20;
 decimal 200 22 222 44 68 69 44 41 222;
-set loop_size (decimal 5);
+set loop_size (decimal 50);
 set index (decimal 1);
 set loop_cache (decimal 224);
 PRINT 64 11;
