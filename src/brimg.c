@@ -988,6 +988,232 @@ Disk caller_find(Disk disk, int index)
     return disk;
 }
 
+/*
+types:
+0 = void 0 bytes
+1 = byte 1 byte
+2 = short 2 bytes
+3 = int 4 bytes
+4 = long 8 bytes
+5 = float 4 bytes
+6 = double 8 bytes
+7 = long double 10 bytes
+*/
+
+Disk caller_convert(Disk disk, int index)
+{
+    int disksize = strlen(disk);
+    int position = get_int(disk, index + 1);
+    int oldtype = get_byte(disk, index + 5);
+    int newtype = get_byte(disk, index + 6);
+    if (oldtype == newtype)
+    {
+        _goto(&disk, index + 7);
+        return disk;
+    }
+    if (oldtype == 0)
+    {
+        printf("Error: Cannot convert void type\n");
+        exit(1);
+    }
+    if (newtype == 0)
+    {
+        printf("Error: Cannot convert to void type\n");
+        exit(1);
+    }
+    if (oldtype == 1)
+    {
+        if (newtype == 2)
+        {
+            set_short(&disk, position, (short)get_byte(disk, position));
+        }
+        else if (newtype == 3)
+        {
+            set_int(&disk, position, (int)get_byte(disk, position));
+        }
+        else if (newtype == 4)
+        {
+            set_long(&disk, position, (long)get_byte(disk, position));
+        }
+        else if (newtype == 5)
+        {
+            set_float(&disk, position, (float)get_byte(disk, position));
+        }
+        else if (newtype == 6)
+        {
+            set_double(&disk, position, (double)get_byte(disk, position));
+        }
+        else if (newtype == 7)
+        {
+            set_long_double(&disk, position, (long double)get_byte(disk, position));
+        }
+    }
+    else if (oldtype == 2)
+    {
+        if (newtype == 1)
+        {
+            set_byte(&disk, position, (byte)get_short(disk, position));
+        }
+        else if (newtype == 3)
+        {
+            set_int(&disk, position, (int)get_short(disk, position));
+        }
+        else if (newtype == 4)
+        {
+            set_long(&disk, position, (long)get_short(disk, position));
+        }
+        else if (newtype == 5)
+        {
+            set_float(&disk, position, (float)get_short(disk, position));
+        }
+        else if (newtype == 6)
+        {
+            set_double(&disk, position, (double)get_short(disk, position));
+        }
+        else if (newtype == 7)
+        {
+            set_long_double(&disk, position, (long double)get_short(disk, position));
+        }
+    }
+    else if (oldtype == 3)
+    {
+        if (newtype == 1)
+        {
+            set_byte(&disk, position, (byte)get_int(disk, position));
+        }
+        else if (newtype == 2)
+        {
+            set_short(&disk, position, (short)get_int(disk, position));
+        }
+        else if (newtype == 4)
+        {
+            set_long(&disk, position, (long)get_int(disk, position));
+        }
+        else if (newtype == 5)
+        {
+            set_float(&disk, position, (float)get_int(disk, position));
+        }
+        else if (newtype == 6)
+        {
+            set_double(&disk, position, (double)get_int(disk, position));
+        }
+        else if (newtype == 7)
+        {
+            set_long_double(&disk, position, (long double)get_int(disk, position));
+        }
+    }
+    else if (oldtype == 4)
+    {
+        if (newtype == 1)
+        {
+            set_byte(&disk, position, (byte)get_long(disk, position));
+        }
+        else if (newtype == 2)
+        {
+            set_short(&disk, position, (short)get_long(disk, position));
+        }
+        else if (newtype == 3)
+        {
+            set_int(&disk, position, (int)get_long(disk, position));
+        }
+        else if (newtype == 5)
+        {
+            set_float(&disk, position, (float)get_long(disk, position));
+        }
+        else if (newtype == 6)
+        {
+            set_double(&disk, position, (double)get_long(disk, position));
+        }
+        else if (newtype == 7)
+        {
+            set_long_double(&disk, position, (long double)get_long(disk, position));
+        }
+    }
+    else if (oldtype == 5)
+    {
+        if (newtype == 1)
+        {
+            set_byte(&disk, position, (byte)get_float(disk, position));
+        }
+        else if (newtype == 2)
+        {
+            set_short(&disk, position, (short)get_float(disk, position));
+        }
+        else if (newtype == 3)
+        {
+            set_int(&disk, position, (int)get_float(disk, position));
+        }
+        else if (newtype == 4)
+        {
+            set_long(&disk, position, (long)get_float(disk, position));
+        }
+        else if (newtype == 6)
+        {
+            set_double(&disk, position, (double)get_float(disk, position));
+        }
+        else if (newtype == 7)
+        {
+            set_long_double(&disk, position, (long double)get_float(disk, position));
+        }
+    }
+    else if (oldtype == 6)
+    {
+        if (newtype == 1)
+        {
+            set_byte(&disk, position, (byte)get_double(disk, position));
+        }
+        else if (newtype == 2)
+        {
+            set_short(&disk, position, (short)get_double(disk, position));
+        }
+        else if (newtype == 3)
+        {
+            set_int(&disk, position, (int)get_double(disk, position));
+        }
+        else if (newtype == 4)
+        {
+            set_long(&disk, position, (long)get_double(disk, position));
+        }
+        else if (newtype == 5)
+        {
+            set_float(&disk, position, (float)get_double(disk, position));
+        }
+        else if (newtype == 7)
+        {
+            set_long_double(&disk, position, (long double)get_double(disk, position));
+        }
+    }
+    else if (oldtype == 7)
+    {
+        if (newtype == 1)
+        {
+            set_byte(&disk, position, (byte)get_long_double(disk, position));
+        }
+        else if (newtype == 2)
+        {
+            set_short(&disk, position, (short)get_long_double(disk, position));
+        }
+        else if (newtype == 3)
+        {
+            set_int(&disk, position, (int)get_long_double(disk, position));
+        }
+        else if (newtype == 4)
+        {
+            set_long(&disk, position, (long)get_long_double(disk, position));
+        }
+        else if (newtype == 5)
+        {
+            set_float(&disk, position, (float)get_long_double(disk, position));
+        }
+        else if (newtype == 6)
+        {
+            set_double(&disk, position, (double)get_long_double(disk, position));
+        }
+    }
+    _goto(&disk, index + 7);
+    return disk;
+}
+
 // fbiiii?
 Disk caller_if(Disk disk, int index)
 {
@@ -1001,23 +1227,6 @@ Disk caller_if(Disk disk, int index)
     return disk;
 }
 
-// f b iiii iiii ? ?
-/*Disk caller_ifelse(Disk disk, int index)
-{
-    int sizeif = get_int(disk, index + 2);
-    int sizeelse = get_int(disk, index + 6);
-    if(get_byte(disk, index+1) == 0)
-    {
-        byte *data = get_bytes(disk, index + 10, sizeif);
-        _run(data);
-    }
-    else
-    {
-        byte *data = get_bytes(disk, index + 10 + sizeif, sizeelse);
-        _run(data);
-    }
-    return disk;
-}*/
 
 Disk caller_equal(Disk disk, int index)
 {
@@ -1072,7 +1281,6 @@ Disk caller_less(Disk disk, int index)
     byte _true = 1;
     for (int i = 0; i < get_int(disk, index + 9); i++)
     {
-        //printf("%d %d\n", disk[get_int(disk, index + 1) + i], disk[get_int(disk, index + 5) + i]);
         if (disk[get_int(disk, index + 1) + i] >= disk[get_int(disk, index + 5) + i] && disk[get_int(disk, index + 1) + i] != 0)
         {
             _true = 0;
@@ -1197,64 +1405,22 @@ Disk caller_add(Disk disk, int index)
         disk[_index] += disk[_pointer];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _index);
-        short s2 = get_short(disk, _pointer);
-        u.s = s1 + s2;
-        set_short(&disk, _index, u.s);
+        set_short(&disk, _index, get_short(disk, _index) + get_short(disk, _pointer));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _index);
-        int i2 = get_int(disk, _pointer);
-        u2.i = i1 + i2;
-        set_int(&disk, _index, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) + get_int(disk, _pointer));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _index);
-        long l2 = get_long(disk, _pointer);
-        u3.l = l1 + l2;
-        set_long(&disk, _index, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) + get_long(disk, _pointer));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _index);
-        float f2 = get_float(disk, _pointer);
-        u4.f = f1 + f2;
-        set_float(&disk, _index, u4.f);
+        set_float(&disk, _index, get_float(disk, _index) + get_float(disk, _pointer));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _index);
-        double d2 = get_double(disk, _pointer);
-        u5.d = d1 + d2;
-        set_double(&disk, _index, u5.d);
+        set_double(&disk, _index, get_double(disk, _index) + get_double(disk, _pointer));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _index);
-        long double d4 = get_long_double(disk, _pointer);
-        u6.d = d3 + d4;
-        set_long_double(&disk, _index, u6.d);
+        set_long_double(&disk, _index, get_long_double(disk, _index) + get_long_double(disk, _pointer));
         break;
     default:
         break;
@@ -1274,64 +1440,22 @@ Disk caller_sub(Disk disk, int index)
         disk[_index] -= disk[_pointer];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _index);
-        short s2 = get_short(disk, _pointer);
-        u.s = s1 - s2;
-        set_short(&disk, _index, u.s);
+        set_short(&disk, _index, get_short(disk, _index) - get_short(disk, _pointer));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _index);
-        int i2 = get_int(disk, _pointer);
-        u2.i = i1 - i2;
-        set_int(&disk, _index, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) - get_int(disk, _pointer));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _index);
-        long l2 = get_long(disk, _pointer);
-        u3.l = l1 - l2;
-        set_long(&disk, _index, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) - get_long(disk, _pointer));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _index);
-        float f2 = get_float(disk, _pointer);
-        u4.f = f1 - f2;
-        set_float(&disk, _index, u4.f);
+        set_float(&disk, _index, get_float(disk, _index) - get_float(disk, _pointer));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _index);
-        double d2 = get_double(disk, _pointer);
-        u5.d = d1 - d2;
-        set_double(&disk, _index, u5.d);
+        set_double(&disk, _index, get_double(disk, _index) - get_double(disk, _pointer));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _index);
-        long double d4 = get_long_double(disk, _pointer);
-        u6.d = d3 - d4;
-        set_long_double(&disk, _index, u6.d);
+        set_long_double(&disk, _index, get_long_double(disk, _index) - get_long_double(disk, _pointer));
         break;
     default:
         break;
@@ -1351,64 +1475,22 @@ Disk caller_mul(Disk disk, int index)
         disk[_index] *= disk[_pointer];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _index);
-        short s2 = get_short(disk, _pointer);
-        u.s = s1 * s2;
-        set_short(&disk, _index, u.s);
+        set_short(&disk, _index, get_short(disk, _index) * get_short(disk, _pointer));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _index);
-        int i2 = get_int(disk, _pointer);
-        u2.i = i1 * i2;
-        set_int(&disk, _index, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) * get_int(disk, _pointer));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _index);
-        long l2 = get_long(disk, _pointer);
-        u3.l = l1 * l2;
-        set_long(&disk, _index, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) * get_long(disk, _pointer));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _index);
-        float f2 = get_float(disk, _pointer);
-        u4.f = f1 * f2;
-        set_float(&disk, _index, u4.f);
+        set_float(&disk, _index, get_float(disk, _index) * get_float(disk, _pointer));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _index);
-        double d2 = get_double(disk, _pointer);
-        u5.d = d1 * d2;
-        set_double(&disk, _index, u5.d);
+        set_double(&disk, _index, get_double(disk, _index) * get_double(disk, _pointer));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _index);
-        long double d4 = get_long_double(disk, _pointer);
-        u6.d = d3 * d4;
-        set_long_double(&disk, _index, u6.d);
+        set_long_double(&disk, _index, get_long_double(disk, _index) * get_long_double(disk, _pointer));
         break;
     default:
         break;
@@ -1428,64 +1510,22 @@ Disk caller_div(Disk disk, int index)
         disk[_index] /= disk[_pointer];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _index);
-        short s2 = get_short(disk, _pointer);
-        u.s = s1 / s2;
-        set_short(&disk, _index, u.s);
+        set_short(&disk, _index, get_short(disk, _index) / get_short(disk, _pointer));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _index);
-        int i2 = get_int(disk, _pointer);
-        u2.i = i1 / i2;
-        set_int(&disk, _index, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) / get_int(disk, _pointer));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _index);
-        long l2 = get_long(disk, _pointer);
-        u3.l = l1 / l2;
-        set_long(&disk, _index, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) / get_long(disk, _pointer));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _index);
-        float f2 = get_float(disk, _pointer);
-        u4.f = f1 / f2;
-        set_float(&disk, _index, u4.f);
+        set_float(&disk, _index, get_float(disk, _index) / get_float(disk, _pointer));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _index);
-        double d2 = get_double(disk, _pointer);
-        u5.d = d1 / d2;
-        set_double(&disk, _index, u5.d);
+        set_double(&disk, _index, get_double(disk, _index) / get_double(disk, _pointer));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _index);
-        long double d4 = get_long_double(disk, _pointer);
-        u6.d = d3 / d4;
-        set_long_double(&disk, _index, u6.d);
+        set_long_double(&disk, _index, get_long_double(disk, _index) / get_long_double(disk, _pointer));
         break;
     default:
         break;
@@ -1504,58 +1544,22 @@ Disk caller_increment(Disk disk, int index)
         disk[_index]++;
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _index);
-        u.s = s1 + 1;
-        set_short(&disk, _index, u.s);
+        set_short(&disk, _index, get_short(disk, _index) + 1);
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _index);
-        u2.i = i1 + 1;
-        set_int(&disk, _index, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) +1);
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _index);
-        u3.l = l1 + 1;
-        set_long(&disk, _index, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) + 1);
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _index);
-        u4.f = f1 + 1;
-        set_float(&disk, _index, u4.f);
+        set_float(&disk, _index, get_float(disk, _index) + 1);
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _index);
-        u5.d = d1 + 1;
-        set_double(&disk, _index, u5.d);
+        set_double(&disk, _index, get_double(disk, _index) + 1);
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _index);
-        u6.d = d3 + 1;
-        set_long_double(&disk, _index, u6.d);
+        set_long_double(&disk, _index, get_long_double(disk, _index) + 1);
         break;
     default:
         break;
@@ -1574,58 +1578,22 @@ Disk caller_decrement(Disk disk, int index)
         disk[_index]--;
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _index);
-        u.s = s1 - 1;
-        set_short(&disk, _index, u.s);
+        set_short(&disk, _index, get_short(disk, _index) - 1);
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _index);
-        u2.i = i1 - 1;
-        set_int(&disk, _index, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) - 1);
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _index);
-        u3.l = l1 - 1;
-        set_long(&disk, _index, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) - 1);
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _index);
-        u4.f = f1 - 1;
-        set_float(&disk, _index, u4.f);
+        set_float(&disk, _index, get_float(disk, _index) - 1);
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _index);
-        u5.d = d1 - 1;
-        set_double(&disk, _index, u5.d);
+        set_double(&disk, _index, get_double(disk, _index) - 1);
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _index);
-        u6.d = d3 - 1;
-        set_long_double(&disk, _index, u6.d);
+        set_long_double(&disk, _index, get_long_double(disk, _index) - 1);
         break;
     default:
         break;
@@ -1636,223 +1604,100 @@ Disk caller_decrement(Disk disk, int index)
 
 Disk caller_mod(Disk disk, int index)
 {
-    int _position1 = get_int(disk, index + 1);
-    int _position2 = get_int(disk, index + 5);
     int _type = get_byte(disk, index + 9);
-    
+    int _index = get_int(disk, index + 1);
+    int _pointer = get_int(disk, index + 5);
     switch (_type)
     {
     case 1:// byte
-        disk[_position1] %= disk[_position2];
+        disk[_index] %= disk[_pointer];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position1);
-        short s2 = get_short(disk, _position2);
-        u.s = s1 % s2;
-        set_short(&disk, _position1, u.s);
+        set_short(&disk, _index, get_short(disk, _index) % get_short(disk, _pointer));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position1);
-        int i2 = get_int(disk, _position2);
-        u2.i = i1 % i2;
-        set_int(&disk, _position1, u2.i);
+        set_int(&disk, _index, get_int(disk, _index) % get_int(disk, _pointer));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position1);
-        long l2 = get_long(disk, _position2);
-        u3.l = l1 % l2;
-        set_long(&disk, _position1, u3.l);
+        set_long(&disk, _index, get_long(disk, _index) % get_long(disk, _pointer));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position1);
-        float f2 = get_float(disk, _position2);
-        u4.f = f1 - (int)(f1 / f2) * f2;
-        set_float(&disk, _position1, u4.f);
+        set_float(&disk, _index, fmod(get_float(disk, _index), get_float(disk, _pointer)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position1);
-        double d2 = get_double(disk, _position2);
-        u5.d = d1 - (int)(d1 / d2) * d2;
-        set_double(&disk, _position1, u5.d);
+        set_double(&disk, _index, fmod(get_double(disk, _index), get_double(disk, _pointer)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position1);
-        long double d4 = get_long_double(disk, _position2);
-        u6.d = d3 - (int)(d3 / d4) * d4;
-        set_long_double(&disk, _position1, u6.d);
+        set_long_double(&disk, _index, fmod(get_long_double(disk, _index), get_long_double(disk, _pointer)));
         break;
     default:
         break;
     }
-    _goto(&disk, index + 10);
+    _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_pow(Disk disk, int index)
 {
-    int _position1 = get_int(disk, index + 1);
-    int _position2 = get_int(disk, index + 5);
     int _type = get_byte(disk, index + 9);
-    
+    int _index = get_int(disk, index + 1);
+    int _pointer = get_int(disk, index + 5);
     switch (_type)
     {
     case 1:// byte
-        disk[_position1] = pow(disk[_position1], disk[_position2]);
+        disk[_index] = pow(disk[_index], disk[_pointer]);
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position1);
-        short s2 = get_short(disk, _position2);
-        u.s = pow(s1, s2);
-        set_short(&disk, _position1, u.s);
+        set_short(&disk, _index, pow(get_short(disk, _index), get_short(disk, _pointer)));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position1);
-        int i2 = get_int(disk, _position2);
-        u2.i = pow(i1, i2);
-        set_int(&disk, _position1, u2.i);
+        set_int(&disk, _index, pow(get_int(disk, _index), get_int(disk, _pointer)));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position1);
-        long l2 = get_long(disk, _position2);
-        u3.l = pow(l1, l2);
-        set_long(&disk, _position1, u3.l);
+        set_long(&disk, _index, pow(get_long(disk, _index), get_long(disk, _pointer)));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position1);
-        float f2 = get_float(disk, _position2);
-        u4.f = pow(f1, f2);
-        set_float(&disk, _position1, u4.f);
+        set_float(&disk, _index, pow(get_float(disk, _index), get_float(disk, _pointer)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position1);
-        double d2 = get_double(disk, _position2);
-        u5.d = pow(d1, d2);
-        set_double(&disk, _position1, u5.d);
+        set_double(&disk, _index, pow(get_double(disk, _index), get_double(disk, _pointer)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position1);
-        long double d4 = get_long_double(disk, _position2);
-        u6.d = pow(d3, d4);
-        set_long_double(&disk, _position1, u6.d);
+        set_long_double(&disk, _index, pow(get_long_double(disk, _index), get_long_double(disk, _pointer)));
         break;
     default:
         break;
     }
-    _goto(&disk, index + 10);
+    _goto(&disk, index + 13);
     return disk;
 }
 
 Disk caller_sqrt(Disk disk, int index)
 {
-    int _position = get_int(disk, index + 1);
     int _type = get_byte(disk, index + 5);
-    
+    int _index = get_int(disk, index + 1);
     switch (_type)
     {
     case 1:// byte
-        disk[_position] = sqrt(disk[_position]);
+        disk[_index] = sqrt(disk[_index]);
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = sqrt(s1);
-        set_short(&disk, _position, u.s);
+        set_short(&disk, _index, sqrt(get_short(disk, _index)));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = sqrt(i1);
-        set_int(&disk, _position, u2.i);
+        set_int(&disk, _index, sqrt(get_int(disk, _index)));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = sqrt(l1);
-        set_long(&disk, _position, u3.l);
+        set_long(&disk, _index, sqrt(get_long(disk, _index)));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = sqrt(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _index, sqrt(get_float(disk, _index)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = sqrt(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _index, sqrt(get_double(disk, _index)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = sqrt(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _index, sqrt(get_long_double(disk, _index)));
         break;
     default:
         break;
@@ -1863,67 +1708,30 @@ Disk caller_sqrt(Disk disk, int index)
 
 Disk caller_abs(Disk disk, int index)
 {
-    int _position = get_int(disk, index + 1);
     int _type = get_byte(disk, index + 5);
-    
+    int _index = get_int(disk, index + 1);
     switch (_type)
     {
     case 1:// byte
-        disk[_position] = abs(disk[_position]);
+        disk[_index] = abs(disk[_index]);
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = abs(s1);
-        set_short(&disk, _position, u.s);
+        set_short(&disk, _index, abs(get_short(disk, _index)));
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = abs(i1);
-        set_int(&disk, _position, u2.i);
+        set_int(&disk, _index, abs(get_int(disk, _index)));
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = abs(l1);
-        set_long(&disk, _position, u3.l);
+        set_long(&disk, _index, abs(get_long(disk, _index)));
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = abs(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _index, abs(get_float(disk, _index)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = abs(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _index, abs(get_double(disk, _index)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = abs(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _index, abs(get_long_double(disk, _index)));
         break;
     default:
         break;
@@ -1944,64 +1752,34 @@ Disk caller_min(Disk disk, int index)
         disk[_position1] = (disk[_position1] < disk[_position2]) ? disk[_position1] : disk[_position2];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
         short s1 = get_short(disk, _position1);
         short s2 = get_short(disk, _position2);
-        u.s = (s1 < s2) ? s1 : s2;
-        set_short(&disk, _position1, u.s);
+        set_short(&disk, _position1, (s1 < s2) ? s1 : s2);
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
         int i1 = get_int(disk, _position1);
         int i2 = get_int(disk, _position2);
-        u2.i = (i1 < i2) ? i1 : i2;
-        set_int(&disk, _position1, u2.i);
+        set_int(&disk, _position1, (i1 < i2) ? i1 : i2);
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
         long l1 = get_long(disk, _position1);
         long l2 = get_long(disk, _position2);
-        u3.l = (l1 < l2) ? l1 : l2;
-        set_long(&disk, _position1, u3.l);
+        set_long(&disk, _position1, (l1 < l2) ? l1 : l2);
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
         float f1 = get_float(disk, _position1);
         float f2 = get_float(disk, _position2);
-        u4.f = (f1 < f2) ? f1 : f2;
-        set_float(&disk, _position1, u4.f);
+        set_float(&disk, _position1, (f1 < f2) ? f1 : f2);
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
         double d1 = get_double(disk, _position1);
         double d2 = get_double(disk, _position2);
-        u5.d = (d1 < d2) ? d1 : d2;
-        set_double(&disk, _position1, u5.d);
+        set_double(&disk, _position1, (d1 < d2) ? d1 : d2);
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
         long double d3 = get_long_double(disk, _position1);
         long double d4 = get_long_double(disk, _position2);
-        u6.d = (d3 < d4) ? d3 : d4;
-        set_long_double(&disk, _position1, u6.d);
+        set_long_double(&disk, _position1, (d3 < d4) ? d3 : d4);
         break;
     default:
         break;
@@ -2022,64 +1800,34 @@ Disk caller_max(Disk disk, int index)
         disk[_position1] = (disk[_position1] > disk[_position2]) ? disk[_position1] : disk[_position2];
         break;
     case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
         short s1 = get_short(disk, _position1);
         short s2 = get_short(disk, _position2);
-        u.s = (s1 > s2) ? s1 : s2;
-        set_short(&disk, _position1, u.s);
+        set_short(&disk, _position1, (s1 > s2) ? s1 : s2);
         break;
     case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
         int i1 = get_int(disk, _position1);
         int i2 = get_int(disk, _position2);
-        u2.i = (i1 > i2) ? i1 : i2;
-        set_int(&disk, _position1, u2.i);
+        set_int(&disk, _position1, (i1 > i2) ? i1 : i2);
         break;
     case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
         long l1 = get_long(disk, _position1);
         long l2 = get_long(disk, _position2);
-        u3.l = (l1 > l2) ? l1 : l2;
-        set_long(&disk, _position1, u3.l);
+        set_long(&disk, _position1, (l1 > l2) ? l1 : l2);
         break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
         float f1 = get_float(disk, _position1);
         float f2 = get_float(disk, _position2);
-        u4.f = (f1 > f2) ? f1 : f2;
-        set_float(&disk, _position1, u4.f);
+        set_float(&disk, _position1, (f1 > f2) ? f1 : f2);
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
         double d1 = get_double(disk, _position1);
         double d2 = get_double(disk, _position2);
-        u5.d = (d1 > d2) ? d1 : d2;
-        set_double(&disk, _position1, u5.d);
+        set_double(&disk, _position1, (d1 > d2) ? d1 : d2);
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
         long double d3 = get_long_double(disk, _position1);
         long double d4 = get_long_double(disk, _position2);
-        u6.d = (d3 > d4) ? d3 : d4;
-        set_long_double(&disk, _position1, u6.d);
+        set_long_double(&disk, _position1, (d3 > d4) ? d3 : d4);
         break;
     default:
         break;
@@ -2091,81 +1839,35 @@ Disk caller_max(Disk disk, int index)
 Disk caller_random(Disk disk, int index)
 {
     int _position = get_int(disk, index + 1);
-    int minrangeposition = get_int(disk, index + 5);
-    int maxrangeposition = get_int(disk, index + 9);
-    int _type = get_byte(disk, index + 13);
-
+    int _type = get_byte(disk, index + 5);
+    
     switch (_type)
     {
     case 1:// byte
-        byte _min = disk[minrangeposition];
-        byte _max = disk[maxrangeposition];
-        disk[_position] = _min + rand() % (_max - _min + 1);
+        disk[_position] = rand() % 256;
         break;
     case 2:// short
-        short _min2 = get_short(disk, minrangeposition);
-        short _max2 = get_short(disk, maxrangeposition);
-        union {
-            short s;
-            byte b[2];
-        } u;
-        u.s = _min2 + rand() % (_max2 - _min2 + 1);
-        set_short(&disk, _position, u.s);
+        set_short(&disk, _position, rand() % 65536);
         break;
     case 3:// int
-        int _min3 = get_int(disk, minrangeposition);
-        int _max3 = get_int(disk, maxrangeposition);
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        u2.i = _min3 + rand() % (_max3 - _min3 + 1);
-        set_int(&disk, _position, u2.i);
+        set_int(&disk, _position, rand());
         break;
     case 4:// long
-        long _min4 = get_long(disk, minrangeposition);
-        long _max4 = get_long(disk, maxrangeposition);
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        u3.l = _min4 + rand() % (_max4 - _min4 + 1);
-        set_long(&disk, _position, u3.l);
+        set_long(&disk, _position, rand());
         break;
     case 5:// float
-        float _min5 = get_float(disk, minrangeposition);
-        float _max5 = get_float(disk, maxrangeposition);
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        u4.f = _min5 + fmod(rand(), (_max5 - _min5 + 1));
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, (float)rand() / (float)RAND_MAX);
         break;
     case 6:// double
-        double _min6 = get_double(disk, minrangeposition);
-        double _max6 = get_double(disk, maxrangeposition);
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        u5.d = _min6 + fmod(rand(), (_max6 - _min6 + 1));
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, (double)rand() / (double)RAND_MAX);
         break;
     case 7:// long double
-        long double _min7 = get_long_double(disk, minrangeposition);
-        long double _max7 = get_long_double(disk, maxrangeposition);
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        u6.d = _min7 + fmod(rand(), (_max7 - _min7 + 1));
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, (long double)rand() / (long double)RAND_MAX);
         break;
     default:
         break;
     }
-    _goto(&disk, index + 14);
+    _goto(&disk, index + 6);
     return disk;
 }
 
@@ -2176,62 +1878,14 @@ Disk caller_round(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = round(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = round(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = round(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = round(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = round(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, round(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = round(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, round(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = round(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, round(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2247,62 +1901,14 @@ Disk caller_floor(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = floor(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = floor(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = floor(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = floor(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = floor(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, floor(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = floor(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, floor(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = floor(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, floor(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2318,62 +1924,14 @@ Disk caller_ceil(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = ceil(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = ceil(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = ceil(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = ceil(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = ceil(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, ceil(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = ceil(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, ceil(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = ceil(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, ceil(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2389,62 +1947,14 @@ Disk caller_trunc(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = trunc(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = trunc(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = trunc(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = trunc(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = trunc(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, trunc(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = trunc(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, trunc(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = trunc(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, trunc(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2460,62 +1970,14 @@ Disk caller_sin(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = sin(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = sin(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = sin(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = sin(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = sin(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, sin(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = sin(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, sin(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = sin(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, sin(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2531,62 +1993,14 @@ Disk caller_cos(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = cos(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = cos(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = cos(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = cos(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = cos(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, cos(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = cos(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, cos(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = cos(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, cos(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2602,62 +2016,14 @@ Disk caller_tan(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = tan(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = tan(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = tan(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = tan(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = tan(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, tan(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = tan(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, tan(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = tan(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, tan(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2673,62 +2039,14 @@ Disk caller_asin(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = asin(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = asin(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = asin(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = asin(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = asin(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, asin(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = asin(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, asin(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = asin(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, asin(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2744,62 +2062,14 @@ Disk caller_acos(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = acos(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = acos(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = acos(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = acos(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = acos(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, acos(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = acos(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, acos(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = acos(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, acos(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2815,62 +2085,14 @@ Disk caller_atan(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = atan(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = atan(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = atan(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = atan(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = atan(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, atan(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = atan(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, atan(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = atan(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, atan(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -2887,68 +2109,14 @@ Disk caller_atan2(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position1] = atan2(disk[_position1], disk[_position2]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position1);
-        short s2 = get_short(disk, _position2);
-        u.s = atan2(s1, s2);
-        set_short(&disk, _position1, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position1);
-        int i2 = get_int(disk, _position2);
-        u2.i = atan2(i1, i2);
-        set_int(&disk, _position1, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position1);
-        long l2 = get_long(disk, _position2);
-        u3.l = atan2(l1, l2);
-        set_long(&disk, _position1, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position1);
-        float f2 = get_float(disk, _position2);
-        u4.f = atan2(f1, f2);
-        set_float(&disk, _position1, u4.f);
+        set_float(&disk, _position1, atan2(get_float(disk, _position1), get_float(disk, _position2)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position1);
-        double d2 = get_double(disk, _position2);
-        u5.d = atan2(d1, d2);
-        set_double(&disk, _position1, u5.d);
+        set_double(&disk, _position1, atan2(get_double(disk, _position1), get_double(disk, _position2)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position1);
-        long double d4 = get_long_double(disk, _position2);
-        u6.d = atan2(d3, d4);
-        set_long_double(&disk, _position1, u6.d);
+        set_long_double(&disk, _position1, atan2(get_long_double(disk, _position1), get_long_double(disk, _position2)));
         break;
     default:
         break;
@@ -2964,62 +2132,14 @@ Disk caller_sinh(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = sinh(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = sinh(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = sinh(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = sinh(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = sinh(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, sinh(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = sinh(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, sinh(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = sinh(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, sinh(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -3035,62 +2155,14 @@ Disk caller_cosh(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = cosh(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = cosh(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = cosh(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = cosh(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = cosh(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, cosh(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = cosh(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, cosh(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = cosh(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, cosh(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -3106,62 +2178,14 @@ Disk caller_tanh(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = tanh(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = tanh(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = tanh(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = tanh(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = tanh(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, tanh(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = tanh(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, tanh(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = tanh(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, tanh(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -3177,62 +2201,14 @@ Disk caller_exp(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = exp(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = exp(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = exp(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = exp(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = exp(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, exp(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = exp(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, exp(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = exp(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, exp(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -3249,73 +2225,19 @@ Disk caller_frexp(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = frexp(disk[_position], &_exp);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        short s2 = _exp;
-        u.s = frexp(s1, (int*)&s2);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        int i2 = _exp;
-        u2.i = frexp(i1, &i2);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        long l2 = _exp;
-        u3.l = frexp(l1, (int*)&l2);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        float f2 = _exp;
-        u4.f = frexp(f1, (int*)&f2);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, frexp(get_float(disk, _position), &_exp));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        double d2 = _exp;
-        u5.d = frexp(d1, (int*)&d2);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, frexp(get_double(disk, _position), &_exp));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        long double d4 = _exp;
-        u6.d = frexp(d3, (int*)&d4);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, frexp(get_long_double(disk, _position), &_exp));
         break;
     default:
         break;
     }
-    set_int(&disk, index + 5, _exp);
+    set_int(&disk, _position + 4, _exp);
     _goto(&disk, index + 10);
     return disk;
 }
@@ -3328,62 +2250,14 @@ Disk caller_ldexp(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = ldexp(disk[_position], _exp);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = ldexp(s1, _exp);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = ldexp(i1, _exp);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = ldexp(l1, _exp);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = ldexp(f1, _exp);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, ldexp(get_float(disk, _position), _exp));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = ldexp(d1, _exp);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, ldexp(get_double(disk, _position), _exp));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = ldexp(d3, _exp);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, ldexp(get_long_double(disk, _position), _exp));
         break;
     default:
         break;
@@ -3399,204 +2273,14 @@ Disk caller_log(Disk disk, int index)
     
     switch (_type)
     {
-    case 1:// byte
-        disk[_position] = log(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = log(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = log(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = log(l1);
-        set_long(&disk, _position, u3.l);
-        break;
     case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = log(f1);
-        set_float(&disk, _position, u4.f);
+        set_float(&disk, _position, log(get_float(disk, _position)));
         break;
     case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = log(d1);
-        set_double(&disk, _position, u5.d);
+        set_double(&disk, _position, log(get_double(disk, _position)));
         break;
     case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = log(d3);
-        set_long_double(&disk, _position, u6.d);
-        break;
-    default:
-        break;
-    }
-    _goto(&disk, index + 6);
-    return disk;
-}
-
-Disk caller_log2(Disk disk, int index)
-{
-    int _position = get_int(disk, index + 1);
-    int _type = get_byte(disk, index + 5);
-    
-    switch (_type)
-    {
-    case 1:// byte
-        disk[_position] = log2(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = log2(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = log2(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = log2(l1);
-        set_long(&disk, _position, u3.l);
-        break;
-    case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = log2(f1);
-        set_float(&disk, _position, u4.f);
-        break;
-    case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = log2(d1);
-        set_double(&disk, _position, u5.d);
-        break;
-    case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = log2(d3);
-        set_long_double(&disk, _position, u6.d);
-        break;
-    default:
-        break;
-    }
-    _goto(&disk, index + 6);
-    return disk;
-}
-
-Disk caller_log10(Disk disk, int index)
-{
-    int _position = get_int(disk, index + 1);
-    int _type = get_byte(disk, index + 5);
-    
-    switch (_type)
-    {
-    case 1:// byte
-        disk[_position] = log10(disk[_position]);
-        break;
-    case 2:// short
-        union {
-            short s;
-            byte b[2];
-        } u;
-        short s1 = get_short(disk, _position);
-        u.s = log10(s1);
-        set_short(&disk, _position, u.s);
-        break;
-    case 3:// int
-        union {
-            int i;
-            byte b[4];
-        } u2;
-        int i1 = get_int(disk, _position);
-        u2.i = log10(i1);
-        set_int(&disk, _position, u2.i);
-        break;
-    case 4:// long
-        union {
-            long l;
-            byte b[8];
-        } u3;
-        long l1 = get_long(disk, _position);
-        u3.l = log10(l1);
-        set_long(&disk, _position, u3.l);
-        break;
-    case 5:// float
-        union {
-            float f;
-            byte b[4];
-        } u4;
-        float f1 = get_float(disk, _position);
-        u4.f = log10(f1);
-        set_float(&disk, _position, u4.f);
-        break;
-    case 6:// double
-        union {
-            double d;
-            byte b[8];
-        } u5;
-        double d1 = get_double(disk, _position);
-        u5.d = log10(d1);
-        set_double(&disk, _position, u5.d);
-        break;
-    case 7:// long double
-        union {
-            long double d;
-            byte b[10];
-        } u6;
-        long double d3 = get_long_double(disk, _position);
-        u6.d = log10(d3);
-        set_long_double(&disk, _position, u6.d);
+        set_long_double(&disk, _position, log(get_long_double(disk, _position)));
         break;
     default:
         break;
@@ -3659,8 +2343,8 @@ Disk (*functions[])(Disk, int) =
     caller_reverse,
     caller_sort,
     caller_find,
+    caller_convert,
     caller_if,
-    NULL,
     caller_equal,
     caller_not_equal,
     caller_greater,
@@ -3703,8 +2387,8 @@ Disk (*functions[])(Disk, int) =
     caller_frexp,
     caller_ldexp,
     caller_log,
-    caller_log2,
-    caller_log10,
+    NULL,
+    NULL,
     caller_load,
     caller_save,
 };

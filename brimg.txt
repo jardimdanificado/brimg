@@ -16,10 +16,10 @@ types:
 version = x.y.z
 
 0 = state
-1 = version x
-2 = version y
-3 = version z
-4-7 = current index
+1 = memory byte range 1,2 or 4
+2 = version x
+3 = version y
+4-(4,5,7) = current index
 
 
 
@@ -38,16 +38,13 @@ version = x.y.z
 10 - REVERSE (start, size)                                f iiii iiii
 11 - SORT (start, size)                                   f iiii iiii
 12 - FIND (position, size, result, patternsize, pattern)  f iiii iiii iiii iiii ?
-
-
-
+13 - CONVERT (position, oldtype, newtype)                 f iiii b b
 
 
 
 // conditions
 
-13 - IF (position, size, code)                               f iiii iiii ?
-14 - NULL
+14 - IF (position, size, code)                               f iiii iiii ?
 15 - EQUAL (position1, position2, size, result)              f iiii iiii iiii iiii
 16 - NOT_EQUAL (position1, position2, size, result)          f iiii iiii iiii iiii
 17 - GREATER (position1, position2, size, result)            f iiii iiii iiii iiii
@@ -75,7 +72,7 @@ version = x.y.z
 29 - DIV (position1, position2, type)           f iiii iiii b
 30 - INCREMENT (position, type)                 f iiii b
 31 - DECREMENT (position, type)                 f iiii b
-32 - MOD (position1, position2 type)   f iiii iiii iiii b
+32 - MOD (position1, position2 type)            f iiii iiii iiii b
 33 - POW (position1, position2, type)           f iiii iiii b
 34 - SQRT (position, type)                      f iiii b
 35 - ABS (position, type)                       f iiii b
@@ -100,8 +97,8 @@ version = x.y.z
 54 - FREXP (position, type)                     f iiii iiii b
 55 - LDEXP (position1, position2, type)         f iiii iiii b
 56 - LOG (position, type)                       f iiii b
-57 - LOG2 (position, type)                      f iiii b
-58 - LOG10 (position, type)                     f iiii b
+57 - NULL
+58 - NULL
 
 // file
 
