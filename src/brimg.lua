@@ -172,17 +172,18 @@ br.STATE = function (data)
         return _position;
     end
     br.vm.file = br.vm.file .. string.char(0) .. string.char(data);
-    return _position;
+
+    return {position = _position, data = _position + 1};
 end
 
 br.SET = function (position, ...)
-    local data = type(({...})[1]) == "string" and ({...})[1] or dstring(...);
+    local data = type(({...})[1]) == "string" and ({...})[1] or br.dstring(...);
     local size = #data;
     local _position = #br.vm.file;
 
     if not position then
         br.vm.file = br.vm.file .. string.char(1);
-        return _position;
+        return {_position};
     end
 
     br.vm.file = br.vm.file .. string.char(1) .. br.int_to_bytes(position) .. br.int_to_bytes(size) .. data;
