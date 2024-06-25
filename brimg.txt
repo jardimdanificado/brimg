@@ -26,39 +26,39 @@ version = x.y.z
 // disk functions
 
 0 - STATE (state)                                         f b
-1 - SET (position, size, data)                            f iiii iiii ?
-2 - INSERT (position, size, data)                         f iiii iiii ?
-3 - DELETE (position, size)                               f iiii iiii
-4 - MOVE (origin, destiny, size)                          f iiii iiii iiii
-5 - SWAP (origin, destiny, size)                          f iiii iiii iiii
-6 - SHIFT (start, size, direction)                        f iiii iiii b
-7 - RANDOM (position, size)                               f iiii iiii
-8 - COPY (origin, destiny, size)                          f iiii iiii iiii
-9 - FILL (start, size, value)                             f iiii iiii b
-10 - REVERSE (start, size)                                f iiii iiii
-11 - SORT (start, size)                                   f iiii iiii
-12 - FIND (position, size, result, patternsize, pattern)  f iiii iiii iiii iiii ?
-13 - CONVERT (position, oldtype, newtype)                 f iiii b b
+1 - SET (position, size, data)                            f ptr ptr ?
+2 - INSERT (position, size, data)                         f ptr ptr ?
+3 - DELETE (position, size)                               f ptr ptr
+4 - MOVE (origin, destiny, size)                          f ptr ptr ptr
+5 - SWAP (origin, destiny, size)                          f ptr ptr ptr
+6 - SHIFT (start, size, direction)                        f ptr ptr b
+7 - RANDOM (position, size)                               f ptr ptr
+8 - COPY (origin, destiny, size)                          f ptr ptr ptr
+9 - FILL (start, size, value)                             f ptr ptr b
+10 - REVERSE (start, size)                                f ptr ptr
+11 - SORT (start, size)                                   f ptr ptr
+12 - FIND (position, size, result, patternsize, pattern)  f ptr ptr ptr ptr ?
+13 - CONVERT (position, oldtype, newtype)                 f ptr b b
 
 
 
 // conditions
 
-14 - IF (position, size, code)                               f iiii iiii ?
-15 - EQUAL (position1, position2, size, result)              f iiii iiii iiii iiii
-16 - NOT_EQUAL (position1, position2, size, result)          f iiii iiii iiii iiii
-17 - GREATER (position1, position2, size, result)            f iiii iiii iiii iiii
-18 - LESS (position1, position2, size, result)               f iiii iiii iiii iiii
-19 - GREATER_OR_EQUAL (position1, position2, size, result)   f iiii iiii iiii iiii
-20 - LESS_OR_EQUAL (position1, position2, size, result)      f iiii iiii iiii iiii
-21 - AND (position, size, result)                            f iiii iiii iiii
-22 - OR (position, size, result)                             f iiii iiii iiii
+14 - IF (position, size, code)                               f ptr ptr ?
+15 - EQUAL (position1, position2, size, result)              f ptr ptr ptr ptr
+16 - NOT_EQUAL (position1, position2, size, result)          f ptr ptr ptr ptr
+17 - GREATER (position1, position2, size, result)            f ptr ptr ptr ptr
+18 - LESS (position1, position2, size, result)               f ptr ptr ptr ptr
+19 - GREATER_OR_EQUAL (position1, position2, size, result)   f ptr ptr ptr ptr
+20 - LESS_OR_EQUAL (position1, position2, size, result)      f ptr ptr ptr ptr
+21 - AND (position, size, result)                            f ptr ptr ptr
+22 - OR (position, size, result)                             f ptr ptr ptr
 
 
 // other
-23 - PRINT (position, size)     f iiii iiii
-24 - SCAN (position, size)      f iiii iiii
-25 - GOTO (position)            f iiii
+23 - PRINT (position, size)     f ptr ptr
+24 - SCAN (position, size)      f ptr ptr
+25 - GOTO (position)            f ptr
 
 
 
@@ -66,44 +66,44 @@ version = x.y.z
 
 // math
 
-26 - ADD (position1, position2, type)           f iiii iiii b
-27 - SUB (position1, position2, type)           f iiii iiii b
-28 - MUL (position1, position2, type)           f iiii iiii b
-29 - DIV (position1, position2, type)           f iiii iiii b
-30 - INCREMENT (position, type)                 f iiii b
-31 - DECREMENT (position, type)                 f iiii b
-32 - MOD (position1, position2 type)            f iiii iiii iiii b
-33 - POW (position1, position2, type)           f iiii iiii b
-34 - SQRT (position, type)                      f iiii b
-35 - ABS (position, type)                       f iiii b
-36 - MIN (position1, position2, result, type)   f iiii iiii iiii b
-37 - MAX (position1, position2, result, type)   f iiii iiii iiii b
-38 - RANDOM (position, pmin, pmax, type)        f iiii iiii iiii b
-39 - ROUND (position, type)                     f iiii b
-40 - FLOOR (position, type)                     f iiii b
-41 - CEIL (position, type)                      f iiii b
-42 - TRUNC (position, type)                     f iiii b
-43 - SIN (position, type)                       f iiii b
-44 - COS (position, type)                       f iiii b
-45 - TAN (position, type)                       f iiii b
-46 - ASIN (position, type)                      f iiii b
-47 - ACOS (position, type)                      f iiii b
-48 - ATAN (position, type)                      f iiii b
-49 - ATAN2 (position1, position2, type)         f iiii iiii b
-50 - SINH (position, type)                      f iiii b
-51 - COSH (position, type)                      f iiii b
-52 - TANH (position, type)                      f iiii b
-53 - EXP (position, type)                       f iiii b
-54 - FREXP (position, type)                     f iiii iiii b
-55 - LDEXP (position1, position2, type)         f iiii iiii b
-56 - LOG (position, type)                       f iiii b
+26 - ADD (position1, position2, type)           f ptr ptr b
+27 - SUB (position1, position2, type)           f ptr ptr b
+28 - MUL (position1, position2, type)           f ptr ptr b
+29 - DIV (position1, position2, type)           f ptr ptr b
+30 - INCREMENT (position, type)                 f ptr b
+31 - DECREMENT (position, type)                 f ptr b
+32 - MOD (position1, position2 type)            f ptr ptr ptr b
+33 - POW (position1, position2, type)           f ptr ptr b
+34 - SQRT (position, type)                      f ptr b
+35 - ABS (position, type)                       f ptr b
+36 - MIN (position1, position2, result, type)   f ptr ptr ptr b
+37 - MAX (position1, position2, result, type)   f ptr ptr ptr b
+38 - RANDOM (position, pmin, pmax, type)        f ptr ptr ptr b
+39 - ROUND (position, type)                     f ptr b
+40 - FLOOR (position, type)                     f ptr b
+41 - CEIL (position, type)                      f ptr b
+42 - TRUNC (position, type)                     f ptr b
+43 - SIN (position, type)                       f ptr b
+44 - COS (position, type)                       f ptr b
+45 - TAN (position, type)                       f ptr b
+46 - ASIN (position, type)                      f ptr b
+47 - ACOS (position, type)                      f ptr b
+48 - ATAN (position, type)                      f ptr b
+49 - ATAN2 (position1, position2, type)         f ptr ptr b
+50 - SINH (position, type)                      f ptr b
+51 - COSH (position, type)                      f ptr b
+52 - TANH (position, type)                      f ptr b
+53 - EXP (position, type)                       f ptr b
+54 - FREXP (position, type)                     f ptr ptr b
+55 - LDEXP (position1, position2, type)         f ptr ptr b
+56 - LOG (position, type)                       f ptr b
 57 - NULL
 58 - NULL
 
 // file
 
-59 - LOAD (destiny, size, filenamesize, filename) f iiii iiii iiii ?
-60 - SAVE (origin, size, filenamesize, filename)  f iiii iiii iiii ?
+59 - LOAD (destiny, size, filenamesize, filename) f ptr ptr ptr ?
+60 - SAVE (origin, size, filenamesize, filename)  f ptr ptr ptr ?
 
 
 // bruter bytecode compiler

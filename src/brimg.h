@@ -8,7 +8,7 @@
 
 #define SIZE 256
 #define VERSION_X 0
-#define VERSION_Y 25
+#define VERSION_Y 26
 
 #define byte unsigned char
 
@@ -27,8 +27,6 @@ void _copy(Disk *disk, int index, int destiny, int size);
 void _fill(Disk *disk, int index, int size, byte data);
 void _reverse(Disk *disk, int index, int size);
 void _sort(Disk *disk, int index, int size);
-void _find(Disk *disk, int index, int size, byte* data, int result);
-
 
 void _print(Disk disk, int index, int size);
 void _scan(Disk *disk, int index, int size);

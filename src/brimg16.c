@@ -2,7 +2,7 @@
 
 // size of the pointer in bytes
 // 1,2 or 4 bytes, 1 is 256bytes, 2 is 64kb, 4 is 4gb
-#define MEMSIZE 4
+#define MEMSIZE 2
 
 // StandardFunctions C Api
 // StandardFunctions C Api
