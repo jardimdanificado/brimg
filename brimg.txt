@@ -16,7 +16,7 @@ types:
 version = x.y.z
 
 0 = state
-1 = memory byte range 1,2 or 4
+1 = pointer size 1,2 or 4
 2 = version x
 3 = version y
 4-(4,5,7) = current index
@@ -118,3 +118,5 @@ version = x.y.z
 7 - float
 8 - double
 9 - long double
+
+// need to adapt to arduino
