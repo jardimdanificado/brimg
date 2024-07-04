@@ -164,7 +164,7 @@ void _shift(Disk *disk, int index, int size, int _shift)
 void _random(Disk *disk, int index, int size)
 {
     //set seed 
-    srand(time(NULL));
+    srand(time(0));
 
     for (int i = 0; i < size; i++)
     {
@@ -413,13 +413,13 @@ void _goto(Disk *disk, int position)
 
 
 
-byte *disk_read(char *filename)
+/*byte *disk_read(char *filename)
 {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL)
+    File *file = fopen(filename, "r");
+    if (file == 0)
     {
         printf("Error: File not found\n");
-        return NULL;
+        return 0;
     }
 
     fseek(file, 0, SEEK_END);
@@ -437,7 +437,7 @@ byte *disk_read(char *filename)
 void disk_write(char *filename, byte *data)
 {
     FILE *file = fopen(filename, "w");
-    if (file == NULL)
+    if (file == 0)
     {
         printf("Error: File not found\n");
         exit(1);
@@ -445,7 +445,7 @@ void disk_write(char *filename, byte *data)
 
     fwrite(data, strlen(data), 1, file);
     fclose(file);
-}
+}*/
 
 
 
@@ -885,7 +885,7 @@ Disk caller_shift(Disk disk, int index)
 Disk caller_randomize(Disk disk, int index)
 {
     int _index = get_ptr(disk, index + 1);
-    srand(time(NULL));
+    srand(time(0));
     int size = get_ptr(disk, _index + 1 + MEMSIZE);
     for (int i = 0; i < size; i++)
     {
@@ -1411,31 +1411,33 @@ Disk caller_add(Disk disk, int index)
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     int _index = get_ptr(disk, index + 1);
     int _pointer = get_ptr(disk, index + 1 + MEMSIZE);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] += disk[_pointer];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) + get_short(disk, _pointer));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, get_int(disk, _index) + get_int(disk, _pointer));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) + get_long(disk, _pointer));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, get_float(disk, _index) + get_float(disk, _pointer));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, get_double(disk, _index) + get_double(disk, _pointer));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, get_long_double(disk, _index) + get_long_double(disk, _pointer));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 1 + MEMSIZE*3);
     return disk;
@@ -1446,31 +1448,33 @@ Disk caller_sub(Disk disk, int index)
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     int _index = get_ptr(disk, index + 1);
     int _pointer = get_ptr(disk, index + 1 + MEMSIZE);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] -= disk[_pointer];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) - get_short(disk, _pointer));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, get_int(disk, _index) - get_int(disk, _pointer));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) - get_long(disk, _pointer));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, get_float(disk, _index) - get_float(disk, _pointer));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, get_double(disk, _index) - get_double(disk, _pointer));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, get_long_double(disk, _index) - get_long_double(disk, _pointer));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 1 + MEMSIZE*3);
     return disk;
@@ -1481,31 +1485,33 @@ Disk caller_mul(Disk disk, int index)
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     int _index = get_ptr(disk, index + 1);
     int _pointer = get_ptr(disk, index + 1 + MEMSIZE);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] *= disk[_pointer];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) * get_short(disk, _pointer));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, get_int(disk, _index) * get_int(disk, _pointer));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) * get_long(disk, _pointer));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, get_float(disk, _index) * get_float(disk, _pointer));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, get_double(disk, _index) * get_double(disk, _pointer));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, get_long_double(disk, _index) * get_long_double(disk, _pointer));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 1 + MEMSIZE*3);
     return disk;
@@ -1516,31 +1522,33 @@ Disk caller_div(Disk disk, int index)
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     int _index = get_ptr(disk, index + 1);
     int _pointer = get_ptr(disk, index + 1 + MEMSIZE);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] /= disk[_pointer];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) / get_short(disk, _pointer));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, get_int(disk, _index) / get_int(disk, _pointer));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) / get_long(disk, _pointer));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, get_float(disk, _index) / get_float(disk, _pointer));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, get_double(disk, _index) / get_double(disk, _pointer));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, get_long_double(disk, _index) / get_long_double(disk, _pointer));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 1 + MEMSIZE*3);
     return disk;
@@ -1550,31 +1558,33 @@ Disk caller_increment(Disk disk, int index)
 {
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     int _index = get_ptr(disk, index + 1);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index]++;
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) + 1);
-        break;
-    case 3:// int
-        set_int(&disk, _index, get_int(disk, _index) +1);
-        break;
-    case 4:// long
+    }
+    else if (_type == 3)
+    {
+        set_int(&disk, _index, get_int(disk, _index) + 1);
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) + 1);
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, get_float(disk, _index) + 1);
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, get_double(disk, _index) + 1);
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, get_long_double(disk, _index) + 1);
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1584,31 +1594,33 @@ Disk caller_decrement(Disk disk, int index)
 {
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     int _index = get_ptr(disk, index + 1);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index]--;
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) - 1);
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, get_int(disk, _index) - 1);
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) - 1);
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, get_float(disk, _index) - 1);
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, get_double(disk, _index) - 1);
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, get_long_double(disk, _index) - 1);
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1619,31 +1631,33 @@ Disk caller_mod(Disk disk, int index)
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     int _index = get_ptr(disk, index + 1);
     int _pointer = get_ptr(disk, index + 1 + MEMSIZE);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] %= disk[_pointer];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, get_short(disk, _index) % get_short(disk, _pointer));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, get_int(disk, _index) % get_int(disk, _pointer));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, get_long(disk, _index) % get_long(disk, _pointer));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, fmod(get_float(disk, _index), get_float(disk, _pointer)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, fmod(get_double(disk, _index), get_double(disk, _pointer)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, fmod(get_long_double(disk, _index), get_long_double(disk, _pointer)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 1 + MEMSIZE*3);
     return disk;
@@ -1654,31 +1668,33 @@ Disk caller_pow(Disk disk, int index)
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     int _index = get_ptr(disk, index + 1);
     int _pointer = get_ptr(disk, index + 1 + MEMSIZE);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] = pow(disk[_index], disk[_pointer]);
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, pow(get_short(disk, _index), get_short(disk, _pointer)));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, pow(get_int(disk, _index), get_int(disk, _pointer)));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, pow(get_long(disk, _index), get_long(disk, _pointer)));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, pow(get_float(disk, _index), get_float(disk, _pointer)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, pow(get_double(disk, _index), get_double(disk, _pointer)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, pow(get_long_double(disk, _index), get_long_double(disk, _pointer)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 1 + MEMSIZE*3);
     return disk;
@@ -1688,31 +1704,33 @@ Disk caller_sqrt(Disk disk, int index)
 {
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     int _index = get_ptr(disk, index + 1);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] = sqrt(disk[_index]);
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, sqrt(get_short(disk, _index)));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, sqrt(get_int(disk, _index)));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, sqrt(get_long(disk, _index)));
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         set_float(&disk, _index, sqrt(get_float(disk, _index)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _index, sqrt(get_double(disk, _index)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _index, sqrt(get_long_double(disk, _index)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1722,31 +1740,33 @@ Disk caller_abs(Disk disk, int index)
 {
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     int _index = get_ptr(disk, index + 1);
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_index] = abs(disk[_index]);
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _index, abs(get_short(disk, _index)));
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _index, abs(get_int(disk, _index)));
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _index, abs(get_long(disk, _index)));
-        break;
-    case 5:// float
-        set_float(&disk, _index, abs(get_float(disk, _index)));
-        break;
-    case 6:// double
-        set_double(&disk, _index, abs(get_double(disk, _index)));
-        break;
-    case 7:// long double
-        set_long_double(&disk, _index, abs(get_long_double(disk, _index)));
-        break;
-    default:
-        break;
+    }
+    else if (_type == 5)
+    {
+        set_float(&disk, _index, fabs(get_float(disk, _index)));
+    }
+    else if (_type == 6)
+    {
+        set_double(&disk, _index, fabs(get_double(disk, _index)));
+    }
+    else if (_type == 7)
+    {
+        set_long_double(&disk, _index, fabsl(get_long_double(disk, _index)));
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1758,43 +1778,45 @@ Disk caller_min(Disk disk, int index)
     int _position2 = get_ptr(disk, index + 1 + MEMSIZE);
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_position1] = (disk[_position1] < disk[_position2]) ? disk[_position1] : disk[_position2];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         short s1 = get_short(disk, _position1);
         short s2 = get_short(disk, _position2);
         set_short(&disk, _position1, (s1 < s2) ? s1 : s2);
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         int i1 = get_int(disk, _position1);
         int i2 = get_int(disk, _position2);
         set_int(&disk, _position1, (i1 < i2) ? i1 : i2);
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         long l1 = get_long(disk, _position1);
         long l2 = get_long(disk, _position2);
         set_long(&disk, _position1, (l1 < l2) ? l1 : l2);
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         float f1 = get_float(disk, _position1);
         float f2 = get_float(disk, _position2);
         set_float(&disk, _position1, (f1 < f2) ? f1 : f2);
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         double d1 = get_double(disk, _position1);
         double d2 = get_double(disk, _position2);
         set_double(&disk, _position1, (d1 < d2) ? d1 : d2);
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         long double d3 = get_long_double(disk, _position1);
         long double d4 = get_long_double(disk, _position2);
         set_long_double(&disk, _position1, (d3 < d4) ? d3 : d4);
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE*2);
     return disk;
@@ -1806,43 +1828,45 @@ Disk caller_max(Disk disk, int index)
     int _position2 = get_ptr(disk, index + 1 + MEMSIZE);
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_position1] = (disk[_position1] > disk[_position2]) ? disk[_position1] : disk[_position2];
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         short s1 = get_short(disk, _position1);
         short s2 = get_short(disk, _position2);
         set_short(&disk, _position1, (s1 > s2) ? s1 : s2);
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         int i1 = get_int(disk, _position1);
         int i2 = get_int(disk, _position2);
         set_int(&disk, _position1, (i1 > i2) ? i1 : i2);
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         long l1 = get_long(disk, _position1);
         long l2 = get_long(disk, _position2);
         set_long(&disk, _position1, (l1 > l2) ? l1 : l2);
-        break;
-    case 5:// float
+    }
+    else if (_type == 5)
+    {
         float f1 = get_float(disk, _position1);
         float f2 = get_float(disk, _position2);
         set_float(&disk, _position1, (f1 > f2) ? f1 : f2);
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         double d1 = get_double(disk, _position1);
         double d2 = get_double(disk, _position2);
         set_double(&disk, _position1, (d1 > d2) ? d1 : d2);
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         long double d3 = get_long_double(disk, _position1);
         long double d4 = get_long_double(disk, _position2);
         set_long_double(&disk, _position1, (d3 > d4) ? d3 : d4);
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 10);
     return disk;
@@ -1853,31 +1877,33 @@ Disk caller_random(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 1)
     {
-    case 1:// byte
         disk[_position] = rand() % 256;
-        break;
-    case 2:// short
+    }
+    else if (_type == 2)
+    {
         set_short(&disk, _position, rand() % 65536);
-        break;
-    case 3:// int
+    }
+    else if (_type == 3)
+    {
         set_int(&disk, _position, rand());
-        break;
-    case 4:// long
+    }
+    else if (_type == 4)
+    {
         set_long(&disk, _position, rand());
-        break;
-    case 5:// float
-        set_float(&disk, _position, (float)rand() / (float)RAND_MAX);
-        break;
-    case 6:// double
-        set_double(&disk, _position, (double)rand() / (double)RAND_MAX);
-        break;
-    case 7:// long double
-        set_long_double(&disk, _position, (long double)rand() / (long double)RAND_MAX);
-        break;
-    default:
-        break;
+    }
+    else if (_type == 5)
+    {
+        set_float(&disk, _position, (float)rand() / RAND_MAX);
+    }
+    else if (_type == 6)
+    {
+        set_double(&disk, _position, (double)rand() / RAND_MAX);
+    }
+    else if (_type == 7)
+    {
+        set_long_double(&disk, _position, (long double)rand() / RAND_MAX);
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1888,19 +1914,17 @@ Disk caller_round(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, round(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, round(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, round(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1911,19 +1935,17 @@ Disk caller_floor(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, floor(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, floor(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, floor(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1934,19 +1956,17 @@ Disk caller_ceil(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, ceil(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, ceil(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, ceil(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1957,19 +1977,17 @@ Disk caller_trunc(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, trunc(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, trunc(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, trunc(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -1980,19 +1998,17 @@ Disk caller_sin(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, sin(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, sin(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, sin(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2003,19 +2019,17 @@ Disk caller_cos(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, cos(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, cos(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, cos(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2026,19 +2040,17 @@ Disk caller_tan(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, tan(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, tan(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, tan(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2049,19 +2061,17 @@ Disk caller_asin(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, asin(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, asin(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, asin(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2072,19 +2082,17 @@ Disk caller_acos(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, acos(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, acos(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, acos(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2095,19 +2103,17 @@ Disk caller_atan(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, atan(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, atan(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, atan(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2119,19 +2125,17 @@ Disk caller_atan2(Disk disk, int index)
     int _position2 = get_ptr(disk, index + 1 + MEMSIZE);
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position1, atan2(get_float(disk, _position1), get_float(disk, _position2)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position1, atan2(get_double(disk, _position1), get_double(disk, _position2)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position1, atan2(get_long_double(disk, _position1), get_long_double(disk, _position2)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE*2);
     return disk;
@@ -2142,19 +2146,17 @@ Disk caller_sinh(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, sinh(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, sinh(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, sinh(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2165,19 +2167,17 @@ Disk caller_cosh(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, cosh(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, cosh(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, cosh(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2188,19 +2188,17 @@ Disk caller_tanh(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, tanh(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, tanh(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, tanh(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2211,19 +2209,17 @@ Disk caller_exp(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, exp(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, exp(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, exp(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
@@ -2236,19 +2232,17 @@ Disk caller_frexp(Disk disk, int index)
     int _exp = get_ptr(disk, index + 1 + MEMSIZE);
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, frexp(get_float(disk, _position), &_exp));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, frexp(get_double(disk, _position), &_exp));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, frexp(get_long_double(disk, _position), &_exp));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE*2);
     return disk;
@@ -2260,19 +2254,17 @@ Disk caller_ldexp(Disk disk, int index)
     int _exp = get_ptr(disk, index + 1 + MEMSIZE);
     int _type = get_byte(disk, index + 1 + MEMSIZE*2);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, ldexp(get_float(disk, _position), _exp));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, ldexp(get_double(disk, _position), _exp));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, ldexp(get_long_double(disk, _position), _exp));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE*2);
     return disk;
@@ -2283,25 +2275,23 @@ Disk caller_log(Disk disk, int index)
     int _position = get_ptr(disk, index + 1);
     int _type = get_byte(disk, index + 1 + MEMSIZE);
     
-    switch (_type)
+    if (_type == 5)
     {
-    case 5:// float
         set_float(&disk, _position, log(get_float(disk, _position)));
-        break;
-    case 6:// double
+    }
+    else if (_type == 6)
+    {
         set_double(&disk, _position, log(get_double(disk, _position)));
-        break;
-    case 7:// long double
+    }
+    else if (_type == 7)
+    {
         set_long_double(&disk, _position, log(get_long_double(disk, _position)));
-        break;
-    default:
-        break;
     }
     _goto(&disk, index + 2 + MEMSIZE);
     return disk;
 }
 
-Disk caller_load(Disk disk, int index)
+/*Disk caller_load(Disk disk, int index)
 {
     int _position = get_ptr(disk, index + 1);
     int _size = get_ptr(disk, index + 1 + MEMSIZE);
@@ -2337,7 +2327,7 @@ Disk caller_save(Disk disk, int index)
     free(_data);
     _goto(&disk, index + 1 + MEMSIZE*3 + _filename_size);
     return disk;
-}
+}*/
 
 // functions
 Disk (*functions[])(Disk, int) = 
@@ -2399,10 +2389,10 @@ Disk (*functions[])(Disk, int) =
     caller_frexp,
     caller_ldexp,
     caller_log,
-    NULL,
-    NULL,
-    caller_load,
-    caller_save,
+    0,
+    0,
+    //caller_load,
+    //caller_save,
 };
 
 

@@ -1,5 +1,39 @@
 #include "brimg.h"
 
+byte *disk_read(char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == 0)
+    {
+        printf("Error: File not found\n");
+        return 0;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    byte *buffer = (byte *)malloc(size + 1);
+    fread(buffer, size, 1, file);
+    fclose(file);
+
+    buffer[size] = '\0';
+    return buffer;
+}
+
+void disk_write(char *filename, byte *data)
+{
+    FILE *file = fopen(filename, "w");
+    if (file == 0)
+    {
+        printf("Error: File not found\n");
+        exit(1);
+    }
+
+    fwrite(data, strlen(data), 1, file);
+    fclose(file);
+}
+
 int main (int argc, char *argv[])
 {
     Disk disk = disk_read(argv[1]);

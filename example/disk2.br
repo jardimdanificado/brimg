@@ -1,5 +1,5 @@
 set MEMSIZE 2;
-decimal 1 2 0 26;
+decimal 1 2 0 27;
 int 20;
 decimal 200 22 222 44 68 69 44 41 222;
 set loop_size (decimal 10);
