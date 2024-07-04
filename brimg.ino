@@ -1,5 +1,5 @@
 
-#include <Wire.h>        // Only needed for Arduino 1.6.5 and earlier
+
 #include "SSD1306Wire.h" // legacy include: `#include "SSD1306.h"`
 #define BUZZER D3
 
@@ -23,7 +23,7 @@ byte cursor_y[PROGS];
 byte *str[96];
 
 byte mode = 0;
-short global_delay = 100;
+short global_delay = 50;
 
 void setup()
 {
@@ -46,7 +46,7 @@ void setup()
         for (byte j = 0; j < 96; j++)
         {
             
-            str[i][j] = 255;
+            str[i][j] = 0;
         }
 
         cursor_x[i] = 0;
