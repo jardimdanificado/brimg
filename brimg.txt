@@ -5,10 +5,6 @@ types:
 1 = byte 1 byte
 2 = short 2 bytes
 3 = int 4 bytes
-4 = long 8 bytes
-5 = float 4 bytes
-6 = double 8 bytes
-7 = long double 10 bytes
 
 // disk 
 // byte 0 to 7 are "reserved" for the system
@@ -79,31 +75,6 @@ version = x.y.z
 36 - MIN (position1, position2, result, type)   f ptr ptr ptr b
 37 - MAX (position1, position2, result, type)   f ptr ptr ptr b
 38 - RANDOM (position, pmin, pmax, type)        f ptr ptr ptr b
-39 - ROUND (position, type)                     f ptr b
-40 - FLOOR (position, type)                     f ptr b
-41 - CEIL (position, type)                      f ptr b
-42 - TRUNC (position, type)                     f ptr b
-43 - SIN (position, type)                       f ptr b
-44 - COS (position, type)                       f ptr b
-45 - TAN (position, type)                       f ptr b
-46 - ASIN (position, type)                      f ptr b
-47 - ACOS (position, type)                      f ptr b
-48 - ATAN (position, type)                      f ptr b
-49 - ATAN2 (position1, position2, type)         f ptr ptr b
-50 - SINH (position, type)                      f ptr b
-51 - COSH (position, type)                      f ptr b
-52 - TANH (position, type)                      f ptr b
-53 - EXP (position, type)                       f ptr b
-54 - FREXP (position, type)                     f ptr ptr b
-55 - LDEXP (position1, position2, type)         f ptr ptr b
-56 - LOG (position, type)                       f ptr b
-57 - NULL
-58 - NULL
-
-// file
-
-59 - LOAD (destiny, size, filenamesize, filename) f ptr ptr ptr ?
-60 - SAVE (origin, size, filenamesize, filename)  f ptr ptr ptr ?
 
 
 // bruter bytecode compiler
@@ -114,9 +85,11 @@ version = x.y.z
 3 - hex
 4 - short
 5 - int
-6 - long
-7 - float
-8 - double
-9 - long double
 
-// need to adapt to arduino
+// arduino
+// cmd mode
+0 - load(position, size)
+1 - save(position, size)
+2 - run(position, size)
+4 - defaultdelay(ms)
+5 - 
